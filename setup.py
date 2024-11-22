@@ -1,8 +1,17 @@
 from setuptools import setup, find_packages
+import os
 
+long_description = ""
+readme_path = os.path.join(os.path.dirname(__file__), "README.md")
+
+if os.path.exists(readme_path):
+    with open(readme_path, "r", encoding="utf-8") as fh:
+        long_description = fh.read()
+        
 setup(
     name="p2p_checkout",
     version="0.1.0",
+    include_package_data=True,
     packages=find_packages(where="src"),
       package_dir={"": "src"},
     install_requires=[
@@ -24,13 +33,13 @@ setup(
     ],
     extras_require={
         "dev": [
-            "black"
+            "flake8"
             "pytest",
             "pytest-cov",
         ],
     },
     description="Python library for PlaceToPay integration.",
-    long_description=open("README.md").read(),
+    long_description=long_description,
     long_description_content_type="text/markdown",
     author="Iván Andrés López Gómez",
     author_email="ialopez11012@gmail.com",
