@@ -1,5 +1,7 @@
 # **P2PCheckout Python Integration Library**
 
+[![codecov](https://codecov.io/github/andrextor/P2PCheckout/graph/badge.svg?token=XPxrdb1Q2M)](https://codecov.io/github/andrextor/P2PCheckout)
+
 This project is a Python library inspired by the [PlaceToPay PHP Redirection Library](https://github.com/dnetix/redirection). It aims to provide a robust and easy-to-use solution for integrating with PlaceToPay's payment gateway using Python. The library incorporates some enhancements to better fit Python's ecosystem and leverages modern Python tools like Pydantic and Requests for validation and HTTP handling.
 
 ---
