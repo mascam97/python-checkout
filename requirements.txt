@@ -1,19 +1,22 @@
 annotated-types==0.7.0
-black==24.10.0
 certifi==2024.8.30
 charset-normalizer==3.4.0
 click==8.1.7
 coverage==7.6.7
+flake8==7.1.1
 idna==3.10
 iniconfig==2.0.0
+mccabe==0.7.0
 mypy-extensions==1.0.0
--e git+https://github.com/andrextor/P2PCheckout.git@ac9a47e26601cdb37b541efc28d24dcab9b754c9#egg=p2p_checkout
+-e git+https://github.com/andrextor/P2PCheckout.git@169effc18001dd07598936f4fb5c404f8248a81c#egg=p2p_checkout
 packaging==24.2
 pathspec==0.12.1
 platformdirs==4.3.6
 pluggy==1.5.0
+pycodestyle==2.12.1
 pydantic==2.10.0
 pydantic_core==2.27.0
+pyflakes==3.2.0
 pytest==8.3.3
 python-dotenv==1.0.1
 requests==2.32.3
