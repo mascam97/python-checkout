@@ -20,6 +20,8 @@ class AccountTest(unittest.TestCase):
         assert account.accountNumber == "1234567890"
         assert account.status.status == StatusEnum.OK
         assert account.status.reason == "Active"
+        assert account.last_digits() == '7890'
+        assert account.get_type() == 'account'
 
 
     def test_account_to_dict(self):

@@ -2,11 +2,13 @@
 branch = True
 source = src
 omit =
-    */__init__.py
+    src/*/__init__.py
+    */__pycache__/*
 
 [report]
 omit =
-    */__init__.py
+    src/*/__init__.py
+    */__pycache__/*
 fail_under = 98
 show_missing = True
 show_covered = True
