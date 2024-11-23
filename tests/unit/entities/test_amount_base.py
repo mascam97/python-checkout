@@ -16,3 +16,10 @@ class AmountBaseTest(unittest.TestCase):
         
         assert amount_base.currency == 'COP'
         assert amount_base.total == 10000
+        
+    def test_amount_base_to_dict_partial(self):
+        amount_base = AmountBase(currency='COP',total=20000);
+        
+        expected = {'currency': 'COP', 'total': 20000.0}
+        assert amount_base.to_dict() == expected
+        
