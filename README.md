@@ -19,7 +19,7 @@ This project is a Python library inspired by the [PlaceToPay PHP Redirection Lib
 
 ## **Technologies Used**
 
-- **Python 3.9+**
+- **Python 3.13+**
 - **Pydantic**: For model validation and serialization.
 - **Requests**: For HTTP client requests.
 - **Logging**: To log and debug processes.
@@ -32,9 +32,13 @@ This project is a Python library inspired by the [PlaceToPay PHP Redirection Lib
 Clone the repository and install the required dependencies:
 
 ```bash
-git clone https://github.com/your-username/redirection-python.git
-cd redirection-python
+git clone https://github.com/andrextor/P2PCheckout.git
+cd P2PCheckout
+
+python -m venv env
+source env/bin/activate # In Windows: env\Scripts\activate
 pip install -r requirements.txt
+pip install -e ".[dev]"  # For development
 ```
 
 ## **Quick Start**
