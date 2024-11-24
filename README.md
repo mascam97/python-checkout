@@ -37,11 +37,12 @@ cd P2PCheckout
 
 python -m venv env
 source env/bin/activate # In Windows: env\Scripts\activate
-pip install -r requirements.txt
 pip install -e ".[dev]"  # For development
 ```
 
-## **Quick Start**
+This will install the library in editable mode and include all development dependencies like flake8, pytest, and pytest-cov.
+
+## ***Quick Start For Production Use **
 
 Here’s a quick example to get you started with the library:
 
@@ -59,8 +60,8 @@ config = {
     "login": "your_login",
     "tranKey": "your_transaction_key",
     "timeout": 10,
-    "verifySsl": True,
-    "headers": {"Authorization": "Bearer your_token"},
+    "verifySsl": True, # Default=True
+    "headers": {"Accept": "application/json", 'Content-Type': 'application/json'},
 }
 
 p2p_checkout = P2PCheckout(**config)
@@ -73,7 +74,7 @@ from messages.requests.redirect import RedirectRequest
 from messages.responses.redirect import RedirectResponse
 
 redirect_request = RedirectRequest(
-    amount={"currency": "USD", "total": 100},
+    amount={"currency": "COP", "total": 10000},
     payment={"reference": "TEST123", "description": "Test Payment"}
 )
 
@@ -107,12 +108,20 @@ print("Reverse Status:", reverse_response.status)
 
 Project Structure
 
-- entities: Contains core models like Settings, Authentication, and payment-related entities (Amount, Transaction, etc.).
-- messages: Handles request and response objects for PlaceToPay interactions.
-- exceptions: Custom exception handling for the library.
-- client: Handles HTTP client interactions, including RestCarrier.
-- contracts: Defines interfaces for reusable components.
-- tests: Contains unit tests to ensure the library’s functionality.
+P2PCheckout/
+├── src/
+│   ├── entities/      # Core models (e.g., Account, Status, Settings)
+│   ├── messages/      # Handles request and response models
+│   ├── exceptions/    # Custom exceptions
+│   ├── client/        # HTTP client logic (e.g., RestCarrier)
+│   ├── contracts/     # Interfaces for reusable components
+├── tests/             # Unit tests and integration tests
+│   ├── unit/
+│   ├── features/
+├── .coveragerc        # Coverage configuration
+├── pytest.ini         # Pytest configuration
+├── README.md          # Project documentation
+├── setup.py           # Installation script
 
 Contributing
 
@@ -120,11 +129,16 @@ We welcome contributions! If you’d like to contribute, please fork the reposit
 
 Steps to Contribute:
 
-1. Fork the repository.
-2. Create a feature branch: git checkout -b feature/new-feature.
-3. Commit your changes: git commit -m "Add new feature".
-4. Push to the branch: git push origin feature/new-feature.
-5. Open a pull request on GitHub.
+- Fork the repository.
+
+```bash
+git fork https://github.com/andrextor/P2PCheckout.git
+``````
+
+- Create a feature branch: git checkout -b feature/new-feature.
+- Commit your changes: git commit -m "Add new feature".
+- Push to the branch: git push origin feature/new-feature.
+- Open a pull request on GitHub.
 
 License
 
