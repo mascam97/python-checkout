@@ -38,10 +38,9 @@ setup(
     author_email="ialopez11012@gmail.com",
     url="https://github.com/andrextor/P2PCheckout",
     classifiers=[
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.13",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.13",
 )
