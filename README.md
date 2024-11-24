@@ -108,20 +108,12 @@ print("Reverse Status:", reverse_response.status)
 
 Project Structure
 
-P2PCheckout/
-├── src/
-│   ├── entities/      # Core models (e.g., Account, Status, Settings)
-│   ├── messages/      # Handles request and response models
-│   ├── exceptions/    # Custom exceptions
-│   ├── client/        # HTTP client logic (e.g., RestCarrier)
-│   ├── contracts/     # Interfaces for reusable components
-├── tests/             # Unit tests and integration tests
-│   ├── unit/
-│   ├── features/
-├── .coveragerc        # Coverage configuration
-├── pytest.ini         # Pytest configuration
-├── README.md          # Project documentation
-├── setup.py           # Installation script
+- entities: Contains core models like Settings, Authentication, and payment-related entities (Amount, Transaction, etc.).
+- messages: Handles request and response objects for PlaceToPay interactions.
+- exceptions: Custom exception handling for the library.
+- client: Handles HTTP client interactions, including RestCarrier.
+- contracts: Defines interfaces for reusable components.
+- tests: Contains unit tests to ensure the library’s functionality.
 
 Contributing
 
