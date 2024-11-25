@@ -5,7 +5,7 @@ from entities.amount_base import AmountBase
 
 class AmountConversionTest(unittest.TestCase):
     
-    def test_amoun_conversion_initialitation(self):
+    def test_amoun_conversion_initialization(self):
         to_amount = AmountBase(currency='COP', total=4000)
         from_amount = AmountBase(currency='USD', total=11)
         
@@ -29,7 +29,7 @@ class AmountConversionTest(unittest.TestCase):
             assert amount_conversion.fromAmount.total == 1000.0
             assert amount_conversion.factor == 1
     
-    def test_amount_conversion_to_dict_partion(self):
+    def test_amount_conversion_to_dict(self):
         
         amount_conversion = AmountConversion(
             fromAmount=AmountBase(currency='COP', total=4000),

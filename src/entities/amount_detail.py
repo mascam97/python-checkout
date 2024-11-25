@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 
-
 class AmountDetail(BaseModel):
     kind: str = Field(..., description="The type of amount")
     amount: float = Field(..., description="The amount value")
@@ -9,4 +8,4 @@ class AmountDetail(BaseModel):
         """
         Convert the AmountDetail object to a dictionary using the Pydantic `model_dump` method.
         """
-        return self.model_dump(exclude_none=True)
+        return self.model_dump()
