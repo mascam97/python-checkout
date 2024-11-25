@@ -15,4 +15,4 @@ class Discount(BaseModel):
         """
         Convert the Discount object to a dictionary using the Pydantic `model_dump` method.
         """
-        return self.model_dump(exclude_none=True)
+        return self.model_dump()
