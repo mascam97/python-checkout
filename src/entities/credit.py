@@ -1,5 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
-
+from pydantic import BaseModel, Field
 
 class Credit(BaseModel):
     code: str = Field(..., description="Credit code")
@@ -11,4 +10,4 @@ class Credit(BaseModel):
         """
         Convert the Credit object to a dictionary using the Pydantic model_dump method.
         """
-        return self.model_dump(by_alias=True, exclude_none=True)
+        return self.model_dump()
