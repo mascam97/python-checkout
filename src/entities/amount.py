@@ -1,9 +1,8 @@
-from typing import List, Optional, Union
-from pydantic import BaseModel, Field
+from typing import List, Optional, Union, Dict
+from pydantic import Field
 from entities.tax_detail import TaxDetail
 from entities.amount_detail import AmountDetail
 from entities.amount_base import AmountBase
-
 
 class Amount(AmountBase):
     taxes: List[TaxDetail] = Field(
@@ -33,16 +32,15 @@ class Amount(AmountBase):
         for detail in details:
             if isinstance(detail, dict):
                 detail = AmountDetail(**detail)
-            setattr(self, detail.kind, detail.amount)
             self.details.append(detail)
 
-    def taxes_to_array(self) -> List[dict]:
+    def taxes_to_dict(self) -> List[dict]:
         """
         Convert taxes to a list of dictionaries.
         """
         return [tax.model_dump() for tax in self.taxes]
 
-    def details_to_array(self) -> List[dict]:
+    def details_to_dict(self) -> List[dict]:
         """
         Convert details to a list of dictionaries.
         """
@@ -55,6 +53,6 @@ class Amount(AmountBase):
         parent_data = super().to_dict()  # Assuming AmountBase has a `to_dict` method.
         return {
             **parent_data,
-            "taxes": self.taxes_to_array(),
-            "details": self.details_to_array(),
+            "taxes": self.taxes_to_dict(),
+            "details": self.details_to_dict(),
         }
