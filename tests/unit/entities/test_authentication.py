@@ -4,7 +4,7 @@ import base64
 import pytest
 from exceptions.p2p_exception import P2PException
 from unittest import mock
-from client.authentication import Authentication
+from clients.authentication import Authentication
 
 
 class AuthenticationTest(unittest.TestCase):

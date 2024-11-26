@@ -1,6 +1,5 @@
-import json
 import requests
-from typing import Any, Dict
+from typing import Dict
 from entities.settings import Settings
 from contracts.carrier import Carrier
 from exceptions.p2p_exception import P2PException

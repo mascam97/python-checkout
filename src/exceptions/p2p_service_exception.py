@@ -1,4 +1,4 @@
-from p2p_exception import P2PException
+from exceptions.p2p_exception import P2PException
 
 
 class P2pServiceException(P2PException):
