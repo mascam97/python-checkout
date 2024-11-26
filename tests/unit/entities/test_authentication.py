@@ -9,8 +9,8 @@ from clients.authentication import Authentication
 
 class AuthenticationTest(unittest.TestCase):
 
-    @mock.patch("client.authentication.random.randrange")
-    @mock.patch("client.authentication.datetime")
+    @mock.patch("clients.authentication.random.randrange")
+    @mock.patch("clients.authentication.datetime")
     def test_authentication_initialitation(self, mock_datetime, mock_randrange):
         mock_now = mock.Mock()
         mock_now.isoformat.return_value = "2024-10-22T04:39:18.810868+00:00"
