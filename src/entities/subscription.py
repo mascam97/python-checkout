@@ -17,6 +17,6 @@ class Subscription(BaseModel, FieldsMixin):
         """
         Convert the subscription object to a dictionary including fields.
         """
-        data = self.model_dump(exclude_none=True)
+        data = self.model_dump()
         data["fields"] = self.fields_to_array()
         return data
