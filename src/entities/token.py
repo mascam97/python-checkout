@@ -9,16 +9,16 @@ class Token(BaseModel):
         default="", description="Franchise associated with the token"
     )
     franchiseName: str = Field(
-        default="", alias="franchiseName", description="Name of the franchise"
+        default="", description="Name of the franchise"
     )
     issuerName: str = Field(
-        default="", alias="issuerName", description="Name of the issuer"
+        default="", description="Name of the issuer"
     )
     lastDigits: str = Field(
-        default="", alias="lastDigits", description="Last digits of the card/token"
+        default="", description="Last digits of the card/token"
     )
     validUntil: str = Field(
-        default="", alias="validUntil", description="Expiration date in ISO format"
+        default="", description="Expiration date in ISO format"
     )
     cvv: str = Field(default="", description="CVV associated with the token")
     installments: int = Field(default=0, description="Number of installments")
@@ -37,4 +37,4 @@ class Token(BaseModel):
         """
         Convert the Token object to a dictionary using the Pydantic model_dump method.
         """
-        return self.model_dump(by_alias=True, exclude_none=True)
+        return self.model_dump()
