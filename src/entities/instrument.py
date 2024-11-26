@@ -4,7 +4,6 @@ from entities.account import Account
 from entities.token import Token
 from entities.credit import Credit
 
-
 class Instrument(BaseModel):
     bank: Optional[Account] = Field(default=None, description="Associated bank account")
     token: Optional[Token] = Field(default=None, description="Associated token")
