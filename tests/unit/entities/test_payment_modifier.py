@@ -3,7 +3,7 @@ from entities.payment_modifier import PaymentModifier
 
 
 class PaymentModifierTest(unittest.TestCase):
-    
+
     def test_initialization(self):
         """
         Test initialization of PaymentModifier with default values.
@@ -46,7 +46,8 @@ class PaymentModifierTest(unittest.TestCase):
         """
         Test retrieving additional data by key.
         """
-        modifier = PaymentModifier(additional={"key1": "value1", "key2": "value2"})
+        modifier = PaymentModifier(
+            additional={"key1": "value1", "key2": "value2"})
         assert modifier.get_additional("key1") == "value1"
         assert modifier.get_additional("key3", "default") == "default"
 
