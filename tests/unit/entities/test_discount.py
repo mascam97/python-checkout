@@ -32,19 +32,26 @@ class TestDiscount(unittest.TestCase):
         self.assertEqual(discount.to_dict(), expected_dict)
 
     def test_discount_missing_field(self):
+        """
+        Test that an error is raised when required fields are missing.
+        """
         with self.assertRaises(ValueError):
             Discount(
                 type="Percentage",
                 amount=50.0,
                 base=200.0
-            )  # Missing 'code'
+            )
 
     def test_discount_field_types(self):
+        """
+        Test that an error is raised when field types are incorrect.
+        For example, if 'amount' is a string instead of a float.
+        """
         with self.assertRaises(ValueError):
             Discount(
                 code="DISCOUNT2023",
                 type="Percentage",
-                amount="fifty",  # 'amount' should be a float
+                amount="fifty",
                 base=200.0,
                 percent=25.0
             )
