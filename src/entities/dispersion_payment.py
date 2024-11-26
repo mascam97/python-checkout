@@ -1,7 +1,6 @@
 from typing import List, Dict
 from entities.payment import Payment
 
-
 class DispersionPayment(Payment):
     dispersion: List[Payment] = []
 
@@ -9,7 +8,7 @@ class DispersionPayment(Payment):
         """
         Initialize DispersionPayment object and process dispersion payments.
         """
-        super().__init__(data)
+        super().__init__(**data)
         if "dispersion" in data:
             self.set_dispersion(data["dispersion"])
 
@@ -19,12 +18,11 @@ class DispersionPayment(Payment):
         """
         self.dispersion = []
         for payment_data in data:
-            payment = Payment(payment_data)
-            payment.set_reference(self.reference).set_description(self.description)
+            payment = Payment(**payment_data) if isinstance(payment_data, dict) else payment_data
             self.dispersion.append(payment)
         return self
 
-    def dispersion_to_array(self) -> List[Dict]:
+    def dispersion_to_dict(self) -> List[Dict]:
         """
         Convert the list of dispersion payments to a list of dictionaries.
         """
@@ -35,5 +33,5 @@ class DispersionPayment(Payment):
         Convert the DispersionPayment object to a dictionary.
         """
         base_data = super().to_dict()
-        base_data["dispersion"] = self.dispersion_to_array()
+        base_data["dispersion"] = self.dispersion_to_dict()
         return base_data
