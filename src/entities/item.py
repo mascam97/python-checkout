@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 
-
 class Item(BaseModel):
     sku: str = Field(default="", description="Stock Keeping Unit (SKU) of the item")
     name: str = Field(default="", description="Name of the item")
@@ -13,4 +12,4 @@ class Item(BaseModel):
         """
         Convert the Item object to a dictionary using the Pydantic `model_dump` method.
         """
-        return self.model_dump(exclude_none=True)
+        return self.model_dump()
