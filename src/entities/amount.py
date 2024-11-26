@@ -4,6 +4,7 @@ from entities.tax_detail import TaxDetail
 from entities.amount_detail import AmountDetail
 from entities.amount_base import AmountBase
 
+
 class Amount(AmountBase):
     taxes: List[TaxDetail] = Field(
         default_factory=list, description="List of tax details"
@@ -11,7 +12,8 @@ class Amount(AmountBase):
     details: List[AmountDetail] = Field(
         default_factory=list, description="List of amount details"
     )
-    tip: Optional[float] = Field(default=None, description="Optional tip amount")
+    tip: Optional[float] = Field(
+        default=None, description="Optional tip amount")
     insurance: Optional[float] = Field(
         default=None, description="Optional insurance amount"
     )

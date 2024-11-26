@@ -5,7 +5,8 @@ from entities.instrument import Instrument
 
 
 class CollectRequest(RedirectRequest):
-    instrument: Optional[Instrument] = Field(..., description="Instrument details")
+    instrument: Optional[Instrument] = Field(...,
+                                             description="Instrument details")
     return_url: str = Field(
         default="", alias="returnUrl", description="URL to return to after processing"
     )

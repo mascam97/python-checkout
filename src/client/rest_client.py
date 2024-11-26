@@ -58,7 +58,8 @@ class RestCarrier(Carrier):
         :param transaction_id: The ID of the transaction to reverse.
         :return: ReverseResponse object.
         """
-        result = self._post("api/reverse", {"internalReference": transaction_id})
+        result = self._post(
+            "api/reverse", {"internalReference": transaction_id})
         return ReverseResponse(**result)
 
     def _post(self, endpoint: str, arguments: Dict) -> Dict:

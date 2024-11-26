@@ -5,7 +5,8 @@ from pydantic import BaseModel, Field
 class PaymentModifier(BaseModel):
     TYPE_FEDERAL_GOVERNMENT: str = "FEDERAL_GOVERNMENT"
 
-    type: Optional[str] = Field(default=None, description="Type of payment modifier")
+    type: Optional[str] = Field(
+        default=None, description="Type of payment modifier")
     code: Optional[str] = Field(
         default=None, description="Code associated with the payment modifier"
     )

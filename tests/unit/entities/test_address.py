@@ -1,6 +1,7 @@
 import unittest
 from entities.address import Address
 
+
 class AddressTest(unittest.TestCase):
 
     def test_address_initialization(self):
@@ -56,7 +57,8 @@ class AddressTest(unittest.TestCase):
             city="Test City"
         )
 
-        expected_dict = {'street': '123 Main St', 'city': 'Test City', 'state': '', 'postalCode': '', 'country': '', 'phone': ''}
+        expected_dict = {'street': '123 Main St', 'city': 'Test City',
+                         'state': '', 'postalCode': '', 'country': '', 'phone': ''}
 
         assert address.to_dict() == expected_dict
 
@@ -79,6 +81,7 @@ class AddressTest(unittest.TestCase):
         """
         address = Address()
 
-        expected_dict = {'street': '', 'city': '', 'state': '', 'postalCode': '', 'country': '', 'phone': ''}
+        expected_dict = {'street': '', 'city': '', 'state': '',
+                         'postalCode': '', 'country': '', 'phone': ''}
 
         assert address.to_dict() == expected_dict

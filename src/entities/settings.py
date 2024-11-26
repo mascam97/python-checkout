@@ -1,4 +1,5 @@
-import requests, logging
+import requests
+import logging
 from typing import Optional, Dict, Any
 from pydantic import BaseModel, Field, HttpUrl, model_validator, ConfigDict
 from client.authentication import Authentication
@@ -12,7 +13,8 @@ class Settings(BaseModel):
 
     baseUrl: HttpUrl = Field(..., description="Base URL for the API")
     timeout: int = Field(default=15, description="Request timeout in seconds")
-    verifySsl: bool = Field( default=True, description="Verify SSL certificates")
+    verifySsl: bool = Field(
+        default=True, description="Verify SSL certificates")
     login: str = Field(..., description="API login key")
     tranKey: str = Field(..., description="API transaction key")
     headers: Dict[str, str] = Field(
@@ -23,7 +25,8 @@ class Settings(BaseModel):
         alias="authAdditional",
         description="Additional authentication data",
     )
-    loggerConfig: Optional[Dict[str, Any]] = Field(default=None, description="Logger configuration")
+    loggerConfig: Optional[Dict[str, Any]] = Field(
+        default=None, description="Logger configuration")
 
     # Internal fields
     _logger: Optional[logging.Logger] = None
@@ -102,7 +105,8 @@ class Settings(BaseModel):
         # Add handler if it doesn't exist
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+            formatter = logging.Formatter(
+                "%(asctime)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
 

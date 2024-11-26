@@ -3,11 +3,13 @@ from enums.status_enum import StatusEnum
 from datetime import datetime
 from typing import Optional
 
+
 class Status(BaseModel):
     status: StatusEnum
     reason: str
     message: str = Field(default="", description="Status message")
-    date: Optional[str] = Field(default_factory=lambda: datetime.now().isoformat())
+    date: Optional[str] = Field(
+        default_factory=lambda: datetime.now().isoformat())
 
     def is_successful(self) -> bool:
         return self.status == StatusEnum.OK
@@ -30,7 +32,7 @@ class Status(BaseModel):
         date: Optional[str] = None,
     ) -> "Status":
         return cls(status=status, reason=reason, message=message, date=date)
-    
+
     def to_dict(self) -> dict:
         """
         Convert the Status object to a dictionary.

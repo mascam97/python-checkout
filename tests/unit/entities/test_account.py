@@ -1,7 +1,9 @@
-import pytest, unittest
+import pytest
+import unittest
 from entities.account import Account
 from entities.status import Status
 from enums.status_enum import StatusEnum
+
 
 class AccountTest(unittest.TestCase):
 
@@ -23,12 +25,12 @@ class AccountTest(unittest.TestCase):
         assert account.last_digits() == '7890'
         assert account.get_type() == 'account'
 
-
     def test_account_to_dict(self):
         """
         Test the `to_dict` method.
         """
-        status = Status(status=StatusEnum.OK, reason="Active", message='process ok')
+        status = Status(status=StatusEnum.OK,
+                        reason="Active", message='process ok')
         account = Account(
             bankCode="001",
             bankName="Test Bank",
@@ -46,7 +48,6 @@ class AccountTest(unittest.TestCase):
         }
 
         assert account.to_dict() == expected_dict
-
 
     def test_account_to_dict_without_status(self):
         """
@@ -69,7 +70,6 @@ class AccountTest(unittest.TestCase):
 
         assert account.to_dict() == expected_dict
 
-
     def test_account_get_type(self):
         """
         Test the `get_type` method.
@@ -83,7 +83,6 @@ class AccountTest(unittest.TestCase):
 
         assert account.get_type() == "account"
 
-
     def test_account_last_digits(self):
         """
         Test the `last_digits` method.
@@ -96,7 +95,6 @@ class AccountTest(unittest.TestCase):
         )
 
         assert account.last_digits() == "7890"
-
 
     def test_account_last_digits_empty(self):
         """

@@ -35,8 +35,10 @@ class Transaction(BaseModel):
     discount: Optional[Discount] = Field(
         default=None, description="Discount information"
     )
-    status: Optional[Status] = Field(default=None, description="Transaction status")
-    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
+    status: Optional[Status] = Field(
+        default=None, description="Transaction status")
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True, populate_by_name=True)
 
     def is_successful(self) -> bool:
         """

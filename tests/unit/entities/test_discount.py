@@ -1,6 +1,7 @@
 import unittest
 from entities.discount import Discount
 
+
 class TestDiscount(unittest.TestCase):
 
     def test_discount_initialization(self):
@@ -26,7 +27,7 @@ class TestDiscount(unittest.TestCase):
             "base": 200.0,
             "percent": 25.0
         }
-          
+
         discount = Discount.model_validate(expected_dict)
 
         self.assertEqual(discount.to_dict(), expected_dict)

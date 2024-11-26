@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 
+
 class TaxDetail(BaseModel):
     kind: str = Field(..., description="The type of tax")
     amount: float = Field(..., description="The tax amount")

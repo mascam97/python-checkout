@@ -19,12 +19,17 @@ class RedirectRequest(BaseModel):
     subscription: Optional[Subscription] = Field(
         default=None, description="Subscription details"
     )
-    return_url: str = Field(..., description="URL to return to after processing")
-    payment_method: str = Field(default="", description="Payment method to be used")
-    cancel_url: str = Field(default="", description="URL to return to if canceled")
+    return_url: str = Field(...,
+                            description="URL to return to after processing")
+    payment_method: str = Field(
+        default="", description="Payment method to be used")
+    cancel_url: str = Field(
+        default="", description="URL to return to if canceled")
     ip_address: str = Field(..., description="IP address of the user")
-    user_agent: str = Field(..., description="User agent of the user's browser")
-    expiration: str = Field(default=None, description="Expiration date for the request")
+    user_agent: str = Field(...,
+                            description="User agent of the user's browser")
+    expiration: str = Field(
+        default=None, description="Expiration date for the request")
     capture_address: bool = Field(
         default=False, description="Whether to capture the address"
     )

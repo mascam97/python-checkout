@@ -4,8 +4,9 @@ from entities.token import Token
 from entities.credit import Credit
 from entities.instrument import Instrument
 
+
 class InstrumentTest(unittest.TestCase):
-    
+
     def test_instrument_initialization(self):
         """
         Test the initialization of the Instrument class.
@@ -17,8 +18,9 @@ class InstrumentTest(unittest.TestCase):
             accountNumber="1234567890"
         )
         token = Token(token="test-token", expiry="2025-12-31")
-        credit = Credit(code="CRED001", type="Credit", groupCode="GRP001", installment=12)
-        
+        credit = Credit(code="CRED001", type="Credit",
+                        groupCode="GRP001", installment=12)
+
         instrument = Instrument(
             bank=account,
             token=token,
@@ -26,7 +28,7 @@ class InstrumentTest(unittest.TestCase):
             pin="1234",
             password="secure_password"
         )
-        
+
         self.assertEqual(instrument.bank.bankCode, "001")
         self.assertEqual(instrument.token.token, "test-token")
         self.assertEqual(instrument.credit.code, "CRED001")
@@ -44,8 +46,9 @@ class InstrumentTest(unittest.TestCase):
             accountNumber="1234567890"
         )
         token = Token(token="test-token", expiry="2025-12-31")
-        credit = Credit(code="CRED001", type="Credit", groupCode="GRP001", installment=12)
-        
+        credit = Credit(code="CRED001", type="Credit",
+                        groupCode="GRP001", installment=12)
+
         instrument = Instrument(
             bank=account,
             token=token,
@@ -53,7 +56,7 @@ class InstrumentTest(unittest.TestCase):
             pin="1234",
             password="secure_password"
         )
-        
+
         expected_dict = {
             "bank": account.to_dict(),
             "token": token.to_dict(),
@@ -61,7 +64,7 @@ class InstrumentTest(unittest.TestCase):
             "pin": "1234",
             "password": "secure_password",
         }
-        
+
         self.assertEqual(instrument.to_dict(), expected_dict)
 
     def test_instrument_to_dict_without_optional_fields(self):
@@ -72,7 +75,7 @@ class InstrumentTest(unittest.TestCase):
             pin="1234",
             password="secure_password"
         )
-        
+
         expected_dict = {
             "bank": None,
             "token": None,
@@ -80,7 +83,7 @@ class InstrumentTest(unittest.TestCase):
             "pin": "1234",
             "password": "secure_password",
         }
-        
+
         self.assertEqual(instrument.to_dict(), expected_dict)
 
     def test_instrument_initialization_with_defaults(self):
@@ -88,7 +91,7 @@ class InstrumentTest(unittest.TestCase):
         Test initialization of the Instrument class with default values.
         """
         instrument = Instrument()
-        
+
         self.assertIsNone(instrument.bank)
         self.assertIsNone(instrument.token)
         self.assertIsNone(instrument.credit)

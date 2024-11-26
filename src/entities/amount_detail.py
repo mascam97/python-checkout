@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class AmountDetail(BaseModel):
     kind: str = Field(..., description="The type of amount")
     amount: float = Field(..., description="The amount value")

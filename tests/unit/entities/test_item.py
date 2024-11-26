@@ -1,8 +1,9 @@
 import unittest
 from entities.item import Item
 
+
 class ItemTest(unittest.TestCase):
-    
+
     def test_item_initialization(self):
         """
         Test the initialization of the Item class.

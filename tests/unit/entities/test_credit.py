@@ -1,6 +1,7 @@
 import unittest
 from entities.credit import Credit
 
+
 class TestCredit(unittest.TestCase):
 
     def test_credit_initialization(self):
@@ -29,7 +30,7 @@ class TestCredit(unittest.TestCase):
             "groupCode": "GRP001",
             "installment": 12,
         }
-        
+
         credit = Credit.model_validate(expected_dict)
 
         self.assertEqual(credit.to_dict(), expected_dict)

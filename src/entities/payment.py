@@ -12,11 +12,16 @@ from mixins.fields_mixin import FieldsMixin
 
 class Payment(BaseModel, FieldsMixin):
     reference: str = Field(..., description="Payment reference")
-    description: str = Field(default="", description="Description of the payment")
-    amount: Optional[Amount] = Field(default=None, description="Amount information")
-    allowPartial: bool = Field(default=False, description="Allow partial payments")
-    shipping: Optional[Person] = Field(default=None, description="Shipping details")
-    items: List[Item] = Field(default_factory=list, description="List of items")
+    description: str = Field(
+        default="", description="Description of the payment")
+    amount: Optional[Amount] = Field(
+        default=None, description="Amount information")
+    allowPartial: bool = Field(
+        default=False, description="Allow partial payments")
+    shipping: Optional[Person] = Field(
+        default=None, description="Shipping details")
+    items: List[Item] = Field(default_factory=list,
+                              description="List of items")
     recurring: Optional[Recurring] = Field(
         default=None, description="Recurring payment details"
     )

@@ -35,7 +35,8 @@ class Authentication:
         if self.auth:
             return self.auth["nonce"]
         else:
-            nonce = random.randrange(1000000, 10000000).to_bytes(16, byteorder="big")
+            nonce = random.randrange(
+                1000000, 10000000).to_bytes(16, byteorder="big")
             return base64.b64encode(nonce).decode("utf-8")
 
     def get_seed(self) -> str:
@@ -59,7 +60,8 @@ class Authentication:
         nonce = self.get_nonce()
         seed = self.get_seed()
         digest_input = nonce + seed + self.tran_key
-        digest = hashlib.new(self.algorithm, digest_input.encode("utf-8")).digest()
+        digest = hashlib.new(
+            self.algorithm, digest_input.encode("utf-8")).digest()
 
         return base64.b64encode(digest).decode("utf-8") if encoded else digest
 
