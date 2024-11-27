@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class DisplayOnEnum(str, Enum):
     NONE = "none"
     """Not displayed in any view of the payment process. Ideal for keeping the data hidden."""

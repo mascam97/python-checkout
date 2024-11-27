@@ -61,7 +61,7 @@ class Settings(BaseModel):
         """
         if not self._client:
             self._client = requests.Session()
-            
+
             self._client.headers.update(self.additional_headers)
             self._client.timeout = self.timeout
         return self._client
@@ -105,10 +105,10 @@ class Settings(BaseModel):
         Return an `Authentication` instance.
         """
         auth = Authentication({
-                "login": self.login,
-                "tranKey": self.tranKey,
-                "authAdditional": self.authAdditional,
-            })
+            "login": self.login,
+            "tranKey": self.tranKey,
+            "authAdditional": self.authAdditional,
+        })
         return auth
 
     def carrier(self) -> Carrier:
