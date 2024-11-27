@@ -43,11 +43,12 @@ class NameValuePairTest(unittest.TestCase):
         """
         Test dictionary conversion with exclusion of None values.
         """
-        pair = NameValuePair(keyword="testKey", displayOn=DisplayOnEnum.PAYMENT)
+        pair = NameValuePair(
+            keyword="testKey", displayOn=DisplayOnEnum.PAYMENT)
         expected_dict = {
             "keyword": "testKey",
             "displayOn": "payment",
-            "value" : None
+            "value": None
         }
         self.assertEqual(pair.to_dict(), expected_dict)
 
