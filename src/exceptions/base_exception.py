@@ -1,9 +1,12 @@
+from typing import Optional
+
+
 class BaseException(Exception):
     """
     Base class for API-related exceptions.
     """
 
-    def __init__(self, message: str, status_code: int = None, details: dict = None):
+    def __init__(self, message: str, status_code: Optional[int] = None, details: Optional[dict] = None):
         """
         Initialize the API exception.
 
@@ -12,9 +15,9 @@ class BaseException(Exception):
         :param details: Additional details about the error (e.g., error codes, metadata).
         """
         super().__init__(message)
-        self.message = message
-        self.status_code = status_code
-        self.details = details or {}
+        self.message: str = message
+        self.status_code: Optional[int] = status_code
+        self.details: dict = details or {}
 
     def to_dict(self) -> dict:
         """
