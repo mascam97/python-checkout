@@ -1,6 +1,7 @@
 import unittest
 from entities.subscription import Subscription
 from entities.name_value_pair import NameValuePair
+from enums.display_on_enum import DisplayOnEnum
 
 
 class SubscriptionTest(unittest.TestCase):
@@ -41,8 +42,8 @@ class SubscriptionTest(unittest.TestCase):
             "reference": "SUB123",
             "description": "Test subscription",
             "customFields": [
-                {"keyword": "field1", "value": "value1", "displayOn": "none"},
-                {"keyword": "field2", "value": "value2", "displayOn": "none"},
+                {"keyword": "field1", "value": "value1", "displayOn": DisplayOnEnum.NONE},
+                {"keyword": "field2", "value": "value2", "displayOn": DisplayOnEnum.NONE},
             ],
             "fields": [],  # Assuming fields_to_array() returns an empty list by default
         }
@@ -68,8 +69,8 @@ class SubscriptionTest(unittest.TestCase):
         subscription.add_field({"keyword": "key2", "value": "value2"})
 
         expected_fields = [
-            {"keyword": "key1", "value": "value1", "displayOn": "none"},
-            {"keyword": "key2", "value": "value2", "displayOn": "none"},
+            {"keyword": "key1", "value": "value1", "displayOn": DisplayOnEnum.NONE},
+            {"keyword": "key2", "value": "value2", "displayOn": DisplayOnEnum.NONE},
         ]
 
         self.assertEqual(subscription.fields_to_array(), expected_fields)
