@@ -4,6 +4,7 @@ from entities.status import Status
 from entities.amount_conversion import AmountConversion
 from entities.discount import Discount
 from entities.name_value_pair import NameValuePair
+from enums.status_enum import StatusEnum
 
 
 class Transaction(BaseModel):
@@ -44,13 +45,13 @@ class Transaction(BaseModel):
         """
         Determines if the transaction is valid (query successful, not necessarily approved).
         """
-        return self.status and self.status.status != Status.ST_ERROR
+        return self.status and self.status.status != StatusEnum.ERROR
 
     def is_approved(self) -> bool:
         """
         Determines if the transaction has been approved.
         """
-        return self.status and self.status.status == Status.ST_APPROVED
+        return self.status and self.status.status == StatusEnum.APPROVED
 
     def set_processor_fields(self, data: List[dict]) -> None:
         """
