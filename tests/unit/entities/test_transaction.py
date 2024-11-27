@@ -78,6 +78,28 @@ class TransactionTest(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
+    def test_set_processor_fields_with_item_key(self):
+        """
+        Test set_processor_fields with a dictionary containing an 'item' key.
+        """
+
+        processor_fields_data = {
+            "item": [
+                {"keyword": "key1", "value": "value1"},
+                {"keyword": "key2", "value": "value2"},
+            ]
+        }
+
+        transaction = Transaction(reference="testReference")
+
+        transaction.set_processor_fields(processor_fields_data)
+
+        self.assertEqual(len(transaction.processor_fields), 2)
+        self.assertEqual(transaction.processor_fields[0].keyword, "key1")
+        self.assertEqual(transaction.processor_fields[0].value, "value1")
+        self.assertEqual(transaction.processor_fields[1].keyword, "key2")
+        self.assertEqual(transaction.processor_fields[1].value, "value2")
+
     def test_additional_data(self):
         """
         Test parsing processor fields as a key-value dictionary.
