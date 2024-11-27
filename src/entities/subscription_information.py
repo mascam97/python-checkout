@@ -30,7 +30,7 @@ class SubscriptionInformation(BaseModel):
             if isinstance(nvp_data, NameValuePair):
                 self.instrument.append(nvp_data)
 
-    def instrument_to_array(self) -> List[dict]:
+    def instrument_to_list(self) -> List[dict]:
         """
         Convert the instrument to a list of dictionaries.
         """
@@ -60,5 +60,5 @@ class SubscriptionInformation(BaseModel):
         return {
             "type": self.type,
             "status": self.status.to_dict() if self.status else None,
-            "instrument": self.instrument_to_array(),
+            "instrument": self.instrument_to_list(),
         }
