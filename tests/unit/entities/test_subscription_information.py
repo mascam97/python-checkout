@@ -103,6 +103,32 @@ class SubsCriptionInformationTest(unittest.TestCase):
         self.assertEqual(result.accountType, "savings")
         self.assertEqual(result.accountNumber, "123456789")
 
+    def test_set_instrument_list_of_dicts(self):
+        """
+        Test setting instrument when input is a list of dictionaries.
+        """
+        instrument_data = [{"keyword": "key1", "value": "value1"}]
+        subscription = SubscriptionInformation()
+        subscription.set_instrument(instrument_data)
+
+        self.assertEqual(len(subscription.instrument), 1)
+        self.assertIsInstance(subscription.instrument[0], NameValuePair)
+        self.assertEqual(subscription.instrument[0].keyword, "key1")
+        self.assertEqual(subscription.instrument[0].value, "value1")
+
+    def test_set_instrument_list_of_name_value_pairs(self):
+        """
+        Test setting instrument when input is a list of NameValuePair objects.
+        """
+        nvp = NameValuePair(keyword="key1", value="value1")
+        subscription = SubscriptionInformation()
+        subscription.set_instrument([nvp])
+
+        self.assertEqual(len(subscription.instrument), 1)
+        self.assertIsInstance(subscription.instrument[0], NameValuePair)
+        self.assertEqual(subscription.instrument[0].keyword, "key1")
+        self.assertEqual(subscription.instrument[0].value, "value1")
+
     def test_parse_instrument_no_type(self):
         """
         Test parsing instrument with no type set.
@@ -134,6 +160,15 @@ class SubsCriptionInformationTest(unittest.TestCase):
             "instrument": [{'keyword': 'key1', 'value': 'value1', 'displayOn': 'none'}]
         }
         self.assertEqual(result_dict, expected_dict)
+
+    def test_parse_instrument_empty_instrument(self):
+        """
+        Test parsing instrument when instrument list is empty.
+        """
+        subscription = SubscriptionInformation(type="account", instrument=[])
+        result = subscription.parse_instrument()
+        self.assertIsNone(
+            result, "Expected None when instrument list is empty.")
 
     def test_empty_instrument_to_dict(self):
         """
