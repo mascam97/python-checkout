@@ -56,3 +56,10 @@ jobs:
       - name: Run Mypy
         run: |
           mypy src/
+      - name: Check Formatting with Black
+        run: |
+          black --check src/
+
+      - name: Lint with Flake8
+        run: |
+          flake8 src/

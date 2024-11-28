@@ -27,11 +27,13 @@ class RedirectRequest(BaseModel):
 
     @staticmethod
     def from_dict(data: dict) -> "RedirectRequest":
-
+        """
+        Create an instance of RedirectRequest from a dictionary.
+        """
         return RedirectRequest(**data)
 
     def to_dict(self) -> dict:
         """
-        Convert the RedirectRequest object to a dictionary.
+        Convert the RedirectRequest object to a dictionary using Pydantic's dict method.
         """
-        return self.to_dict(by_alias=True, exclude_none=True)
+        return self.model_dump(by_alias=True, exclude_none=True)

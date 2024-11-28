@@ -1,4 +1,4 @@
-from typing import Any, Dict, Union
+from typing import Any, Dict, Type, TypeVar, Union
 
 from entities.settings import Settings
 from exceptions.p2p_exception import P2PException
@@ -8,19 +8,38 @@ from messages.responses.information import RedirectInformation
 from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
 
+T = TypeVar("T", RedirectRequest, CollectRequest)
+
 
 class P2PCheckout:
     """
     Main class for interacting with PlaceToPay.
     """
 
-    def __init__(self, data: Dict[str, Any]):
+    def __init__(self, data: Dict[str, Any]) -> None:
         """
         Initialize the PlacetoPay instance with the provided settings.
 
         :param data: Configuration dictionary for settings.
         """
-        self.settings = Settings(**data)
+        self.settings: Settings = Settings(**data)
+
+    def _validate_request(self, request: Union[RedirectRequest, CollectRequest, Dict], expected_class: Type[T]) -> T:
+        """
+        Validate the request object and convert it to the expected class if necessary.
+
+        :param request: The request object or dictionary.
+        :param expected_class: The expected class type for the request.
+        :return: A validated request object.
+        :raises P2PException: If the request is invalid.
+        """
+        if isinstance(request, dict):
+            request = expected_class(**request)
+
+        if not isinstance(request, expected_class):
+            raise P2PException.for_data_not_provided(f"Invalid request type. Expected {expected_class.__name__}")
+
+        return request
 
     def request(self, redirect_request: Union[RedirectRequest, Dict]) -> RedirectResponse:
         """
@@ -28,17 +47,11 @@ class P2PCheckout:
 
         :param redirect_request: RedirectRequest instance or dictionary with request data.
         :return: RedirectResponse object.
-        :raises P2PException: If the request object is invalid.
         """
-        if isinstance(redirect_request, dict):
-            redirect_request = RedirectRequest(**redirect_request)
-
-        if not isinstance(redirect_request, RedirectRequest):
-            raise P2PException.for_data_not_provided("Wrong class request")
-
+        redirect_request = self._validate_request(redirect_request, RedirectRequest)
         return self.settings.carrier().request(redirect_request)
 
-    def query(self, request_id: int) -> RedirectInformation:
+    def query(self, request_id: str) -> RedirectInformation:
         """
         Query a session by request ID.
 
@@ -53,14 +66,8 @@ class P2PCheckout:
 
         :param collect_request: CollectRequest instance or dictionary with request data.
         :return: RedirectInformation object.
-        :raises P2PException: If the collect request object is invalid.
         """
-        if isinstance(collect_request, dict):
-            collect_request = CollectRequest(**collect_request)
-
-        if not isinstance(collect_request, CollectRequest):
-            raise P2PException("Wrong collect request")
-
+        collect_request = self._validate_request(collect_request, CollectRequest)
         return self.settings.carrier().collect(collect_request)
 
     def reverse(self, internal_reference: str) -> ReverseResponse:

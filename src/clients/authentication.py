@@ -50,7 +50,7 @@ class Authentication:
         """
         Generate the digest based on nonce, seed, and tranKey.
 
-        :param encoded: If True, returns the digest base64 encoded.
+        :param encoded: If True, returns the digest base64 encoded. Otherwise, returns the hexadecimal digest.
         :return: Digest string.
         """
         nonce = self.get_nonce()
@@ -58,7 +58,7 @@ class Authentication:
         digest_input = nonce + seed + self.tran_key
         digest = hashlib.new(self.algorithm, digest_input.encode("utf-8")).digest()
 
-        return base64.b64encode(digest).decode("utf-8") if encoded else digest
+        return base64.b64encode(digest).decode("utf-8") if encoded else digest.hex()
 
     def generate(self) -> None:
         """

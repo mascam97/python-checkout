@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 from entities.name_value_pair import NameValuePair
 
@@ -32,7 +32,7 @@ class FieldsMixin:
         """
         return [field.to_dict() for field in self.fields if isinstance(field, NameValuePair)]
 
-    def fields_to_key_value(self, nvps: List[NameValuePair] = None) -> Dict[str, Union[str, list, dict]]:
+    def fields_to_key_value(self, nvps: Optional[List[NameValuePair]] = None) -> Dict[str, Union[str, list, dict]]:
         """
         Convert the fields to a key-value pair dictionary.
         """

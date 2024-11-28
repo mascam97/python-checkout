@@ -32,6 +32,7 @@ setup(
             "pytest-cov",
             "mypy",
             "isort",
+            "types-requests"
         ],
     },
     description="Python library for PlaceToPay integration.",

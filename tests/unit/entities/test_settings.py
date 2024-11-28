@@ -1,12 +1,10 @@
 import unittest
 import logging
 from unittest import mock
-from unittest.mock import patch, MagicMock
-from clients.authentication import Authentication
-from contracts.carrier import Carrier
+from unittest.mock import MagicMock
 from clients.rest_client import RestCarrier
 from entities.settings import Settings
-from mixins.logger import Logger
+from clients.http_client import HttpClient
 
 
 class SettingsTest(unittest.TestCase):
@@ -31,8 +29,7 @@ class SettingsTest(unittest.TestCase):
         settings = Settings(**self.config)
         client = settings.get_client()
         self.assertIsNotNone(client)
-        print(client.headers)
-        self.assertEqual(client.headers, {'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate',
+        self.assertEqual(client.session.headers, {'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate',
                          'Accept': '*/*', 'Connection': 'keep-alive', 'Authorization': 'Bearer test_token'})
         self.assertEqual(client.timeout, self.config["timeout"])
 
@@ -83,40 +80,32 @@ class SettingsTest(unittest.TestCase):
     def test_client_headers_and_timeout(self):
         settings = Settings(**self.config)
         client = settings.get_client()
-        self.assertEqual(client.headers["Authorization"], "Bearer test_token")
+
+        self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
         self.assertEqual(client.timeout, self.config["timeout"])
 
-    @patch("requests.Session")
-    def test_get_client_initializes_session(self, MockSession):
+    def test_get_client_initializes_session(self):
         """
-        Test that get_client initializes a requests.Session with headers and timeout.
+        Test that get_client initializes a HttpClient with headers and timeout.
         """
-        mock_session_instance = MagicMock()
-        MockSession.return_value = mock_session_instance
-
         settings = Settings(**self.config)
-
         client = settings.get_client()
 
-        self.assertEqual(client, mock_session_instance)
-
-        mock_session_instance.headers.update.assert_called_once_with(
-            self.config["additional_headers"]
-        )
-
-        self.assertEqual(mock_session_instance.timeout, self.config["timeout"])
+        self.assertIsInstance(client, HttpClient)
+        self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
+        self.assertEqual(client.timeout, self.config["timeout"])
 
     def test_get_client_uses_existing_session(self):
         """
         Test that get_client reuses an existing session if already initialized.
         """
         settings = Settings(**self.config)
+        first_client = settings.get_client()
+        second_client = settings.get_client()
+        self.assertIs(first_client, second_client)
 
-        existing_client = MagicMock()
-        settings._client = existing_client
-
-        client = settings.get_client()
-        self.assertEqual(client, existing_client)
+        # Verifica que el cliente sigue siendo una instancia de HttpClient
+        self.assertIsInstance(first_client, HttpClient)
 
     def test_logger_reuses_existing_instance(self):
         """

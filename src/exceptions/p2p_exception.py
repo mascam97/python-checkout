@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class P2PException(Exception):
     """
     Custom exception class for PlaceToPay errors.
@@ -19,7 +22,7 @@ class P2PException(Exception):
         return f"{exception} [No traceback available]"
 
     @staticmethod
-    def for_data_not_provided(message: str = "") -> "P2PException":
+    def for_data_not_provided(message: Optional[str] = "") -> "P2PException":
         """
         Return a new P2PException for missing data errors.
 

@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 
 class Logger:
@@ -7,15 +7,15 @@ class Logger:
     A wrapper for logging with dynamic method handling for different log levels.
     """
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         """
         Initialize the Logger instance.
 
         :param logger: An optional `logging.Logger` instance. If not provided, a default logger is created.
         """
-        self.logger = logger or self._create_default_logger()
+        self.logger: logging.Logger = logger or self._create_default_logger()
 
-    def log(self, level: str, message: str, context: Optional[Dict[str, Any]] = None):
+    def log(self, level: str, message: str, context: Optional[Dict[str, Any]] = None) -> None:
         """
         Log a message with the specified level.
 
@@ -28,7 +28,7 @@ class Logger:
             context = self.clean_up(context)
             log_func(f"(P2P Checkout) {message} - Context: {context}")
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> Callable[[str, Optional[Dict[str, Any]]], None]:
         """
         Dynamically handle logging methods like `debug`, `info`, etc.
 
@@ -36,7 +36,7 @@ class Logger:
         :return: A callable function that logs with the specified level.
         """
 
-        def method(message: str, context: Optional[Dict[str, Any]] = None):
+        def method(message: str, context: Optional[Dict[str, Any]] = None) -> None:
             self.log(name, message, context)
 
         return method

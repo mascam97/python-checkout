@@ -31,13 +31,13 @@ class Transaction(BaseModel):
         """
         Determines if the transaction is valid (query successful, not necessarily approved).
         """
-        return self.status and self.status.status != StatusEnum.ERROR
+        return bool(self.status and self.status.status != StatusEnum.ERROR)
 
     def is_approved(self) -> bool:
         """
         Determines if the transaction has been approved.
         """
-        return self.status and self.status.status == StatusEnum.APPROVED
+        return bool(self.status and self.status.status == StatusEnum.APPROVED)
 
     def set_processor_fields(self, data: List[dict]) -> None:
         """

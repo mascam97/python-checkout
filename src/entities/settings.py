@@ -1,11 +1,13 @@
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+from pydantic import BaseModel, Field, HttpUrl, model_validator
 import requests
 
 from clients.authentication import Authentication
+from clients.http_client import HttpClient
 from contracts.carrier import Carrier
+from exceptions.p2p_exception import P2PException
 
 
 class Settings(BaseModel):
@@ -31,14 +33,15 @@ class Settings(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def validate_base_url(cls, values: dict) -> dict:
+    def validate_base_url(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """
         Ensure the base_url ends with a slash and is valid.
         """
-        if not values["base_url"]:
+        base_url = values.get("base_url")
+        if not base_url:
             raise ValueError("Base URL cannot be empty.")
 
-        values["base_url"] = f'{values["base_url"].rstrip("/")}/' if "base_url" in values else values["base_url"]
+        values["base_url"] = f"{str(base_url).rstrip('/')}/"
         return values
 
     def base_url_with_endpoint(self, endpoint: str = "") -> str:
@@ -48,20 +51,28 @@ class Settings(BaseModel):
         :param endpoint: API endpoint.
         :return: Full URL as a string.
         """
-        return str(self.base_url) + endpoint
+        return f"{str(self.base_url).rstrip('/')}/{endpoint.lstrip('/')}"
 
-    def get_client(self) -> requests.Session:
+    def get_client(self) -> HttpClient:
         """
         Return or create the HTTP client instance.
 
-        :return: Configured `requests.Session`.
+        :return: Configured `HttpClient`.
+        :raises P2PException: If the existing client is not an instance of HttpClient.
         """
         if not self._client:
-            self._client = requests.Session()
-
-            self._client.headers.update(self.additional_headers)
-            self._client.timeout = self.timeout
-        return self._client
+            self._client = HttpClient(
+                base_url=str(self.base_url),
+                timeout=self.timeout,
+                logger=self.logger(),
+            )
+        elif not isinstance(self._client, HttpClient):
+            raise P2PException.for_data_not_provided(
+                f"Invalid client type: Expected HttpClient, got {type(self._client).__name__}"
+            )
+        client = cast(HttpClient, self._client)
+        client.session.headers.update(self.additional_headers)
+        return client
 
     def logger(self) -> logging.Logger:
         """
@@ -85,14 +96,12 @@ class Settings(BaseModel):
             formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
-        else:
-            handler = logger.handlers[0]
 
         if self.loggerConfig:
             logger.setLevel(self.loggerConfig.get("level", logging.DEBUG))
             custom_formatter = self.loggerConfig.get("formatter")
             if custom_formatter:
-                handler.setFormatter(logging.Formatter(custom_formatter))
+                logger.handlers[0].setFormatter(logging.Formatter(custom_formatter))
 
         return logger
 
@@ -113,6 +122,8 @@ class Settings(BaseModel):
         """
         Return or create the carrier instance.
         """
-        from clients.rest_client import RestCarrier  # Deferred import
+        from clients.rest_client import RestCarrier
 
-        return RestCarrier(self)
+        if not self._carrier_instance:
+            self._carrier_instance = RestCarrier(self)
+        return self._carrier_instance
