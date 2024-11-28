@@ -20,13 +20,8 @@ class CollectTest(unittest.TestCase):
             "installments": 12,
         }
 
-        # Create a Token object
         self.token = Token(**self.token_data)
-
-        # Sample instrument using the token
         self.instrument = Instrument(token=self.token, pin="1234", password="secret")
-
-        # Sample CollectRequest data
         self.request_data = {
             "instrument": self.instrument,
             "returnUrl": "https://example.com/return",
@@ -38,7 +33,7 @@ class CollectTest(unittest.TestCase):
         """
         Test CollectRequest initialization with a Token in the Instrument.
         """
-        collect_request = CollectRequest(**self.request_data)
+        collect_request = Collect(**self.request_data)
 
         self.assertIsNotNone(collect_request.instrument)
         self.assertIsInstance(collect_request.instrument, Instrument)
@@ -55,7 +50,7 @@ class CollectTest(unittest.TestCase):
         """
         Test CollectRequest to_dict method with a Token in the Instrument.
         """
-        collect_request = CollectRequest(**self.request_data)
+        collect_request = Collect(**self.request_data)
         result = collect_request.to_dict()
 
         self.assertIn("instrument", result)
@@ -71,7 +66,7 @@ class CollectTest(unittest.TestCase):
         request_data_no_token = self.request_data.copy()
         request_data_no_token["instrument"] = Instrument(pin="5678", password="no_token")
 
-        collect_request = CollectRequest(**request_data_no_token)
+        collect_request = Collect(**request_data_no_token)
         result = collect_request.to_dict()
 
         self.assertIn("instrument", result)
