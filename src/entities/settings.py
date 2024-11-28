@@ -11,7 +11,7 @@ class Settings(BaseModel):
     Configuration class for PlaceToPay integration using Pydantic.
     """
 
-    baseUrl: HttpUrl = Field(..., description="Base URL for the API")
+    base_url: HttpUrl = Field(..., description="Base URL for the API")
     timeout: int = Field(default=15, description="Request timeout in seconds")
     login: str = Field(..., description="API login key")
     tranKey: str = Field(..., description="API transaction key")
@@ -26,7 +26,6 @@ class Settings(BaseModel):
     loggerConfig: Optional[Dict[str, Any]] = Field(
         default=None, description="Logger configuration")
 
-    # Internal fields
     _logger: Optional[logging.Logger] = None
     _carrier_instance: Optional[Carrier] = None
     _client: Optional[requests.Session] = None
@@ -35,13 +34,12 @@ class Settings(BaseModel):
     @classmethod
     def validate_base_url(cls, values: dict) -> dict:
         """
-        Ensure the base_url ends with a slash.
-
-        :param values: Input values for the model.
-        :return: Modified values with a corrected base_url.
+        Ensure the base_url ends with a slash and is valid.
         """
-        if "base_url" in values and not values["base_url"].endswith("/"):
-            values["base_url"] += "/"
+        if not values["base_url"]:
+            raise ValueError("Base URL cannot be empty.")
+
+        values["base_url"] = f'{values["base_url"].rstrip("/")}/' if "base_url" in values else values["base_url"]
         return values
 
     def base_url_with_endpoint(self, endpoint: str = "") -> str:
@@ -51,7 +49,7 @@ class Settings(BaseModel):
         :param endpoint: API endpoint.
         :return: Full URL as a string.
         """
-        return str(self.baseUrl) + endpoint
+        return str(self.base_url) + endpoint
 
     def get_client(self) -> requests.Session:
         """
@@ -83,15 +81,16 @@ class Settings(BaseModel):
         logger = logging.getLogger("P2P Checkout Logger")
         logger.setLevel(logging.DEBUG)
 
-        # Add handler if it doesn't exist
         if not logger.handlers:
             handler = logging.StreamHandler()
             formatter = logging.Formatter(
-                "%(asctime)s - %(levelname)s - %(message)s")
+                "%(asctime)s - %(levelname)s - %(message)s"
+            )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
+        else:
+            handler = logger.handlers[0]
 
-        # Apply custom configurations if provided
         if self.loggerConfig:
             logger.setLevel(self.loggerConfig.get("level", logging.DEBUG))
             custom_formatter = self.loggerConfig.get("formatter")
