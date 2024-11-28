@@ -56,7 +56,7 @@ from src.p2p_checkout import P2PCheckout
 
 # Configuration
 config = {
-    "baseUrl": "https://example.placetopay.com/redirection/",
+    "base_url": "https://example.placetopay.com/redirection/",
     "login": "your_login",
     "tranKey": "your_transaction_key",
     "timeout": 10,

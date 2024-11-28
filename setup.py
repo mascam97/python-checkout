@@ -27,13 +27,15 @@ setup(
     extras_require={
         "dev": [
             "flake8",
-            "autopep8",
+            "black",
             "pytest",
             "pytest-cov",
+            "mypy",
+            "isort",
+            "types-requests"
         ],
     },
     description="Python library for PlaceToPay integration.",
-    # Asegúrate de usar UTF-8
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     author="Iván Andrés López Gómez",

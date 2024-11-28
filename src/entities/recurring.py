@@ -1,4 +1,5 @@
 from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -13,10 +14,8 @@ class Recurring(BaseModel):
         default=None,
         description="Maximum times the recurrence will happen, -1 if unlimited",
     )
-    dueDate: str = Field(
-        default="", description="Due date for the recurring charge")
-    notificationUrl: str = Field(
-        default="", description="URL for sending notifications")
+    dueDate: str = Field(default="", description="Due date for the recurring charge")
+    notificationUrl: str = Field(default="", description="URL for sending notifications")
 
     def to_dict(self) -> dict:
         """

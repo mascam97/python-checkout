@@ -1,20 +1,17 @@
 from typing import List, Optional, Union
+
 from pydantic import BaseModel, Field
-from entities.status import Status
-from entities.name_value_pair import NameValuePair
+
 from entities.account import Account
+from entities.name_value_pair import NameValuePair
+from entities.status import Status
 from entities.token import Token
 
 
 class SubscriptionInformation(BaseModel):
-    type: str = Field(
-        default="", description="Type of subscription (e.g., token, account)"
-    )
-    status: Optional[Status] = Field(
-        default=None, description="Status information")
-    instrument: List[NameValuePair] = Field(
-        default_factory=list, description="Instrument details as name-value pairs"
-    )
+    type: str = Field(default="", description="Type of subscription (e.g., token, account)")
+    status: Optional[Status] = Field(default=None, description="Status information")
+    instrument: List[NameValuePair] = Field(default_factory=list, description="Instrument details as name-value pairs")
 
     def set_instrument(self, instrument_data: Union[dict, List[dict]]) -> None:
         """

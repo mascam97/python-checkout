@@ -44,7 +44,7 @@ class TestCredit(unittest.TestCase):
                 type="Personal",
                 groupCode="GRP001",
                 installment=12
-            )  # Missing 'code'
+            )
 
     def test_credit_field_types(self):
         """

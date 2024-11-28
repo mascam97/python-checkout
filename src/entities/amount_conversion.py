@@ -1,20 +1,20 @@
-from typing import Optional
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Any, Dict, Optional, Union
+
+from pydantic import BaseModel, Field
+
 from entities.amount_base import AmountBase
 
 
 class AmountConversion(BaseModel):
-    fromAmount: Optional[AmountBase] = Field(
-        default=None, description="Base amount to convert from"
-    )
-    toAmount: Optional[AmountBase] = Field(
-        default=None, description="Base amount to convert to"
-    )
+    fromAmount: Optional[AmountBase] = Field(default=None, description="Base amount to convert from")
+    toAmount: Optional[AmountBase] = Field(default=None, description="Base amount to convert to")
     factor: float = Field(default=1.0, description="Conversion factor")
 
-    def set_amount_base(self, base: dict[AmountBase]) -> None:
+    def set_amount_base(self, base: Union[Dict[Any, AmountBase], AmountBase]) -> None:
         """
         Quickly set all values to the same base.
+
+        :param base: Either a dictionary or an instance of AmountBase.
         """
         amount_base = AmountBase(**base) if isinstance(base, dict) else base
         self.toAmount = amount_base

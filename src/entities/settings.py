@@ -1,9 +1,13 @@
-import requests
 import logging
-from typing import Optional, Dict, Any
-from pydantic import BaseModel, Field, HttpUrl, model_validator, ConfigDict
+from typing import Any, Dict, Optional, cast
+
+from pydantic import BaseModel, Field, HttpUrl, model_validator
+import requests
+
 from clients.authentication import Authentication
+from clients.http_client import HttpClient
 from contracts.carrier import Carrier
+from exceptions.p2p_exception import P2PException
 
 
 class Settings(BaseModel):
@@ -11,37 +15,33 @@ class Settings(BaseModel):
     Configuration class for PlaceToPay integration using Pydantic.
     """
 
-    baseUrl: HttpUrl = Field(..., description="Base URL for the API")
+    base_url: HttpUrl = Field(..., description="Base URL for the API")
     timeout: int = Field(default=15, description="Request timeout in seconds")
     login: str = Field(..., description="API login key")
     tranKey: str = Field(..., description="API transaction key")
-    additional_headers: Dict[str, str] = Field(
-        default_factory=dict, description="Additional HTTP headers"
-    )
+    additional_headers: Dict[str, str] = Field(default_factory=dict, description="Additional HTTP headers")
     authAdditional: Dict[str, Any] = Field(
         default_factory=dict,
         alias="authAdditional",
         description="Additional authentication data",
     )
-    loggerConfig: Optional[Dict[str, Any]] = Field(
-        default=None, description="Logger configuration")
+    loggerConfig: Optional[Dict[str, Any]] = Field(default=None, description="Logger configuration")
 
-    # Internal fields
     _logger: Optional[logging.Logger] = None
     _carrier_instance: Optional[Carrier] = None
     _client: Optional[requests.Session] = None
 
     @model_validator(mode="before")
     @classmethod
-    def validate_base_url(cls, values: dict) -> dict:
+    def validate_base_url(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Ensure the base_url ends with a slash.
+        Ensure the base_url ends with a slash and is valid.
+        """
+        base_url = values.get("base_url")
+        if not base_url:
+            raise ValueError("Base URL cannot be empty.")
 
-        :param values: Input values for the model.
-        :return: Modified values with a corrected base_url.
-        """
-        if "base_url" in values and not values["base_url"].endswith("/"):
-            values["base_url"] += "/"
+        values["base_url"] = f"{str(base_url).rstrip('/')}/"
         return values
 
     def base_url_with_endpoint(self, endpoint: str = "") -> str:
@@ -51,20 +51,28 @@ class Settings(BaseModel):
         :param endpoint: API endpoint.
         :return: Full URL as a string.
         """
-        return str(self.baseUrl) + endpoint
+        return f"{str(self.base_url).rstrip('/')}/{endpoint.lstrip('/')}"
 
-    def get_client(self) -> requests.Session:
+    def get_client(self) -> HttpClient:
         """
         Return or create the HTTP client instance.
 
-        :return: Configured `requests.Session`.
+        :return: Configured `HttpClient`.
+        :raises P2PException: If the existing client is not an instance of HttpClient.
         """
         if not self._client:
-            self._client = requests.Session()
-
-            self._client.headers.update(self.additional_headers)
-            self._client.timeout = self.timeout
-        return self._client
+            self._client = HttpClient(
+                base_url=str(self.base_url),
+                timeout=self.timeout,
+                logger=self.logger(),
+            )
+        elif not isinstance(self._client, HttpClient):
+            raise P2PException.for_data_not_provided(
+                f"Invalid client type: Expected HttpClient, got {type(self._client).__name__}"
+            )
+        client = cast(HttpClient, self._client)
+        client.session.headers.update(self.additional_headers)
+        return client
 
     def logger(self) -> logging.Logger:
         """
@@ -83,20 +91,17 @@ class Settings(BaseModel):
         logger = logging.getLogger("P2P Checkout Logger")
         logger.setLevel(logging.DEBUG)
 
-        # Add handler if it doesn't exist
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter(
-                "%(asctime)s - %(levelname)s - %(message)s")
+            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
 
-        # Apply custom configurations if provided
         if self.loggerConfig:
             logger.setLevel(self.loggerConfig.get("level", logging.DEBUG))
             custom_formatter = self.loggerConfig.get("formatter")
             if custom_formatter:
-                handler.setFormatter(logging.Formatter(custom_formatter))
+                logger.handlers[0].setFormatter(logging.Formatter(custom_formatter))
 
         return logger
 
@@ -104,16 +109,21 @@ class Settings(BaseModel):
         """
         Return an `Authentication` instance.
         """
-        auth = Authentication({
-            "login": self.login,
-            "tranKey": self.tranKey,
-            "authAdditional": self.authAdditional,
-        })
+        auth = Authentication(
+            {
+                "login": self.login,
+                "tranKey": self.tranKey,
+                "authAdditional": self.authAdditional,
+            }
+        )
         return auth
 
     def carrier(self) -> Carrier:
         """
         Return or create the carrier instance.
         """
-        from clients.rest_client import RestCarrier  # Deferred import
-        return RestCarrier(self)
+        from clients.rest_client import RestCarrier
+
+        if not self._carrier_instance:
+            self._carrier_instance = RestCarrier(self)
+        return self._carrier_instance

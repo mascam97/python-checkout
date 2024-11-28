@@ -27,7 +27,6 @@ class StatusTest(unittest.TestCase):
         """
         status = Status(status=StatusEnum.OK, reason="All good")
         self.assertIsNotNone(status.date)
-        # Verifies it's a valid ISO date
         self.assertTrue(datetime.fromisoformat(status.date))
 
     def test_is_successful(self):

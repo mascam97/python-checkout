@@ -1,18 +1,14 @@
-from typing import Optional, Any, Dict
+from typing import Any, Dict, Optional
+
 from pydantic import BaseModel, Field
 
 
 class PaymentModifier(BaseModel):
     TYPE_FEDERAL_GOVERNMENT: str = "FEDERAL_GOVERNMENT"
 
-    type: Optional[str] = Field(
-        default=None, description="Type of payment modifier")
-    code: Optional[str] = Field(
-        default=None, description="Code associated with the payment modifier"
-    )
-    additional: Dict[str, Any] = Field(
-        default_factory=dict, description="Additional data for the payment modifier"
-    )
+    type: Optional[str] = Field(default=None, description="Type of payment modifier")
+    code: Optional[str] = Field(default=None, description="Code associated with the payment modifier")
+    additional: Dict[str, Any] = Field(default_factory=dict, description="Additional data for the payment modifier")
 
     def set_type(self, type: Optional[str]) -> "PaymentModifier":
         """

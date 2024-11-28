@@ -33,11 +33,7 @@ class BaseException(Exception):
         """
         String representation of the exception.
         """
-        base_message = (
-            f"{self.message} (Status Code: {self.status_code})"
-            if self.status_code
-            else self.message
-        )
+        base_message = f"{self.message} (Status Code: {self.status_code})" if self.status_code else self.message
         if self.details:
             base_message += f" | Details: {self.details}"
         return base_message

@@ -1,8 +1,9 @@
-import hashlib
 import base64
-import random
 import datetime
+import hashlib
+import random
 from typing import Dict
+
 from exceptions.p2p_exception import P2PException
 
 
@@ -14,9 +15,7 @@ class Authentication:
         :param config: Dictionary containing 'login' and 'tranKey'.
         """
         if "login" not in config or "tranKey" not in config:
-            raise P2PException.for_data_not_provided(
-                "No login or tranKey provided for authentication"
-            )
+            raise P2PException.for_data_not_provided("No login or tranKey provided for authentication")
 
         self.login: str = config["login"]
         self.tran_key: str = config["tranKey"]
@@ -35,8 +34,7 @@ class Authentication:
         if self.auth:
             return self.auth["nonce"]
         else:
-            nonce = random.randrange(
-                1000000, 10000000).to_bytes(16, byteorder="big")
+            nonce = random.randrange(1000000, 10000000).to_bytes(16, byteorder="big")
             return base64.b64encode(nonce).decode("utf-8")
 
     def get_seed(self) -> str:
@@ -46,24 +44,21 @@ class Authentication:
         :return: ISO formatted timestamp.
         """
 
-        return self.auth.get(
-            "seed", datetime.datetime.now(datetime.timezone.utc).isoformat()
-        )
+        return self.auth.get("seed", datetime.datetime.now(datetime.timezone.utc).isoformat())
 
     def digest(self, encoded: bool = True) -> str:
         """
         Generate the digest based on nonce, seed, and tranKey.
 
-        :param encoded: If True, returns the digest base64 encoded.
+        :param encoded: If True, returns the digest base64 encoded. Otherwise, returns the hexadecimal digest.
         :return: Digest string.
         """
         nonce = self.get_nonce()
         seed = self.get_seed()
         digest_input = nonce + seed + self.tran_key
-        digest = hashlib.new(
-            self.algorithm, digest_input.encode("utf-8")).digest()
+        digest = hashlib.new(self.algorithm, digest_input.encode("utf-8")).digest()
 
-        return base64.b64encode(digest).decode("utf-8") if encoded else digest
+        return base64.b64encode(digest).decode("utf-8") if encoded else digest.hex()
 
     def generate(self) -> None:
         """

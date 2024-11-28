@@ -7,8 +7,7 @@ class Address(BaseModel):
     state: str = Field(default="", description="State or province")
     postalCode: str = Field(default="", description="Postal code")
     country: str = Field(default="", description="Country")
-    phone: str = Field(
-        default="", description="Phone number associated with the address")
+    phone: str = Field(default="", description="Phone number associated with the address")
 
     def to_dict(self) -> dict:
         """

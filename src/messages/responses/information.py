@@ -1,5 +1,7 @@
 from typing import List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from entities.status import Status
 from entities.subscription_information import SubscriptionInformation
 from entities.transaction import Transaction
@@ -7,22 +9,12 @@ from messages.requests.redirect import RedirectRequest
 
 
 class RedirectInformation(BaseModel):
-    request_id: str = Field(
-        ..., alias="requestId", description="Unique identifier for the request"
-    )
-    status: Optional[Status] = Field(
-        default=None, description="Status of the request")
-    request: Optional[RedirectRequest] = Field(
-        default=None, description="Redirect request details"
-    )
-    payment: List[Transaction] = Field(
-        default_factory=list, description="List of payment transactions"
-    )
-    subscription: Optional[SubscriptionInformation] = Field(
-        default=None, description="Subscription details"
-    )
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True, populate_by_name=True)
+    request_id: str = Field(..., alias="requestId", description="Unique identifier for the request")
+    status: Optional[Status] = Field(default=None, description="Status of the request")
+    request: Optional[RedirectRequest] = Field(default=None, description="Redirect request details")
+    payment: List[Transaction] = Field(default_factory=list, description="List of payment transactions")
+    subscription: Optional[SubscriptionInformation] = Field(default=None, description="Subscription details")
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
 
     def set_payment(self, payments: List[dict]) -> None:
         """

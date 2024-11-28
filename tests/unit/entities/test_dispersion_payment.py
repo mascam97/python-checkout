@@ -26,7 +26,6 @@ class DispersionPaymentTest(unittest.TestCase):
         self.assertEqual(dispersion_payment.description, "Main Payment")
         self.assertEqual(len(dispersion_payment.dispersion), 2)
 
-        # Check individual dispersion payments
         self.assertEqual(dispersion_payment.dispersion[0].reference, "DISP001")
         self.assertEqual(
             dispersion_payment.dispersion[0].description, "Split Payment 1")

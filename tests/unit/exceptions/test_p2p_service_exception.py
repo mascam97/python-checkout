@@ -12,11 +12,10 @@ class P2pServiceExceptionTest(unittest.TestCase):
             # Simulate an exception
             1 / 0
         except ZeroDivisionError as e:
-            # Create a P2pServiceException from the caught exception
             exc = P2pServiceException.from_service_exception(e)
             self.assertIsInstance(exc, P2pServiceException)
             self.assertIn("Error handling operation", str(exc))
-            self.assertIn("line", str(exc))  # Ensure line number is included
+            self.assertIn("line", str(exc))
 
     def test_from_service_exception_without_traceback(self):
         """
@@ -27,7 +26,6 @@ class P2pServiceExceptionTest(unittest.TestCase):
         self.assertIsInstance(exc, P2pServiceException)
         self.assertIn("Error handling operation", str(exc))
         self.assertIn("Test exception without traceback", str(exc))
-        # Ensure 'Unknown' is used for missing line number
         self.assertIn("line Unknown", str(exc))
 
     def test_p2p_service_exception_inheritance(self):

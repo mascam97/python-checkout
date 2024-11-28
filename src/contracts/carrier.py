@@ -1,8 +1,9 @@
 from typing import Protocol
-from messages.requests.redirect import RedirectRequest
+
 from messages.requests.collect import CollectRequest
-from messages.responses.redirect import RedirectResponse
+from messages.requests.redirect import RedirectRequest
 from messages.responses.information import RedirectInformation
+from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
 
 

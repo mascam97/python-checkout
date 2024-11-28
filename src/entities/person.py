@@ -1,22 +1,19 @@
 from typing import Optional
+
 from pydantic import BaseModel, Field
+
 from entities.address import Address
 
 
 class Person(BaseModel):
-    document: str = Field(
-        default="", description="Document number of the person")
-    documentType: str = Field(
-        default="", description="Type of document (e.g., ID, Passport)"
-    )
+    document: str = Field(default="", description="Document number of the person")
+    documentType: str = Field(default="", description="Type of document (e.g., ID, Passport)")
     name: str = Field(default="", description="First name of the person")
     surname: str = Field(default="", description="Last name of the person")
     company: str = Field(default="", description="Company name if applicable")
-    email: Optional[str] = Field(
-        default="", description="Email address of the person")
+    email: Optional[str] = Field(default="", description="Email address of the person")
     mobile: str = Field(default="", description="Mobile number of the person")
-    address: Optional[Address] = Field(
-        default=None, description="Address information")
+    address: Optional[Address] = Field(default=None, description="Address information")
 
     def is_business(self) -> bool:
         """
