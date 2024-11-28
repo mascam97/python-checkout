@@ -14,9 +14,5 @@ class P2pServiceException(P2PException):
         :param exception: The original exception that caused the service error.
         :return: A new instance of P2pServiceException.
         """
-        line_number = (
-            exception.__traceback__.tb_lineno if exception.__traceback__ else "Unknown"
-        )
-        return P2pServiceException(
-            f"Error handling operation: {exception} (line {line_number})"
-        )
+        line_number = exception.__traceback__.tb_lineno if exception.__traceback__ else "Unknown"
+        return P2pServiceException(f"Error handling operation: {exception} (line {line_number})")

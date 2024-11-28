@@ -20,8 +20,7 @@ class DispersionPayment(Payment):
         """
         self.dispersion = []
         for payment_data in data:
-            payment = Payment(
-                **payment_data) if isinstance(payment_data, dict) else payment_data
+            payment = Payment(**payment_data) if isinstance(payment_data, dict) else payment_data
             self.dispersion.append(payment)
         return self
 

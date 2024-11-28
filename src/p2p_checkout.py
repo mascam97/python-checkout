@@ -22,9 +22,7 @@ class P2PCheckout:
         """
         self.settings = Settings(**data)
 
-    def request(
-        self, redirect_request: Union[RedirectRequest, Dict]
-    ) -> RedirectResponse:
+    def request(self, redirect_request: Union[RedirectRequest, Dict]) -> RedirectResponse:
         """
         Handle a redirect request.
 
@@ -49,9 +47,7 @@ class P2PCheckout:
         """
         return self.settings.carrier().query(request_id)
 
-    def collect(
-        self, collect_request: Union[CollectRequest, Dict]
-    ) -> RedirectInformation:
+    def collect(self, collect_request: Union[CollectRequest, Dict]) -> RedirectInformation:
         """
         Handle a collect request.
 

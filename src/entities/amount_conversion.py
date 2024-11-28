@@ -6,12 +6,8 @@ from entities.amount_base import AmountBase
 
 
 class AmountConversion(BaseModel):
-    fromAmount: Optional[AmountBase] = Field(
-        default=None, description="Base amount to convert from"
-    )
-    toAmount: Optional[AmountBase] = Field(
-        default=None, description="Base amount to convert to"
-    )
+    fromAmount: Optional[AmountBase] = Field(default=None, description="Base amount to convert from")
+    toAmount: Optional[AmountBase] = Field(default=None, description="Base amount to convert to")
     factor: float = Field(default=1.0, description="Conversion factor")
 
     def set_amount_base(self, base: dict[AmountBase]) -> None:

@@ -8,25 +8,16 @@ from entities.tax_detail import TaxDetail
 
 
 class Amount(AmountBase):
-    taxes: List[TaxDetail] = Field(
-        default_factory=list, description="List of tax details"
-    )
-    details: List[AmountDetail] = Field(
-        default_factory=list, description="List of amount details"
-    )
-    tip: Optional[float] = Field(
-        default=None, description="Optional tip amount")
-    insurance: Optional[float] = Field(
-        default=None, description="Optional insurance amount"
-    )
+    taxes: List[TaxDetail] = Field(default_factory=list, description="List of tax details")
+    details: List[AmountDetail] = Field(default_factory=list, description="List of amount details")
+    tip: Optional[float] = Field(default=None, description="Optional tip amount")
+    insurance: Optional[float] = Field(default=None, description="Optional insurance amount")
 
     def set_taxes(self, taxes: List[Union[dict, TaxDetail]]) -> None:
         """
         Set the taxes for the amount object.
         """
-        self.taxes = [
-            TaxDetail(**tax) if isinstance(tax, dict) else tax for tax in taxes
-        ]
+        self.taxes = [TaxDetail(**tax) if isinstance(tax, dict) else tax for tax in taxes]
 
     def set_details(self, details: List[Union[dict, AmountDetail]]) -> None:
         """

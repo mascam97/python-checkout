@@ -10,8 +10,7 @@ class Status(BaseModel):
     status: StatusEnum
     reason: str
     message: str = Field(default="", description="Status message")
-    date: Optional[str] = Field(
-        default_factory=lambda: datetime.now().isoformat())
+    date: Optional[str] = Field(default_factory=lambda: datetime.now().isoformat())
 
     def is_successful(self) -> bool:
         return self.status == StatusEnum.OK

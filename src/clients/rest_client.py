@@ -59,8 +59,7 @@ class RestCarrier(Carrier):
         :param transaction_id: The ID of the transaction to reverse.
         :return: ReverseResponse object.
         """
-        result = self._post(
-            "api/reverse", {"internalReference": transaction_id})
+        result = self._post("api/reverse", {"internalReference": transaction_id})
         return ReverseResponse(**result)
 
     def _post(self, endpoint: str, arguments: Dict) -> Dict:
@@ -76,9 +75,7 @@ class RestCarrier(Carrier):
         try:
             data = {**arguments, "auth": self.settings.authentication().to_dict()}
             self.settings.logger().debug("REQUEST", data)
-            response = self.settings.client().post(
-                url, json=data, headers=self.settings.headers()
-            )
+            response = self.settings.client().post(url, json=data, headers=self.settings.headers())
 
             self.settings.logger().debug("RESPONSE", {"result": response.text})
             return response.json()
@@ -89,9 +86,7 @@ class RestCarrier(Carrier):
                     {"class": type(e).__name__, "result": e.response.text},
                 )
             else:
-                self.settings.logger().warning(
-                    "BAD_RESPONSE", {"class": type(e).__name__}
-                )
+                self.settings.logger().warning("BAD_RESPONSE", {"class": type(e).__name__})
             raise P2PException.for_data_not_provided(f"Request failed: {e}")
         except Exception as e:
             self.settings.logger().warning(

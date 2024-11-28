@@ -30,24 +30,16 @@ class FieldsMixin:
         """
         Convert the fields to a list of dictionaries.
         """
-        return [
-            field.to_dict() for field in self.fields if isinstance(field, NameValuePair)
-        ]
+        return [field.to_dict() for field in self.fields if isinstance(field, NameValuePair)]
 
-    def fields_to_key_value(
-        self, nvps: List[NameValuePair] = None
-    ) -> Dict[str, Union[str, list, dict]]:
+    def fields_to_key_value(self, nvps: List[NameValuePair] = None) -> Dict[str, Union[str, list, dict]]:
         """
         Convert the fields to a key-value pair dictionary.
         """
         if nvps is None:
             nvps = self.fields
 
-        return {
-            field.keyword: field.value
-            for field in nvps
-            if isinstance(field, NameValuePair)
-        }
+        return {field.keyword: field.value for field in nvps if isinstance(field, NameValuePair)}
 
     def add_field(self, nvp: Union[Dict, NameValuePair]) -> None:
         """

@@ -17,16 +17,13 @@ class Settings(BaseModel):
     timeout: int = Field(default=15, description="Request timeout in seconds")
     login: str = Field(..., description="API login key")
     tranKey: str = Field(..., description="API transaction key")
-    additional_headers: Dict[str, str] = Field(
-        default_factory=dict, description="Additional HTTP headers"
-    )
+    additional_headers: Dict[str, str] = Field(default_factory=dict, description="Additional HTTP headers")
     authAdditional: Dict[str, Any] = Field(
         default_factory=dict,
         alias="authAdditional",
         description="Additional authentication data",
     )
-    loggerConfig: Optional[Dict[str, Any]] = Field(
-        default=None, description="Logger configuration")
+    loggerConfig: Optional[Dict[str, Any]] = Field(default=None, description="Logger configuration")
 
     _logger: Optional[logging.Logger] = None
     _carrier_instance: Optional[Carrier] = None
@@ -85,9 +82,7 @@ class Settings(BaseModel):
 
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter(
-                "%(asctime)s - %(levelname)s - %(message)s"
-            )
+            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
         else:
@@ -105,11 +100,13 @@ class Settings(BaseModel):
         """
         Return an `Authentication` instance.
         """
-        auth = Authentication({
-            "login": self.login,
-            "tranKey": self.tranKey,
-            "authAdditional": self.authAdditional,
-        })
+        auth = Authentication(
+            {
+                "login": self.login,
+                "tranKey": self.tranKey,
+                "authAdditional": self.authAdditional,
+            }
+        )
         return auth
 
     def carrier(self) -> Carrier:
@@ -117,4 +114,5 @@ class Settings(BaseModel):
         Return or create the carrier instance.
         """
         from clients.rest_client import RestCarrier  # Deferred import
+
         return RestCarrier(self)

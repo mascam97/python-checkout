@@ -27,7 +27,7 @@ setup(
     extras_require={
         "dev": [
             "flake8",
-            "autopep8",
+            "black",
             "pytest",
             "pytest-cov",
             "mypy",

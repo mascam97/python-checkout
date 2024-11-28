@@ -7,12 +7,8 @@ from entities.transaction import Transaction
 
 
 class ReverseResponse(BaseModel):
-    status: Optional[Status] = Field(
-        default=None, description="Status of the reversal response"
-    )
-    payment: Optional[Transaction] = Field(
-        default=None, description="Transaction details associated with the reversal"
-    )
+    status: Optional[Status] = Field(default=None, description="Status of the reversal response")
+    payment: Optional[Transaction] = Field(default=None, description="Transaction details associated with the reversal")
 
     def to_dict(self) -> dict:
         """

@@ -16,10 +16,8 @@ class RedirectResponse(BaseModel):
         alias="session_url",
         description="URL to consume when the gateway requires redirection",
     )
-    status: Optional[Status] = Field(...,
-                                     description="Status of the transaction")
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True, populate_by_name=True)
+    status: Optional[Status] = Field(..., description="Status of the transaction")
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
 
     def is_successful(self) -> bool:
         """

@@ -6,21 +6,11 @@ from pydantic import BaseModel, ConfigDict, Field
 class Token(BaseModel):
     token: str = Field(default="", description="Unique token identifier")
     subtoken: str = Field(default="", description="Secondary token identifier")
-    franchise: str = Field(
-        default="", description="Franchise associated with the token"
-    )
-    franchiseName: str = Field(
-        default="", description="Name of the franchise"
-    )
-    issuerName: str = Field(
-        default="", description="Name of the issuer"
-    )
-    lastDigits: str = Field(
-        default="", description="Last digits of the card/token"
-    )
-    validUntil: str = Field(
-        default="", description="Expiration date in ISO format"
-    )
+    franchise: str = Field(default="", description="Franchise associated with the token")
+    franchiseName: str = Field(default="", description="Name of the franchise")
+    issuerName: str = Field(default="", description="Name of the issuer")
+    lastDigits: str = Field(default="", description="Last digits of the card/token")
+    validUntil: str = Field(default="", description="Expiration date in ISO format")
     cvv: str = Field(default="", description="CVV associated with the token")
     installments: int = Field(default=0, description="Number of installments")
 

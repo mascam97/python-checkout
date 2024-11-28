@@ -7,10 +7,8 @@ from mixins.fields_mixin import FieldsMixin
 
 
 class Subscription(BaseModel, FieldsMixin):
-    reference: str = Field(
-        default="", description="Reference for the subscription")
-    description: str = Field(
-        default="", description="Description of the subscription")
+    reference: str = Field(default="", description="Reference for the subscription")
+    description: str = Field(default="", description="Description of the subscription")
     customFields: Optional[List[NameValuePair]] = Field(
         default_factory=list, description="Additional fields for the subscription"
     )

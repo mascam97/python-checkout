@@ -11,37 +11,21 @@ from enums.status_enum import StatusEnum
 
 class Transaction(BaseModel):
     reference: str = Field(..., description="Commerce-provided reference")
-    internal_reference: str = Field(
-        default="", alias="internalReference", description="PlacetoPay reference"
-    )
-    payment_method: str = Field(
-        default="", alias="paymentMethod", description="Payment method identifier"
-    )
-    payment_method_name: str = Field(
-        default="", alias="paymentMethodName", description="Payment method name"
-    )
-    issuer_name: str = Field(
-        default="", alias="issuerName", description="Name of the issuer"
-    )
-    amount: Optional[AmountConversion] = Field(
-        default=None, description="Amount conversion details"
-    )
+    internal_reference: str = Field(default="", alias="internalReference", description="PlacetoPay reference")
+    payment_method: str = Field(default="", alias="paymentMethod", description="Payment method identifier")
+    payment_method_name: str = Field(default="", alias="paymentMethodName", description="Payment method name")
+    issuer_name: str = Field(default="", alias="issuerName", description="Name of the issuer")
+    amount: Optional[AmountConversion] = Field(default=None, description="Amount conversion details")
     authorization: str = Field(default="", description="Authorization code")
     receipt: str = Field(default="", description="Receipt number")
     franchise: str = Field(default="", description="Franchise identifier")
-    refunded: bool = Field(
-        default=False, description="Refund status of the transaction"
-    )
+    refunded: bool = Field(default=False, description="Refund status of the transaction")
     processor_fields: List[NameValuePair] = Field(
         default_factory=list, alias="processorFields", description="Processor fields"
     )
-    discount: Optional[Discount] = Field(
-        default=None, description="Discount information"
-    )
-    status: Optional[Status] = Field(
-        default=None, description="Transaction status")
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True, populate_by_name=True)
+    discount: Optional[Discount] = Field(default=None, description="Discount information")
+    status: Optional[Status] = Field(default=None, description="Transaction status")
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
 
     def is_successful(self) -> bool:
         """
