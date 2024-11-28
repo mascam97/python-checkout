@@ -1,7 +1,9 @@
 from typing import Optional
+
 from pydantic import Field
-from messages.requests.redirect import RedirectRequest
+
 from entities.instrument import Instrument
+from messages.requests.redirect import RedirectRequest
 
 
 class CollectRequest(RedirectRequest):

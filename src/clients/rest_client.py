@@ -1,7 +1,9 @@
-import requests
 from typing import Dict
-from entities.settings import Settings
+
+import requests
+
 from contracts.carrier import Carrier
+from entities.settings import Settings
 from exceptions.p2p_exception import P2PException
 from exceptions.p2p_service_exception import P2pServiceException
 from messages.requests.collect import CollectRequest

@@ -1,9 +1,11 @@
-from typing import List, Optional, Dict
-from pydantic import BaseModel, Field, ConfigDict
-from entities.status import Status
+from typing import Dict, List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from entities.amount_conversion import AmountConversion
 from entities.discount import Discount
 from entities.name_value_pair import NameValuePair
+from entities.status import Status
 from enums.status_enum import StatusEnum
 
 

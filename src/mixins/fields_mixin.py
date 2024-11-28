@@ -1,4 +1,5 @@
-from typing import List, Union, Dict
+from typing import Dict, List, Union
+
 from entities.name_value_pair import NameValuePair
 
 

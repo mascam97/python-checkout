@@ -30,6 +30,8 @@ setup(
             "autopep8",
             "pytest",
             "pytest-cov",
+            "mypy",
+            "isort",
         ],
     },
     description="Python library for PlaceToPay integration.",

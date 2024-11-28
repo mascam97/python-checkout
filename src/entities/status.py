@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field
-from enums.status_enum import StatusEnum
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel, Field
+
+from enums.status_enum import StatusEnum
 
 
 class Status(BaseModel):

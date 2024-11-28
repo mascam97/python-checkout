@@ -1,5 +1,7 @@
 from typing import List, Optional
+
 from pydantic import BaseModel, Field
+
 from entities.name_value_pair import NameValuePair
 from mixins.fields_mixin import FieldsMixin
 

@@ -1,7 +1,9 @@
-import requests
 import logging
-from typing import Optional, Dict, Any
-from pydantic import BaseModel, Field, HttpUrl, model_validator, ConfigDict
+from typing import Any, Dict, Optional
+
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+import requests
+
 from clients.authentication import Authentication
 from contracts.carrier import Carrier
 

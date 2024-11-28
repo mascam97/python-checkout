@@ -1,5 +1,7 @@
 from typing import Optional
+
 from pydantic import BaseModel, Field
+
 from entities.status import Status
 from entities.transaction import Transaction
 

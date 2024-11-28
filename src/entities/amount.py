@@ -1,8 +1,10 @@
-from typing import List, Optional, Union, Dict
+from typing import Dict, List, Optional, Union
+
 from pydantic import Field
-from entities.tax_detail import TaxDetail
-from entities.amount_detail import AmountDetail
+
 from entities.amount_base import AmountBase
+from entities.amount_detail import AmountDetail
+from entities.tax_detail import TaxDetail
 
 
 class Amount(AmountBase):

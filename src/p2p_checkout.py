@@ -1,11 +1,12 @@
-from typing import Union, Dict, Any
+from typing import Any, Dict, Union
+
 from entities.settings import Settings
+from exceptions.p2p_exception import P2PException
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
 from messages.responses.information import RedirectInformation
 from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
-from exceptions.p2p_exception import P2PException
 
 
 class P2PCheckout:

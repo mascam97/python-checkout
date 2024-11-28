@@ -6,8 +6,11 @@ coverage==7.6.8
 flake8==7.1.1
 idna==3.10
 iniconfig==2.0.0
+isort==5.13.2
 mccabe==0.7.0
--e .
+mypy==1.13.0
+mypy-extensions==1.0.0
+p2p_checkout==0.1.0
 packaging==24.2
 pluggy==1.5.0
 pycodestyle==2.12.1

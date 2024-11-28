@@ -1,5 +1,7 @@
 from typing import List, Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from entities.status import Status
 from entities.subscription_information import SubscriptionInformation
 from entities.transaction import Transaction

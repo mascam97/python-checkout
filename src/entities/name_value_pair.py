@@ -1,6 +1,8 @@
-from typing import Union, Optional
-from enums.display_on_enum import DisplayOnEnum
+from typing import Optional, Union
+
 from pydantic import BaseModel, Field
+
+from enums.display_on_enum import DisplayOnEnum
 
 
 class NameValuePair(BaseModel):

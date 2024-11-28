@@ -1,12 +1,14 @@
 from typing import List, Optional, Union
+
 from pydantic import BaseModel, Field
+
 from entities.amount import Amount
-from entities.recurring import Recurring
 from entities.discount import Discount
-from entities.person import Person
-from entities.item import Item
 from entities.instrument import Instrument
+from entities.item import Item
 from entities.payment_modifier import PaymentModifier
+from entities.person import Person
+from entities.recurring import Recurring
 from mixins.fields_mixin import FieldsMixin
 
 

@@ -1,8 +1,10 @@
 from typing import Optional
+
 from pydantic import BaseModel, Field
+
 from entities.account import Account
-from entities.token import Token
 from entities.credit import Credit
+from entities.token import Token
 
 
 class Instrument(BaseModel):
