@@ -1,9 +1,10 @@
 import unittest
-from entities.transaction import Transaction
-from entities.name_value_pair import NameValuePair
-from entities.status import Status
+
 from entities.amount_conversion import AmountConversion
 from entities.discount import Discount
+from entities.name_value_pair import NameValuePair
+from entities.status import Status
+from entities.transaction import Transaction
 from enums.status_enum import StatusEnum
 
 
@@ -26,8 +27,7 @@ class TransactionTest(unittest.TestCase):
         """
         Test is_successful method with different status values.
         """
-        transaction = Transaction(reference="test_ref", status=Status(
-            status=StatusEnum.ERROR, reason='XX'))
+        transaction = Transaction(reference="test_ref", status=Status(status=StatusEnum.ERROR, reason="XX"))
         self.assertFalse(transaction.is_successful())
 
         transaction.status.status = StatusEnum.OK
@@ -37,8 +37,7 @@ class TransactionTest(unittest.TestCase):
         """
         Test is_approved method with different status values.
         """
-        transaction = Transaction(reference="test_ref", status=Status(
-            status=StatusEnum.APPROVED, reason='00'))
+        transaction = Transaction(reference="test_ref", status=Status(status=StatusEnum.APPROVED, reason="00"))
         self.assertTrue(transaction.is_approved())
 
         transaction.status.status = StatusEnum.REJECTED
@@ -48,10 +47,7 @@ class TransactionTest(unittest.TestCase):
         """
         Test setting processor fields from a list of dictionaries.
         """
-        data = [
-            {"keyword": "key1", "value": "value1"},
-            {"keyword": "key2", "value": "value2"}
-        ]
+        data = [{"keyword": "key1", "value": "value1"}, {"keyword": "key2", "value": "value2"}]
         transaction = Transaction(reference="test_ref")
         transaction.set_processor_fields(data)
 
@@ -65,16 +61,13 @@ class TransactionTest(unittest.TestCase):
         """
         Test conversion of processor fields to a list of dictionaries.
         """
-        data = [
-            NameValuePair(keyword="key1", value="value1"),
-            NameValuePair(keyword="key2", value="value2")
-        ]
+        data = [NameValuePair(keyword="key1", value="value1"), NameValuePair(keyword="key2", value="value2")]
         transaction = Transaction(reference="test_ref", processor_fields=data)
         result = transaction.processor_fields_to_array()
 
         expected = [
             {"keyword": "key1", "value": "value1", "displayOn": "none"},
-            {"keyword": "key2", "value": "value2", "displayOn": "none"}
+            {"keyword": "key2", "value": "value2", "displayOn": "none"},
         ]
         self.assertEqual(result, expected)
 
@@ -104,14 +97,14 @@ class TransactionTest(unittest.TestCase):
         """
         Test parsing processor fields as a key-value dictionary.
         """
-        data = [
-            NameValuePair(keyword="key1", value="value1"),
-            NameValuePair(keyword="key2", value="value2")
-        ]
+        data = [NameValuePair(keyword="key1", value="value1"), NameValuePair(keyword="key2", value="value2")]
         transaction = Transaction(reference="test_ref", processor_fields=data)
         additional_data = transaction.additional_data()
 
-        expected = {"key1": "value1", "key2": "value2", }
+        expected = {
+            "key1": "value1",
+            "key2": "value2",
+        }
         self.assertEqual(additional_data, expected)
 
     def test_to_dict(self):
@@ -120,11 +113,10 @@ class TransactionTest(unittest.TestCase):
         """
         status = Status(status=StatusEnum.APPROVED, reason="Test reason")
         amount = AmountConversion(currency="USD", total=100.0)
-        discount = Discount(code="DISCOUNT1", type="PERCENT",
-                            amount=10.0, base=100.0)
+        discount = Discount(code="DISCOUNT1", type="PERCENT", amount=10.0, base=100.0)
         processor_fields = [
             NameValuePair(keyword="key1", value="value1"),
-            NameValuePair(keyword="key2", value="value2")
+            NameValuePair(keyword="key2", value="value2"),
         ]
 
         transaction = Transaction(
@@ -140,7 +132,7 @@ class TransactionTest(unittest.TestCase):
             refunded=True,
             discount=discount,
             processor_fields=processor_fields,
-            status=status
+            status=status,
         )
 
         result = transaction.to_dict()
@@ -160,7 +152,7 @@ class TransactionTest(unittest.TestCase):
             "discount": discount.to_dict(),
             "processorFields": [
                 {"keyword": "key1", "value": "value1", "displayOn": "none"},
-                {"keyword": "key2", "value": "value2", "displayOn": "none"}
+                {"keyword": "key2", "value": "value2", "displayOn": "none"},
             ],
         }
         self.assertEqual(result, expected)

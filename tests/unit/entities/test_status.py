@@ -1,5 +1,6 @@
-import unittest
 from datetime import datetime
+import unittest
+
 from entities.status import Status
 from enums.status_enum import StatusEnum
 
@@ -11,10 +12,7 @@ class StatusTest(unittest.TestCase):
         Test the initialization of a Status object.
         """
         status = Status(
-            status=StatusEnum.OK,
-            reason="All good",
-            message="Operation successful",
-            date="2024-11-25T12:00:00"
+            status=StatusEnum.OK, reason="All good", message="Operation successful", date="2024-11-25T12:00:00"
         )
         self.assertEqual(status.status, StatusEnum.OK)
         self.assertEqual(status.reason, "All good")
@@ -62,10 +60,7 @@ class StatusTest(unittest.TestCase):
         Test the quick class method.
         """
         quick_status = Status.quick(
-            status=StatusEnum.OK,
-            reason="Quick init",
-            message="Quick message",
-            date="2024-11-25T12:00:00"
+            status=StatusEnum.OK, reason="Quick init", message="Quick message", date="2024-11-25T12:00:00"
         )
         self.assertIsInstance(quick_status, Status)
         self.assertEqual(quick_status.status, StatusEnum.OK)
@@ -78,15 +73,12 @@ class StatusTest(unittest.TestCase):
         Test the to_dict method.
         """
         status = Status(
-            status=StatusEnum.OK,
-            reason="All good",
-            message="Everything is fine",
-            date="2024-11-25T12:00:00"
+            status=StatusEnum.OK, reason="All good", message="Everything is fine", date="2024-11-25T12:00:00"
         )
         expected_dict = {
             "status": StatusEnum.OK.value,
             "reason": "All good",
             "message": "Everything is fine",
-            "date": "2024-11-25T12:00:00"
+            "date": "2024-11-25T12:00:00",
         }
         self.assertEqual(status.to_dict(), expected_dict)

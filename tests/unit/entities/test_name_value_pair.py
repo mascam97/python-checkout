@@ -1,4 +1,5 @@
 import unittest
+
 from entities.name_value_pair import NameValuePair
 from enums.display_on_enum import DisplayOnEnum
 
@@ -9,9 +10,7 @@ class NameValuePairTest(unittest.TestCase):
         """
         Test initialization of NameValuePair with valid data.
         """
-        pair = NameValuePair(
-            keyword="testKey", value="testValue", displayOn=DisplayOnEnum.BOTH
-        )
+        pair = NameValuePair(keyword="testKey", value="testValue", displayOn=DisplayOnEnum.BOTH)
         self.assertEqual(pair.keyword, "testKey")
         self.assertEqual(pair.value, "testValue")
         self.assertEqual(pair.displayOn, DisplayOnEnum.BOTH)
@@ -29,9 +28,7 @@ class NameValuePairTest(unittest.TestCase):
         """
         Test conversion of NameValuePair to a dictionary.
         """
-        pair = NameValuePair(
-            keyword="testKey", value={"key": "value"}, displayOn=DisplayOnEnum.RECEIPT
-        )
+        pair = NameValuePair(keyword="testKey", value={"key": "value"}, displayOn=DisplayOnEnum.RECEIPT)
         expected_dict = {
             "keyword": "testKey",
             "value": {"key": "value"},
@@ -43,13 +40,8 @@ class NameValuePairTest(unittest.TestCase):
         """
         Test dictionary conversion with exclusion of None values.
         """
-        pair = NameValuePair(
-            keyword="testKey", displayOn=DisplayOnEnum.PAYMENT)
-        expected_dict = {
-            "keyword": "testKey",
-            "displayOn": "payment",
-            "value": None
-        }
+        pair = NameValuePair(keyword="testKey", displayOn=DisplayOnEnum.PAYMENT)
+        expected_dict = {"keyword": "testKey", "displayOn": "payment", "value": None}
         self.assertEqual(pair.to_dict(), expected_dict)
 
     def test_value_as_list(self):

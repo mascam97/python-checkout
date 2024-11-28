@@ -1,6 +1,8 @@
 import unittest
-from entities.tax_detail import TaxDetail
+
 from pydantic import ValidationError
+
+from entities.tax_detail import TaxDetail
 
 
 class TaxtDetailTest(unittest.TestCase):
@@ -35,7 +37,7 @@ class TaxtDetailTest(unittest.TestCase):
         """
         tax_detail = TaxDetail(kind="VAT", amount=100.0)
 
-        expected_dict = {'amount': 100, 'base': None, 'kind': 'VAT'}
+        expected_dict = {"amount": 100, "base": None, "kind": "VAT"}
 
         self.assertEqual(tax_detail.to_dict(), expected_dict)
 

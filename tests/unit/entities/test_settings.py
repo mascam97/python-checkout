@@ -1,10 +1,10 @@
-import unittest
 import logging
-from unittest import mock
+import unittest
 from unittest.mock import MagicMock
+
+from clients.http_client import HttpClient
 from clients.rest_client import RestCarrier
 from entities.settings import Settings
-from clients.http_client import HttpClient
 
 
 class SettingsTest(unittest.TestCase):
@@ -15,7 +15,7 @@ class SettingsTest(unittest.TestCase):
             "timeout": 10,
             "login": "test_login",
             "tranKey": "test_tranKey",
-            "authAdditional": {},
+            "auth_additional": {},
             "loggerConfig": {"level": "DEBUG"},
             "additional_headers": {"Authorization": "Bearer test_token"},
         }
@@ -28,21 +28,19 @@ class SettingsTest(unittest.TestCase):
     def test_get_client(self):
         settings = Settings(**self.config)
         client = settings.get_client()
+        carrier = settings.carrier()
+        self.assertIsInstance(carrier, RestCarrier)
         self.assertIsNotNone(client)
-        self.assertEqual(client.session.headers, {'User-Agent': 'python-requests/2.32.3', 'Accept-Encoding': 'gzip, deflate',
-                         'Accept': '*/*', 'Connection': 'keep-alive', 'Authorization': 'Bearer test_token'})
+        self.assertIsInstance(client, HttpClient)
+        self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
         self.assertEqual(client.timeout, self.config["timeout"])
 
-    @mock.patch("entities.settings.Authentication")
-    def test_authentication_instance(self, MockAuth):
+    def test_authentication_instance(self):
         settings = Settings(**self.config)
         auth = settings.authentication()
-
-        MockAuth.assert_called_once_with({
-            "login": self.config["login"],
-            "tranKey": self.config["tranKey"],
-            "authAdditional": self.config["authAdditional"]
-        })
+        self.assertEqual(auth.login, self.config["login"])
+        self.assertEqual(auth.tran_key, self.config["tranKey"])
+        self.assertEqual(auth.additional, self.config["auth_additional"])
 
     def test_rest_client_instance(self):
         settings = Settings(**self.config)
@@ -62,8 +60,7 @@ class SettingsTest(unittest.TestCase):
         self.assertIn("Base URL cannot be empty.", str(context.exception))
 
     def test_logger_creation(self):
-        config = self.config.copy()
-        settings = Settings(**config)
+        settings = Settings(**self.config)
         logger = settings.logger()
         self.assertEqual(len(logger.handlers), 1)
         self.assertIsInstance(logger.handlers[0], logging.StreamHandler)
@@ -76,59 +73,69 @@ class SettingsTest(unittest.TestCase):
         self.assertIsNotNone(logger)
         self.assertEqual(logger.level, logging.DEBUG)
         self.assertEqual(len(logger.handlers), 1)
+        handler = logger.handlers[0]
+        self.assertIsInstance(handler.formatter, logging.Formatter)
+        self.assertEqual(handler.formatter._fmt, "%(message)s")
 
     def test_client_headers_and_timeout(self):
         settings = Settings(**self.config)
         client = settings.get_client()
-
         self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
         self.assertEqual(client.timeout, self.config["timeout"])
 
     def test_get_client_initializes_session(self):
-        """
-        Test that get_client initializes a HttpClient with headers and timeout.
-        """
         settings = Settings(**self.config)
         client = settings.get_client()
-
         self.assertIsInstance(client, HttpClient)
         self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
         self.assertEqual(client.timeout, self.config["timeout"])
 
     def test_get_client_uses_existing_session(self):
-        """
-        Test that get_client reuses an existing session if already initialized.
-        """
         settings = Settings(**self.config)
         first_client = settings.get_client()
         second_client = settings.get_client()
         self.assertIs(first_client, second_client)
-
-        # Verifica que el cliente sigue siendo una instancia de HttpClient
         self.assertIsInstance(first_client, HttpClient)
 
     def test_logger_reuses_existing_instance(self):
-        """
-        Test that logger() reuses the existing _logger instance if already initialized.
-        """
         settings = Settings(**self.config)
-
         existing_logger = MagicMock()
-        settings._logger = existing_logger
-
+        settings.p2p_logger = existing_logger
         logger = settings.logger()
         self.assertEqual(logger, existing_logger)
 
     def test_custom_logger_configuration(self):
-        """
-        Test that custom logger configuration is applied correctly.
-        """
-        custom_config = {
-            "level": logging.ERROR,
-            "formatter": "%(message)s",
-        }
-        self.config["loggerConfig"] = custom_config
-        settings = Settings(**self.config)
-        logger = settings._create_logger()
+        config = self.config.copy()
+        config.pop("loggerConfig", None)
+        settings = Settings(**config)
+        logger = settings.logger()
 
-        self.assertEqual(logger.level, logging.ERROR)
+        self.assertIsNotNone(logger)
+        self.assertEqual(len(logger.handlers), 1)
+        self.assertEqual(logger.level, logging.DEBUG)
+
+    def test_create_logger_with_logger_config(self):
+        config = self.config.copy()
+        config["loggerConfig"] = {"level": logging.WARNING, "formatter": "%(message)s"}
+        settings = Settings(**config)
+        logger = settings.logger()
+        self.assertEqual(logger.level, logging.WARNING)
+        self.assertEqual(len(logger.handlers), 1)
+        handler = logger.handlers[0]
+        self.assertIsInstance(handler.formatter, logging.Formatter)
+        self.assertEqual(handler.formatter._fmt, "%(message)s")
+
+    def test_use_external_client(self):
+        """
+        Test that get_client uses an externally provided HttpClient.
+        """
+        external_client = HttpClient(
+            base_url=self.config["base_url"],
+            timeout=self.config["timeout"],
+        )
+        self.config["p2p_client"] = external_client
+        settings = Settings(**self.config)
+
+        client = settings.get_client()
+        self.assertEqual(client, external_client)
+        self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")

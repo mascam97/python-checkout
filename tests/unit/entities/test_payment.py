@@ -1,10 +1,11 @@
 import unittest
-from entities.payment import Payment
+
 from entities.amount import Amount
 from entities.discount import Discount
-from entities.person import Person
 from entities.item import Item
+from entities.payment import Payment
 from entities.payment_modifier import PaymentModifier
+from entities.person import Person
 
 
 class PaymentTest(unittest.TestCase):
@@ -33,8 +34,7 @@ class PaymentTest(unittest.TestCase):
         Test the initialization of a Payment object with provided values.
         """
         amount = Amount(currency="USD", total=100.0)
-        discount = Discount(code="DISC10", type="PERCENTAGE",
-                            amount=10.0, base=100.0)
+        discount = Discount(code="DISC10", type="PERCENTAGE", amount=10.0, base=100.0)
         shipping = Person(document="123456789", name="John", surname="Doe")
         items = [Item(sku="ITEM001", name="Test Item", qty="1", price="50.0")]
         modifiers = [PaymentModifier(type="FEDERAL_GOVERNMENT", code="MOD001")]
@@ -70,8 +70,7 @@ class PaymentTest(unittest.TestCase):
         Test setting items in the Payment object.
         """
         payment = Payment(reference="REF001")
-        items = [{"sku": "ITEM001", "name": "Test Item",
-                  "qty": "1", "price": "50.0"}]
+        items = [{"sku": "ITEM001", "name": "Test Item", "qty": "1", "price": "50.0"}]
         payment.set_items(items)
 
         assert len(payment.items) == 1
@@ -82,8 +81,7 @@ class PaymentTest(unittest.TestCase):
         Test converting items to an array of dictionaries.
         """
         payment = Payment(reference="REF001")
-        items = [{"sku": "ITEM001", "name": "Test Item",
-                  "qty": "1", "price": "50.0"}]
+        items = [{"sku": "ITEM001", "name": "Test Item", "qty": "1", "price": "50.0"}]
         payment.set_items(items)
 
         items_array = payment.items_to_array()
@@ -118,8 +116,7 @@ class PaymentTest(unittest.TestCase):
         Test converting the Payment object to a dictionary.
         """
         amount = Amount(currency="USD", total=100.0)
-        discount = Discount(code="DISC10", type="PERCENTAGE",
-                            amount=10.0, base=100.0)
+        discount = Discount(code="DISC10", type="PERCENTAGE", amount=10.0, base=100.0)
         shipping = Person(document="123456789", name="John", surname="Doe")
         items = [Item(sku="ITEM001", name="Test Item", qty="1", price="50.0")]
         modifiers = [PaymentModifier(type="FEDERAL_GOVERNMENT", code="MOD001")]

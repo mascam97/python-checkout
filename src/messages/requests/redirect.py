@@ -18,7 +18,7 @@ class RedirectRequest(BaseModel):
     cancel_url: str = Field(default="", description="URL to return to if canceled", alias="cancelUrl")
     ip_address: str = Field(..., description="IP address of the user", alias="ipAddress")
     user_agent: str = Field(..., description="User agent of the user's browser", alias="userAgent")
-    expiration: str = Field(default=None, description="Expiration date for the request", alias="expiration")
+    expiration: Optional[str] = Field(default=None, description="Expiration date for the request", alias="expiration")
     capture_address: bool = Field(default=False, description="Whether to capture the address", alias="captureAddress")
     skip_result: bool = Field(default=False, description="Whether to skip showing results", alias="skipResult")
     no_buyer_fill: bool = Field(

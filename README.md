@@ -34,13 +34,63 @@ Clone the repository and install the required dependencies:
 ```bash
 git clone https://github.com/andrextor/P2PCheckout.git
 cd P2PCheckout
-
-python -m venv env
-source env/bin/activate # In Windows: env\Scripts\activate
-pip install -e ".[dev]"  # For development
 ```
 
-This will install the library in editable mode and include all development dependencies like flake8, pytest, and pytest-cov.
+Install Poetry (if not already installed):
+
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+Install dependencies
+
+```bash
+poetry install
+```
+
+To activate the development environment
+
+- Centralized Virtual Environments: By default, Poetry places the virtual environments in a central location for all Poetry-managed projects:
+~/.cache/pypoetry/virtualenvs/
+- Project-Specific Virtual Environments: If you prefer the virtual environment to be created within your project directory (e.g., ./.venv), you can configure Poetry to do so:
+
+```bash
+poetry config virtualenvs.in-project true
+```
+
+```bash
+poetry shell
+```
+
+Running Tests
+
+```bash
+poetry run pytest --cov=src
+```
+
+Use the following commands for code formatting and linting:
+
+```bash
+poetry run black .
+poetry run flake8
+poetry run isort .
+```
+
+Run type checks using mypy:
+
+```bash
+poetry run mypy src
+```
+
+Adding Dependencies
+
+```bash
+# To add a runtime dependency
+poetry add <package_name> 
+
+# To add a development dependency
+poetry add --group dev <package_name>
+```
 
 ## ***Quick Start For Production Use **
 

@@ -1,7 +1,8 @@
 import unittest
-from messages.requests.collect import CollectRequest
+
 from entities.instrument import Instrument
 from entities.token import Token
+from messages.requests.collect import CollectRequest
 
 
 class CollectTest(unittest.TestCase):
@@ -23,8 +24,7 @@ class CollectTest(unittest.TestCase):
         self.token = Token(**self.token_data)
 
         # Sample instrument using the token
-        self.instrument = Instrument(
-            token=self.token, pin="1234", password="secret")
+        self.instrument = Instrument(token=self.token, pin="1234", password="secret")
 
         # Sample CollectRequest data
         self.request_data = {
@@ -43,18 +43,13 @@ class CollectTest(unittest.TestCase):
         self.assertIsNotNone(collect_request.instrument)
         self.assertIsInstance(collect_request.instrument, Instrument)
         self.assertIsInstance(collect_request.instrument.token, Token)
-        self.assertEqual(collect_request.instrument.token.token,
-                         self.token_data["token"])
-        self.assertEqual(collect_request.instrument.token.franchise,
-                         self.token_data["franchise"])
+        self.assertEqual(collect_request.instrument.token.token, self.token_data["token"])
+        self.assertEqual(collect_request.instrument.token.franchise, self.token_data["franchise"])
         self.assertEqual(collect_request.instrument.pin, "1234")
         self.assertEqual(collect_request.instrument.password, "secret")
-        self.assertEqual(collect_request.return_url,
-                         self.request_data["returnUrl"])
-        self.assertEqual(collect_request.ip_address,
-                         self.request_data["ipAddress"])
-        self.assertEqual(collect_request.user_agent,
-                         self.request_data["userAgent"])
+        self.assertEqual(collect_request.return_url, self.request_data["returnUrl"])
+        self.assertEqual(collect_request.ip_address, self.request_data["ipAddress"])
+        self.assertEqual(collect_request.user_agent, self.request_data["userAgent"])
 
     def test_to_dict_with_token(self):
         """
@@ -63,12 +58,9 @@ class CollectTest(unittest.TestCase):
         collect_request = CollectRequest(**self.request_data)
         result = collect_request.to_dict()
 
-        # Verify parent fields
         self.assertIn("instrument", result)
-        self.assertEqual(result["instrument"]["token"]
-                         ["token"], self.token_data["token"])
-        self.assertEqual(result["instrument"]["token"]
-                         ["franchise"], self.token_data["franchise"])
+        self.assertEqual(result["instrument"]["token"]["token"], self.token_data["token"])
+        self.assertEqual(result["instrument"]["token"]["franchise"], self.token_data["franchise"])
         self.assertEqual(result["instrument"]["pin"], "1234")
         self.assertEqual(result["instrument"]["password"], "secret")
 
@@ -77,8 +69,7 @@ class CollectTest(unittest.TestCase):
         Test CollectRequest to_dict method with no Token in the Instrument.
         """
         request_data_no_token = self.request_data.copy()
-        request_data_no_token["instrument"] = Instrument(
-            pin="5678", password="no_token")
+        request_data_no_token["instrument"] = Instrument(pin="5678", password="no_token")
 
         collect_request = CollectRequest(**request_data_no_token)
         result = collect_request.to_dict()

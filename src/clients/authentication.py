@@ -21,7 +21,7 @@ class Authentication:
         self.tran_key: str = config["tranKey"]
         self.algorithm: str = config.get("algorithm", "sha256")
         self.auth: Dict = config.get("auth", {})
-        self.additional: Dict = config.get("authAdditional", {})
+        self.additional: Dict = config.get("auth_additional", {})
 
         self.generate()
 

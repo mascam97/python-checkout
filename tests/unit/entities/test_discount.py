@@ -1,17 +1,12 @@
 import unittest
+
 from entities.discount import Discount
 
 
 class TestDiscount(unittest.TestCase):
 
     def test_discount_initialization(self):
-        discount = Discount(
-            code="DISCOUNT2023",
-            type="Percentage",
-            amount=50.0,
-            base=200.0,
-            percent=25.0
-        )
+        discount = Discount(code="DISCOUNT2023", type="Percentage", amount=50.0, base=200.0, percent=25.0)
 
         self.assertEqual(discount.code, "DISCOUNT2023")
         self.assertEqual(discount.type, "Percentage")
@@ -20,13 +15,7 @@ class TestDiscount(unittest.TestCase):
         self.assertEqual(discount.percent, 25.0)
 
     def test_discount_to_dict(self):
-        expected_dict = {
-            "code": "DISCOUNT2023",
-            "type": "Percentage",
-            "amount": 50.0,
-            "base": 200.0,
-            "percent": 25.0
-        }
+        expected_dict = {"code": "DISCOUNT2023", "type": "Percentage", "amount": 50.0, "base": 200.0, "percent": 25.0}
 
         discount = Discount.model_validate(expected_dict)
 
@@ -37,11 +26,7 @@ class TestDiscount(unittest.TestCase):
         Test that an error is raised when required fields are missing.
         """
         with self.assertRaises(ValueError):
-            Discount(
-                type="Percentage",
-                amount=50.0,
-                base=200.0
-            )
+            Discount(type="Percentage", amount=50.0, base=200.0)
 
     def test_discount_field_types(self):
         """
@@ -49,10 +34,4 @@ class TestDiscount(unittest.TestCase):
         For example, if 'amount' is a string instead of a float.
         """
         with self.assertRaises(ValueError):
-            Discount(
-                code="DISCOUNT2023",
-                type="Percentage",
-                amount="fifty",
-                base=200.0,
-                percent=25.0
-            )
+            Discount(code="DISCOUNT2023", type="Percentage", amount="fifty", base=200.0, percent=25.0)

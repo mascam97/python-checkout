@@ -1,7 +1,8 @@
 import unittest
+
 from entities.amount import Amount
-from entities.tax_detail import TaxDetail
 from entities.amount_detail import AmountDetail
+from entities.tax_detail import TaxDetail
 
 
 class AmountTest(unittest.TestCase):
@@ -69,9 +70,8 @@ class AmountTest(unittest.TestCase):
 
         taxes_dict = amount.taxes_to_dict()
         assert len(taxes_dict) == 2
-        assert taxes_dict[0] == {'amount': 10.0, 'base': None, 'kind': 'VAT'}
-        assert taxes_dict[1] == {'amount': 5.0,
-                                 'base': None, 'kind': 'SERVICE'}
+        assert taxes_dict[0] == {"amount": 10.0, "base": None, "kind": "VAT"}
+        assert taxes_dict[1] == {"amount": 5.0, "base": None, "kind": "SERVICE"}
 
     def test_details_to_dict(self):
         """
@@ -108,7 +108,13 @@ class AmountTest(unittest.TestCase):
         amount.set_details(details_data)
 
         amount_dict = amount.to_dict()
-        expected_dict = {'currency': 'COP', 'total': 100.0, 'taxes': [{'kind': 'VAT', 'amount': 10.0, 'base': None}, {
-            'kind': 'SERVICE', 'amount': 5.0, 'base': None}], 'details': [{'kind': 'FEE', 'amount': 3.0}, {'kind': 'DISCOUNT', 'amount': 2.0}], 'tip': 15.0, 'insurance': 20.0}
+        expected_dict = {
+            "currency": "COP",
+            "total": 100.0,
+            "taxes": [{"kind": "VAT", "amount": 10.0, "base": None}, {"kind": "SERVICE", "amount": 5.0, "base": None}],
+            "details": [{"kind": "FEE", "amount": 3.0}, {"kind": "DISCOUNT", "amount": 2.0}],
+            "tip": 15.0,
+            "insurance": 20.0,
+        }
 
         assert amount_dict == expected_dict

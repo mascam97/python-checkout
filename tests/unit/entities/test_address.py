@@ -1,4 +1,5 @@
 import unittest
+
 from entities.address import Address
 
 
@@ -14,7 +15,7 @@ class AddressTest(unittest.TestCase):
             state="Test State",
             postalCode="12345",
             country="Test Country",
-            phone="123-456-7890"
+            phone="123-456-7890",
         )
 
         assert address.street == "123 Main St"
@@ -34,7 +35,7 @@ class AddressTest(unittest.TestCase):
             state="Test State",
             postalCode="12345",
             country="Test Country",
-            phone="123-456-7890"
+            phone="123-456-7890",
         )
 
         expected_dict = {
@@ -52,13 +53,16 @@ class AddressTest(unittest.TestCase):
         """
         Test the `to_dict` method when only partial data is provided.
         """
-        address = Address(
-            street="123 Main St",
-            city="Test City"
-        )
+        address = Address(street="123 Main St", city="Test City")
 
-        expected_dict = {'street': '123 Main St', 'city': 'Test City',
-                         'state': '', 'postalCode': '', 'country': '', 'phone': ''}
+        expected_dict = {
+            "street": "123 Main St",
+            "city": "Test City",
+            "state": "",
+            "postalCode": "",
+            "country": "",
+            "phone": "",
+        }
 
         assert address.to_dict() == expected_dict
 
@@ -81,7 +85,6 @@ class AddressTest(unittest.TestCase):
         """
         address = Address()
 
-        expected_dict = {'street': '', 'city': '', 'state': '',
-                         'postalCode': '', 'country': '', 'phone': ''}
+        expected_dict = {"street": "", "city": "", "state": "", "postalCode": "", "country": "", "phone": ""}
 
         assert address.to_dict() == expected_dict

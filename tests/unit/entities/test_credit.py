@@ -1,4 +1,5 @@
 import unittest
+
 from entities.credit import Credit
 
 
@@ -8,12 +9,7 @@ class TestCredit(unittest.TestCase):
         """
         Test that the Credit object initializes correctly with all fields.
         """
-        credit = Credit(
-            code="CREDIT123",
-            type="Personal",
-            groupCode="GRP001",
-            installment=12
-        )
+        credit = Credit(code="CREDIT123", type="Personal", groupCode="GRP001", installment=12)
 
         self.assertEqual(credit.code, "CREDIT123")
         self.assertEqual(credit.type, "Personal")
@@ -40,11 +36,7 @@ class TestCredit(unittest.TestCase):
         Test that the Credit object raises a validation error when required fields are missing.
         """
         with self.assertRaises(ValueError):
-            Credit(
-                type="Personal",
-                groupCode="GRP001",
-                installment=12
-            )
+            Credit(type="Personal", groupCode="GRP001", installment=12)
 
     def test_credit_field_types(self):
         """
@@ -55,5 +47,5 @@ class TestCredit(unittest.TestCase):
                 code="CREDIT123",
                 type="Personal",
                 groupCode="GRP001",
-                installment="twelve"  # 'installment' should be an int
+                installment="twelve",  # 'installment' should be an int
             )

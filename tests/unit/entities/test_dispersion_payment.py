@@ -1,7 +1,8 @@
 import unittest
+
+from entities.amount import Amount
 from entities.dispersion_payment import DispersionPayment
 from entities.payment import Payment
-from entities.amount import Amount
 
 
 class DispersionPaymentTest(unittest.TestCase):
@@ -13,10 +14,12 @@ class DispersionPaymentTest(unittest.TestCase):
             "description": "Main Payment",
             "amount": {"currency": "USD", "total": 100.0},
             "dispersion": [
-                Payment(reference='DISP001', description='Split Payment 1',
-                        amount=Amount(total=1000, currency='COP')),
-                {"reference": "DISP002", "description": "Split Payment 2",
-                    "amount": {"currency": "COP", "total": 1000}},
+                Payment(reference="DISP001", description="Split Payment 1", amount=Amount(total=1000, currency="COP")),
+                {
+                    "reference": "DISP002",
+                    "description": "Split Payment 2",
+                    "amount": {"currency": "COP", "total": 1000},
+                },
             ],
         }
 
@@ -27,13 +30,11 @@ class DispersionPaymentTest(unittest.TestCase):
         self.assertEqual(len(dispersion_payment.dispersion), 2)
 
         self.assertEqual(dispersion_payment.dispersion[0].reference, "DISP001")
-        self.assertEqual(
-            dispersion_payment.dispersion[0].description, "Split Payment 1")
+        self.assertEqual(dispersion_payment.dispersion[0].description, "Split Payment 1")
         self.assertEqual(dispersion_payment.dispersion[0].amount.total, 1000.0)
 
         self.assertEqual(dispersion_payment.dispersion[1].reference, "DISP002")
-        self.assertEqual(
-            dispersion_payment.dispersion[1].description, "Split Payment 2")
+        self.assertEqual(dispersion_payment.dispersion[1].description, "Split Payment 2")
         self.assertEqual(dispersion_payment.dispersion[1].amount.total, 1000.0)
 
     def test_set_dispersion(self):
@@ -49,10 +50,8 @@ class DispersionPaymentTest(unittest.TestCase):
         dispersion_payment = DispersionPayment(data)
 
         dispersion_data = [
-            {"reference": "DISP001", "description": "Split Payment 1",
-                "amount": {"currency": "USD", "total": 50.0}},
-            {"reference": "DISP002", "description": "Split Payment 2",
-                "amount": {"currency": "USD", "total": 50.0}},
+            {"reference": "DISP001", "description": "Split Payment 1", "amount": {"currency": "USD", "total": 50.0}},
+            {"reference": "DISP002", "description": "Split Payment 2", "amount": {"currency": "USD", "total": 50.0}},
         ]
 
         dispersion_payment.set_dispersion(dispersion_data)
@@ -70,21 +69,70 @@ class DispersionPaymentTest(unittest.TestCase):
             "description": "Main Payment",
             "amount": {"currency": "USD", "total": 100.0},
             "dispersion": [
-                {"reference": "DISP001", "description": "Split Payment 1",
-                    "amount": {"currency": "USD", "total": 50.0}},
-                {"reference": "DISP002", "description": "Split Payment 2",
-                    "amount": {"currency": "USD", "total": 50.0}},
+                {
+                    "reference": "DISP001",
+                    "description": "Split Payment 1",
+                    "amount": {"currency": "USD", "total": 50.0},
+                },
+                {
+                    "reference": "DISP002",
+                    "description": "Split Payment 2",
+                    "amount": {"currency": "USD", "total": 50.0},
+                },
             ],
         }
 
         dispersion_payment = DispersionPayment(data)
         print(dispersion_payment.dispersion_to_dict())
 
-        expected_dispersion = [{'reference': 'DISP001', 'description': 'Split Payment 1', 'amount': {'currency': 'USD', 'total': 50.0, 'taxes': [], 'details': [], 'tip': None, 'insurance': None}, 'allowPartial': False, 'shipping': None, 'items': [], 'recurring': None, 'discount': None, 'subscribe': False, 'agreement': None, 'agreementType': '', 'modifiers': [], 'fields': []}, {
-            'reference': 'DISP002', 'description': 'Split Payment 2', 'amount': {'currency': 'USD', 'total': 50.0, 'taxes': [], 'details': [], 'tip': None, 'insurance': None}, 'allowPartial': False, 'shipping': None, 'items': [], 'recurring': None, 'discount': None, 'subscribe': False, 'agreement': None, 'agreementType': '', 'modifiers': [], 'fields': []}]
+        expected_dispersion = [
+            {
+                "reference": "DISP001",
+                "description": "Split Payment 1",
+                "amount": {
+                    "currency": "USD",
+                    "total": 50.0,
+                    "taxes": [],
+                    "details": [],
+                    "tip": None,
+                    "insurance": None,
+                },
+                "allowPartial": False,
+                "shipping": None,
+                "items": [],
+                "recurring": None,
+                "discount": None,
+                "subscribe": False,
+                "agreement": None,
+                "agreementType": "",
+                "modifiers": [],
+                "fields": [],
+            },
+            {
+                "reference": "DISP002",
+                "description": "Split Payment 2",
+                "amount": {
+                    "currency": "USD",
+                    "total": 50.0,
+                    "taxes": [],
+                    "details": [],
+                    "tip": None,
+                    "insurance": None,
+                },
+                "allowPartial": False,
+                "shipping": None,
+                "items": [],
+                "recurring": None,
+                "discount": None,
+                "subscribe": False,
+                "agreement": None,
+                "agreementType": "",
+                "modifiers": [],
+                "fields": [],
+            },
+        ]
 
-        self.assertEqual(
-            dispersion_payment.dispersion_to_dict(), expected_dispersion)
+        self.assertEqual(dispersion_payment.dispersion_to_dict(), expected_dispersion)
 
     def test_dispersion_payment_to_dict(self):
         """
@@ -95,15 +143,80 @@ class DispersionPaymentTest(unittest.TestCase):
             "description": "Main Payment",
             "amount": {"currency": "USD", "total": 100.0},
             "dispersion": [
-                {"reference": "DISP001", "description": "Split Payment 1",
-                    "amount": {"currency": "USD", "total": 50.0}},
-                {"reference": "DISP002", "description": "Split Payment 2",
-                    "amount": {"currency": "USD", "total": 50.0}},
+                {
+                    "reference": "DISP001",
+                    "description": "Split Payment 1",
+                    "amount": {"currency": "USD", "total": 50.0},
+                },
+                {
+                    "reference": "DISP002",
+                    "description": "Split Payment 2",
+                    "amount": {"currency": "USD", "total": 50.0},
+                },
             ],
         }
 
         dispersion_payment = DispersionPayment(data)
 
-        expected_dict = {'reference': 'REF001', 'description': 'Main Payment', 'amount': {'currency': 'USD', 'total': 100.0, 'taxes': [], 'details': [], 'tip': None, 'insurance': None}, 'allowPartial': False, 'shipping': None, 'items': [], 'recurring': None, 'discount': None, 'subscribe': False, 'agreement': None, 'agreementType': '', 'modifiers': [], 'fields': [], 'dispersion': [{'reference': 'DISP001', 'description': 'Split Payment 1', 'amount': {'currency': 'USD', 'total': 50.0, 'taxes': [], 'details': [], 'tip': None, 'insurance': None},
-                                                                                                                                                                                                                                                                                                                                                                                                'allowPartial': False, 'shipping': None, 'items': [], 'recurring': None, 'discount': None, 'subscribe': False, 'agreement': None, 'agreementType': '', 'modifiers': [], 'fields': []}, {'reference': 'DISP002', 'description': 'Split Payment 2', 'amount': {'currency': 'USD', 'total': 50.0, 'taxes': [], 'details': [], 'tip': None, 'insurance': None}, 'allowPartial': False, 'shipping': None, 'items': [], 'recurring': None, 'discount': None, 'subscribe': False, 'agreement': None, 'agreementType': '', 'modifiers': [], 'fields': []}]}
+        expected_dict = {
+            "reference": "REF001",
+            "description": "Main Payment",
+            "amount": {"currency": "USD", "total": 100.0, "taxes": [], "details": [], "tip": None, "insurance": None},
+            "allowPartial": False,
+            "shipping": None,
+            "items": [],
+            "recurring": None,
+            "discount": None,
+            "subscribe": False,
+            "agreement": None,
+            "agreementType": "",
+            "modifiers": [],
+            "fields": [],
+            "dispersion": [
+                {
+                    "reference": "DISP001",
+                    "description": "Split Payment 1",
+                    "amount": {
+                        "currency": "USD",
+                        "total": 50.0,
+                        "taxes": [],
+                        "details": [],
+                        "tip": None,
+                        "insurance": None,
+                    },
+                    "allowPartial": False,
+                    "shipping": None,
+                    "items": [],
+                    "recurring": None,
+                    "discount": None,
+                    "subscribe": False,
+                    "agreement": None,
+                    "agreementType": "",
+                    "modifiers": [],
+                    "fields": [],
+                },
+                {
+                    "reference": "DISP002",
+                    "description": "Split Payment 2",
+                    "amount": {
+                        "currency": "USD",
+                        "total": 50.0,
+                        "taxes": [],
+                        "details": [],
+                        "tip": None,
+                        "insurance": None,
+                    },
+                    "allowPartial": False,
+                    "shipping": None,
+                    "items": [],
+                    "recurring": None,
+                    "discount": None,
+                    "subscribe": False,
+                    "agreement": None,
+                    "agreementType": "",
+                    "modifiers": [],
+                    "fields": [],
+                },
+            ],
+        }
         self.assertEqual(dispersion_payment.to_dict(), expected_dict)

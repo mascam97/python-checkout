@@ -1,4 +1,5 @@
 import unittest
+
 from entities.recurring import Recurring
 
 
@@ -84,8 +85,8 @@ class RecurringTest(unittest.TestCase):
             "interval": 7,
             "nextPayment": "2024-01-01",
             "maxPeriods": None,
-            "dueDate": '',
-            "notificationUrl": ''
+            "dueDate": "",
+            "notificationUrl": "",
         }
 
         assert recurring_dict == expected_dict

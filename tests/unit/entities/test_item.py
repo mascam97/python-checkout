@@ -1,4 +1,5 @@
 import unittest
+
 from entities.item import Item
 
 
@@ -8,14 +9,7 @@ class ItemTest(unittest.TestCase):
         """
         Test the initialization of the Item class.
         """
-        item = Item(
-            sku="ITEM001",
-            name="Test Item",
-            category="Category A",
-            qty="2",
-            price="10.00",
-            tax="1.20"
-        )
+        item = Item(sku="ITEM001", name="Test Item", category="Category A", qty="2", price="10.00", tax="1.20")
 
         self.assertEqual(item.sku, "ITEM001")
         self.assertEqual(item.name, "Test Item")
@@ -28,14 +22,7 @@ class ItemTest(unittest.TestCase):
         """
         Test the `to_dict` method.
         """
-        item = Item(
-            sku="ITEM001",
-            name="Test Item",
-            category="Category A",
-            qty="2",
-            price="10.00",
-            tax="1.20"
-        )
+        item = Item(sku="ITEM001", name="Test Item", category="Category A", qty="2", price="10.00", tax="1.20")
 
         expected_dict = {
             "sku": "ITEM001",

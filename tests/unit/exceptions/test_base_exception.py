@@ -1,4 +1,5 @@
 import unittest
+
 from exceptions.base_exception import BaseException
 
 
@@ -15,8 +16,7 @@ class BaseExceptionTest(unittest.TestCase):
         )
         self.assertEqual(exc.message, "Test error")
         self.assertEqual(exc.status_code, 400)
-        self.assertEqual(
-            exc.details, {"code": "BAD_REQUEST", "info": "Invalid input"})
+        self.assertEqual(exc.details, {"code": "BAD_REQUEST", "info": "Invalid input"})
 
     def test_initialization_with_defaults(self):
         """
@@ -64,9 +64,7 @@ class BaseExceptionTest(unittest.TestCase):
             status_code=500,
             details={"code": "SERVER_ERROR", "trace": "stack_trace"},
         )
-        expected_str = (
-            "Test error (Status Code: 500) | Details: {'code': 'SERVER_ERROR', 'trace': 'stack_trace'}"
-        )
+        expected_str = "Test error (Status Code: 500) | Details: {'code': 'SERVER_ERROR', 'trace': 'stack_trace'}"
         self.assertEqual(str(exc), expected_str)
 
     def test_str_with_message_only(self):
@@ -88,7 +86,6 @@ class BaseExceptionTest(unittest.TestCase):
         """
         Test the __str__ method with message and details.
         """
-        exc = BaseException(message="Error with details",
-                            details={"key": "value"})
+        exc = BaseException(message="Error with details", details={"key": "value"})
         expected_str = "Error with details | Details: {'key': 'value'}"
         self.assertEqual(str(exc), expected_str)

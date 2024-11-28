@@ -1,8 +1,9 @@
 import unittest
+
 from entities.account import Account
-from entities.token import Token
 from entities.credit import Credit
 from entities.instrument import Instrument
+from entities.token import Token
 
 
 class InstrumentTest(unittest.TestCase):
@@ -11,23 +12,11 @@ class InstrumentTest(unittest.TestCase):
         """
         Test the initialization of the Instrument class.
         """
-        account = Account(
-            bankCode="001",
-            bankName="Test Bank",
-            accountType="Savings",
-            accountNumber="1234567890"
-        )
+        account = Account(bankCode="001", bankName="Test Bank", accountType="Savings", accountNumber="1234567890")
         token = Token(token="test-token", expiry="2025-12-31")
-        credit = Credit(code="CRED001", type="Credit",
-                        groupCode="GRP001", installment=12)
+        credit = Credit(code="CRED001", type="Credit", groupCode="GRP001", installment=12)
 
-        instrument = Instrument(
-            bank=account,
-            token=token,
-            credit=credit,
-            pin="1234",
-            password="secure_password"
-        )
+        instrument = Instrument(bank=account, token=token, credit=credit, pin="1234", password="secure_password")
 
         self.assertEqual(instrument.bank.bankCode, "001")
         self.assertEqual(instrument.token.token, "test-token")
@@ -39,23 +28,11 @@ class InstrumentTest(unittest.TestCase):
         """
         Test the `to_dict` method.
         """
-        account = Account(
-            bankCode="001",
-            bankName="Test Bank",
-            accountType="Savings",
-            accountNumber="1234567890"
-        )
+        account = Account(bankCode="001", bankName="Test Bank", accountType="Savings", accountNumber="1234567890")
         token = Token(token="test-token", expiry="2025-12-31")
-        credit = Credit(code="CRED001", type="Credit",
-                        groupCode="GRP001", installment=12)
+        credit = Credit(code="CRED001", type="Credit", groupCode="GRP001", installment=12)
 
-        instrument = Instrument(
-            bank=account,
-            token=token,
-            credit=credit,
-            pin="1234",
-            password="secure_password"
-        )
+        instrument = Instrument(bank=account, token=token, credit=credit, pin="1234", password="secure_password")
 
         expected_dict = {
             "bank": account.to_dict(),
@@ -71,10 +48,7 @@ class InstrumentTest(unittest.TestCase):
         """
         Test the `to_dict` method when optional fields are not set.
         """
-        instrument = Instrument(
-            pin="1234",
-            password="secure_password"
-        )
+        instrument = Instrument(pin="1234", password="secure_password")
 
         expected_dict = {
             "bank": None,

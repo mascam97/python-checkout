@@ -1,10 +1,12 @@
-import unittest
-import hashlib
 import base64
-import pytest
-from exceptions.p2p_exception import P2PException
+import hashlib
+import unittest
 from unittest import mock
+
+import pytest
+
 from clients.authentication import Authentication
+from exceptions.p2p_exception import P2PException
 
 
 class AuthenticationTest(unittest.TestCase):
@@ -25,8 +27,7 @@ class AuthenticationTest(unittest.TestCase):
         auth = Authentication(config)
 
         digest_input = auth.auth["nonce"] + auth.auth["seed"] + auth.tran_key
-        digest = hashlib.new(
-            auth.algorithm, digest_input.encode("utf-8")).digest()
+        digest = hashlib.new(auth.algorithm, digest_input.encode("utf-8")).digest()
 
         expect_digets = base64.b64encode(digest).decode("utf-8")
         expect_seed = "2024-10-22T04:39:18.810868+00:00"
@@ -56,5 +57,4 @@ class AuthenticationTest(unittest.TestCase):
         with pytest.raises(P2PException) as exc_info:
             Authentication({})
 
-        assert str(
-            exc_info.value) == "No login or tranKey provided for authentication"
+        assert str(exc_info.value) == "No login or tranKey provided for authentication"

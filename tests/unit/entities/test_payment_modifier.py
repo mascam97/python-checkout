@@ -1,4 +1,5 @@
 import unittest
+
 from entities.payment_modifier import PaymentModifier
 
 
@@ -17,11 +18,7 @@ class PaymentModifierTest(unittest.TestCase):
         """
         Test initialization of PaymentModifier with provided values.
         """
-        modifier = PaymentModifier(
-            type="CUSTOM_TYPE",
-            code="MOD123",
-            additional={"key": "value"}
-        )
+        modifier = PaymentModifier(type="CUSTOM_TYPE", code="MOD123", additional={"key": "value"})
         assert modifier.type == "CUSTOM_TYPE"
         assert modifier.code == "MOD123"
         assert modifier.additional == {"key": "value"}
@@ -46,8 +43,7 @@ class PaymentModifierTest(unittest.TestCase):
         """
         Test retrieving additional data by key.
         """
-        modifier = PaymentModifier(
-            additional={"key1": "value1", "key2": "value2"})
+        modifier = PaymentModifier(additional={"key1": "value1", "key2": "value2"})
         assert modifier.get_additional("key1") == "value1"
         assert modifier.get_additional("key3", "default") == "default"
 
@@ -79,11 +75,7 @@ class PaymentModifierTest(unittest.TestCase):
         """
         Test converting PaymentModifier to a dictionary.
         """
-        modifier = PaymentModifier(
-            type="CUSTOM_TYPE",
-            code="MOD123",
-            additional={"key": "value"}
-        )
+        modifier = PaymentModifier(type="CUSTOM_TYPE", code="MOD123", additional={"key": "value"})
         expected_dict = {
             "type": "CUSTOM_TYPE",
             "code": "MOD123",

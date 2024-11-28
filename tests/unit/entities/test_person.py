@@ -1,6 +1,7 @@
 import unittest
-from entities.person import Person
+
 from entities.address import Address
+from entities.person import Person
 
 
 class PersonTest(unittest.TestCase):
@@ -25,12 +26,7 @@ class PersonTest(unittest.TestCase):
         Test initialization with provided values.
         """
         address = Address(
-            street="123 Main St",
-            city="Testville",
-            state="TX",
-            postal_code="12345",
-            country="US",
-            phone="123-456-7890"
+            street="123 Main St", city="Testville", state="TX", postal_code="12345", country="US", phone="123-456-7890"
         )
 
         person = Person(
@@ -41,7 +37,7 @@ class PersonTest(unittest.TestCase):
             company="TestCorp",
             email="john.doe@example.com",
             mobile="1234567890",
-            address=address
+            address=address,
         )
 
         assert person.document == "123456789"
@@ -68,12 +64,7 @@ class PersonTest(unittest.TestCase):
         Test the `to_dict` method.
         """
         address = Address(
-            street="123 Main St",
-            city="Testville",
-            state="TX",
-            postal_code="12345",
-            country="US",
-            phone="123-456-7890"
+            street="123 Main St", city="Testville", state="TX", postal_code="12345", country="US", phone="123-456-7890"
         )
 
         person = Person(
@@ -84,7 +75,7 @@ class PersonTest(unittest.TestCase):
             company="TestCorp",
             email="john.doe@example.com",
             mobile="1234567890",
-            address=address
+            address=address,
         )
 
         person_dict = person.to_dict()

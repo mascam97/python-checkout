@@ -1,10 +1,10 @@
 import unittest
-from unittest.mock import MagicMock
-from entities.status import Status
-from entities.name_value_pair import NameValuePair
+
 from entities.account import Account
-from entities.token import Token
+from entities.name_value_pair import NameValuePair
+from entities.status import Status
 from entities.subscription_information import SubscriptionInformation
+from entities.token import Token
 from enums.status_enum import StatusEnum
 
 
@@ -71,7 +71,7 @@ class SubsCriptionInformationTest(unittest.TestCase):
             NameValuePair(keyword="validUntil", value="2025-12-31"),
         ]
         subscription = SubscriptionInformation(
-            type="token", status=Status.quick(status=StatusEnum.OK, reason='00'), instrument=instrument_data
+            type="token", status=Status.quick(status=StatusEnum.OK, reason="00"), instrument=instrument_data
         )
         result = subscription.parse_instrument()
 
@@ -93,7 +93,7 @@ class SubsCriptionInformationTest(unittest.TestCase):
             NameValuePair(keyword="accountNumber", value="123456789"),
         ]
         subscription = SubscriptionInformation(
-            type="account", status=Status.quick(status=StatusEnum.OK, reason='00'), instrument=instrument_data
+            type="account", status=Status.quick(status=StatusEnum.OK, reason="00"), instrument=instrument_data
         )
         result = subscription.parse_instrument()
 
@@ -150,14 +150,14 @@ class SubsCriptionInformationTest(unittest.TestCase):
             NameValuePair(keyword="key1", value="value1"),
         ]
         subscription = SubscriptionInformation(
-            type="token", status=Status.quick(status=StatusEnum.OK, reason='00'), instrument=instrument_data
+            type="token", status=Status.quick(status=StatusEnum.OK, reason="00"), instrument=instrument_data
         )
         result_dict = subscription.to_dict()
 
         expected_dict = {
             "type": "token",
-            "status": {'status': 'OK', 'reason': '00', 'message': '', 'date': None},
-            "instrument": [{'keyword': 'key1', 'value': 'value1', 'displayOn': 'none'}]
+            "status": {"status": "OK", "reason": "00", "message": "", "date": None},
+            "instrument": [{"keyword": "key1", "value": "value1", "displayOn": "none"}],
         }
         self.assertEqual(result_dict, expected_dict)
 
@@ -167,8 +167,7 @@ class SubsCriptionInformationTest(unittest.TestCase):
         """
         subscription = SubscriptionInformation(type="account", instrument=[])
         result = subscription.parse_instrument()
-        self.assertIsNone(
-            result, "Expected None when instrument list is empty.")
+        self.assertIsNone(result, "Expected None when instrument list is empty.")
 
     def test_empty_instrument_to_dict(self):
         """
