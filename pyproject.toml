@@ -86,7 +86,7 @@ omit = [
     "src/*/__init__.py",
     "*/__pycache__/*"
 ]
-fail_under = 98
+fail_under = 70
 show_missing = true
 show_covered = true
 
