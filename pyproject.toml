@@ -91,7 +91,6 @@ show_missing = true
 show_covered = true
 
 [tool.coverage.html]
-directory = "coverage_html_report"
 title = "Test Coverage Report"
 
 [tool.coverage.xml]
