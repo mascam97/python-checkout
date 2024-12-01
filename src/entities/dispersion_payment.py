@@ -10,7 +10,7 @@ class DispersionPayment(Payment):
         """
         Initialize DispersionPayment object and process dispersion payments.
         """
-        super().__init__(**data)  # Pasar los datos a la clase base
+        super().__init__(**data)
         if "dispersion" in data:
             self.set_dispersion(data["dispersion"])
 
