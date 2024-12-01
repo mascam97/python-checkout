@@ -16,7 +16,8 @@ class CollectRequest(RedirectRequest):
         """
         Convert the CollectRequest object to a dictionary.
         """
-        parent_dict = super().model_dump()
+        parent_dict = super().to_dict()
+
         return {
             **parent_dict,
             "instrument": self.instrument.to_dict() if self.instrument else None,

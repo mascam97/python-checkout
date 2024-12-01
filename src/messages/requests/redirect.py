@@ -36,4 +36,4 @@ class RedirectRequest(BaseModel):
         """
         Convert the RedirectRequest object to a dictionary using Pydantic's dict method.
         """
-        return self.model_dump(by_alias=True, exclude_none=True)
+        return self.model_dump(by_alias=True)

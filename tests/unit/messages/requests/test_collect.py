@@ -33,7 +33,7 @@ class CollectTest(unittest.TestCase):
         """
         Test CollectRequest initialization with a Token in the Instrument.
         """
-        collect_request = Collect(**self.request_data)
+        collect_request = CollectRequest(**self.request_data)
 
         self.assertIsNotNone(collect_request.instrument)
         self.assertIsInstance(collect_request.instrument, Instrument)
@@ -50,7 +50,7 @@ class CollectTest(unittest.TestCase):
         """
         Test CollectRequest to_dict method with a Token in the Instrument.
         """
-        collect_request = Collect(**self.request_data)
+        collect_request = CollectRequest(**self.request_data)
         result = collect_request.to_dict()
 
         self.assertIn("instrument", result)
@@ -66,10 +66,28 @@ class CollectTest(unittest.TestCase):
         request_data_no_token = self.request_data.copy()
         request_data_no_token["instrument"] = Instrument(pin="5678", password="no_token")
 
-        collect_request = Collect(**request_data_no_token)
+        collect_request = CollectRequest(**request_data_no_token)
         result = collect_request.to_dict()
 
         self.assertIn("instrument", result)
         self.assertIsNone(result["instrument"]["token"])
         self.assertEqual(result["instrument"]["pin"], "5678")
         self.assertEqual(result["instrument"]["password"], "no_token")
+        self.assertEqual("es_CO", result['locale'])
+        self.assertEqual('192.168.1.1', result['ipAddress'])
+        self.assertEqual('Mozilla/5.0', result['userAgent'])
+        self.assertEqual('https://example.com/return', result['returnUrl'])
+
+        self.assertIsNone(result['payer'])
+        self.assertIsNone(result['buyer'])
+        self.assertIsNone(result['payment'])
+        self.assertIsNone(result['subscription'])
+        
+        self.assertIsNone(result['expiration'])
+
+        self.assertFalse(result['captureAddress'])
+        self.assertFalse(result['skipResult'])
+        self.assertFalse(result['noBuyerFill'])
+
+        self.assertEqual('', result['paymentMethod'])
+        self.assertEqual('', result['cancelUrl'])        
