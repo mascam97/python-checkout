@@ -5,7 +5,7 @@ from contracts.carrier import Carrier
 from entities.settings import Settings
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
-from messages.responses.information import RedirectInformation
+from messages.responses.information import Information
 from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
 
@@ -38,19 +38,19 @@ class RestCarrier(Carrier):
         result = self._post("api/session", redirect_request.to_dict())
         return RedirectResponse(**result)
 
-    def query(self, request_id: str) -> RedirectInformation:
+    def query(self, request_id: str) -> Information:
         """
         Query a session by request ID.
         """
         result = self._post(f"api/session/{request_id}", {})
-        return RedirectInformation(**result)
+        return Information(**result)
 
-    def collect(self, collect_request: CollectRequest) -> RedirectInformation:
+    def collect(self, collect_request: CollectRequest) -> Information:
         """
         Handle a collect request.
         """
         result = self._post("api/collect", collect_request.to_dict())
-        return RedirectInformation(**result)
+        return Information(**result)
 
     def reverse(self, transaction_id: str) -> ReverseResponse:
         """

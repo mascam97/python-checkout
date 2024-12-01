@@ -4,7 +4,7 @@ from entities.settings import Settings
 from exceptions.p2p_exception import P2PException
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
-from messages.responses.information import RedirectInformation
+from messages.responses.information import Information
 from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
 
@@ -51,7 +51,7 @@ class P2PCheckout:
         redirect_request = self._validate_request(redirect_request, RedirectRequest)
         return self.settings.carrier().request(redirect_request)
 
-    def query(self, request_id: str) -> RedirectInformation:
+    def query(self, request_id: str) -> Information:
         """
         Query a session by request ID.
 
@@ -60,7 +60,7 @@ class P2PCheckout:
         """
         return self.settings.carrier().query(request_id)
 
-    def collect(self, collect_request: Union[CollectRequest, Dict]) -> RedirectInformation:
+    def collect(self, collect_request: Union[CollectRequest, Dict]) -> Information:
         """
         Handle a collect request.
 

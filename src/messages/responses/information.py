@@ -8,7 +8,7 @@ from entities.transaction import Transaction
 from messages.requests.redirect import RedirectRequest
 
 
-class RedirectInformation(BaseModel):
+class Information(BaseModel):
     request_id: str = Field(..., alias="requestId", description="Unique identifier for the request")
     status: Optional[Status] = Field(default=None, description="Status of the request")
     request: Optional[RedirectRequest] = Field(default=None, description="Redirect request details")

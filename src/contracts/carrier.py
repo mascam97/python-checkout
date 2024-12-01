@@ -2,7 +2,7 @@ from typing import Protocol
 
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
-from messages.responses.information import RedirectInformation
+from messages.responses.information import Information
 from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
 
@@ -14,13 +14,13 @@ class Carrier(Protocol):
         """
         ...
 
-    def query(self, request_id: str) -> RedirectInformation:
+    def query(self, request_id: str) -> Information:
         """
         Query a redirect by request ID.
         """
         ...
 
-    def collect(self, collect_request: CollectRequest) -> RedirectInformation:
+    def collect(self, collect_request: CollectRequest) -> Information:
         """
         Collect redirect information from a request.
         """
