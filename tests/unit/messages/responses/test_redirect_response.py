@@ -1,10 +1,12 @@
 import unittest
-from messages.responses.redirect import RedirectResponse
+
 from entities.status import Status
 from enums.status_enum import StatusEnum
+from messages.responses.redirect import RedirectResponse
+
 
 class RedirectResponseTest(unittest.TestCase):
-    
+
     def test_initialization_with_all_fields(self):
         """
         Test the initialization of RedirectResponse with all fields provided.
