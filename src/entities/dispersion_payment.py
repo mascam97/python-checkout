@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from entities.payment import Payment
 
@@ -6,15 +6,15 @@ from entities.payment import Payment
 class DispersionPayment(Payment):
     dispersion: List[Payment] = []
 
-    def __init__(self, data: Dict):
+    def __init__(self, **data: Dict):
         """
         Initialize DispersionPayment object and process dispersion payments.
         """
-        super().__init__(**data)
+        super().__init__(**data)  # Pasar los datos a la clase base
         if "dispersion" in data:
             self.set_dispersion(data["dispersion"])
 
-    def set_dispersion(self, data: List[Dict]) -> "DispersionPayment":
+    def set_dispersion(self, data: Union[List[Dict], Dict]) -> "DispersionPayment":
         """
         Set the dispersion payments.
         """

@@ -23,7 +23,7 @@ class DispersionPaymentTest(unittest.TestCase):
             ],
         }
 
-        dispersion_payment = DispersionPayment(data)
+        dispersion_payment = DispersionPayment(**data)
 
         self.assertEqual(dispersion_payment.reference, "REF001")
         self.assertEqual(dispersion_payment.description, "Main Payment")
@@ -47,7 +47,7 @@ class DispersionPaymentTest(unittest.TestCase):
             "amount": {"currency": "USD", "total": 100.0},
         }
 
-        dispersion_payment = DispersionPayment(data)
+        dispersion_payment = DispersionPayment(**data)
 
         dispersion_data = [
             {"reference": "DISP001", "description": "Split Payment 1", "amount": {"currency": "USD", "total": 50.0}},
@@ -82,7 +82,7 @@ class DispersionPaymentTest(unittest.TestCase):
             ],
         }
 
-        dispersion_payment = DispersionPayment(data)
+        dispersion_payment = DispersionPayment(**data)
         print(dispersion_payment.dispersion_to_dict())
 
         expected_dispersion = [
@@ -156,7 +156,7 @@ class DispersionPaymentTest(unittest.TestCase):
             ],
         }
 
-        dispersion_payment = DispersionPayment(data)
+        dispersion_payment = DispersionPayment(**data)
 
         expected_dict = {
             "reference": "REF001",
