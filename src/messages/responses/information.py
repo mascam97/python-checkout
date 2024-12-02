@@ -36,11 +36,14 @@ class Information(BaseModel):
         if not self.payment:
             return None
 
-        if approved:
-            for transaction in self.payment:
-                if transaction.is_approved():
-                    return transaction
-        return self.payment[-1] if self.payment else None
+        if not approved:
+            return self.payment[-1] if self.payment else None
+
+        for transaction in self.payment:
+            if transaction.is_approved():
+                return transaction
+
+        return None
 
     def last_approved_transaction(self) -> Optional[Transaction]:
         """

@@ -34,7 +34,7 @@ class InformationTest(unittest.TestCase):
         )
         subscription = SubscriptionInformation(type="token")
 
-        redirect_info = Information(
+        information = Information(
             request_id="REQ123",
             status=status,
             request=request,
@@ -42,23 +42,23 @@ class InformationTest(unittest.TestCase):
             subscription=subscription,
         )
 
-        self.assertEqual(redirect_info.request_id, "REQ123")
-        self.assertEqual(redirect_info.status.reason, "Request successful")
-        self.assertEqual(redirect_info.request.return_url, "https://example.com/return")
-        self.assertEqual(len(redirect_info.payment), 1)
-        self.assertEqual(redirect_info.subscription.type, "token")
+        self.assertEqual(information.request_id, "REQ123")
+        self.assertEqual(information.status.reason, "Request successful")
+        self.assertEqual(information.request.return_url, "https://example.com/return")
+        self.assertEqual(len(information.payment), 1)
+        self.assertEqual(information.subscription.type, "token")
 
     def test_initialization_with_defaults(self):
         """
         Test initialization of Information with default values.
         """
-        redirect_info = Information(request_id="REQ123")
+        information = Information(request_id="REQ123")
 
-        self.assertEqual(redirect_info.request_id, "REQ123")
-        self.assertIsNone(redirect_info.status)
-        self.assertIsNone(redirect_info.request)
-        self.assertEqual(redirect_info.payment, [])
-        self.assertIsNone(redirect_info.subscription)
+        self.assertEqual(information.request_id, "REQ123")
+        self.assertIsNone(information.status)
+        self.assertIsNone(information.request)
+        self.assertEqual(information.payment, [])
+        self.assertIsNone(information.subscription)
 
     def test_set_payment(self):
         """
@@ -69,12 +69,12 @@ class InformationTest(unittest.TestCase):
             {"reference": "REF002", "internalReference": "INT002", "authorization": "AUTH002"},
         ]
 
-        redirect_info = Information(request_id="REQ123")
-        redirect_info.set_payment(payments_data)
+        information = Information(request_id="REQ123")
+        information.set_payment(payments_data)
 
-        self.assertEqual(len(redirect_info.payment), 2)
-        self.assertEqual(redirect_info.payment[0].reference, "REF001")
-        self.assertEqual(redirect_info.payment[1].reference, "REF002")
+        self.assertEqual(len(information.payment), 2)
+        self.assertEqual(information.payment[0].reference, "REF001")
+        self.assertEqual(information.payment[1].reference, "REF002")
 
     def test_last_transaction(self):
         """
@@ -83,9 +83,9 @@ class InformationTest(unittest.TestCase):
         transaction1 = Transaction(reference="REF001", authorization="AUTH001", refunded=False)
         transaction2 = Transaction(reference="REF002", authorization="AUTH002", refunded=False)
 
-        redirect_info = Information(request_id="REQ123", payment=[transaction1, transaction2])
+        information = Information(request_id="REQ123", payment=[transaction1, transaction2])
 
-        last_transaction = redirect_info.last_transaction()
+        last_transaction = information.last_transaction()
         self.assertEqual(last_transaction.reference, "REF002")
 
     def test_last_approved_transaction(self):
@@ -96,9 +96,9 @@ class InformationTest(unittest.TestCase):
         transaction1 = Transaction(reference="REF001", authorization="AUTH001", refunded=False)
         transaction2 = Transaction(reference="REF002", authorization="AUTH002", refunded=False, status=status_approved)
 
-        redirect_info = Information(request_id="REQ123", payment=[transaction1, transaction2])
+        information = Information(request_id="REQ123", payment=[transaction1, transaction2])
 
-        last_approved_transaction = redirect_info.last_approved_transaction()
+        last_approved_transaction = information.last_approved_transaction()
         self.assertEqual(last_approved_transaction.reference, "REF002")
 
     def test_last_authorization(self):
@@ -108,9 +108,9 @@ class InformationTest(unittest.TestCase):
         status_approved = Status(status=StatusEnum.APPROVED, reason="Approved")
         transaction = Transaction(reference="REF001", authorization="AUTH001", refunded=False, status=status_approved)
 
-        redirect_info = Information(request_id="REQ123", payment=[transaction])
+        information = Information(request_id="REQ123", payment=[transaction])
 
-        last_authorization = redirect_info.last_authorization()
+        last_authorization = information.last_authorization()
         self.assertEqual(last_authorization, "AUTH001")
 
     def test_to_dict(self):
@@ -121,7 +121,7 @@ class InformationTest(unittest.TestCase):
         transaction = Transaction(reference="REF001", authorization="AUTH001")
         subscription = SubscriptionInformation(type="token")
 
-        redirect_info = Information(
+        information = Information(
             request_id="REQ123",
             status=status,
             payment=[transaction],
@@ -136,4 +136,59 @@ class InformationTest(unittest.TestCase):
             "subscription": subscription.to_dict(),
         }
 
-        self.assertEqual(redirect_info.to_dict(), expected_dict)
+        self.assertEqual(information.to_dict(), expected_dict)
+
+    def test_set_payment_with_nested_transactions(self):
+        """
+        Test `set_payment` when the input contains nested transactions in a dictionary.
+        """
+        information = Information(
+            request_id="12345",
+            status=Status(status="OK", reason="Success"),
+        )
+        nested_payments = {
+            "transaction": [
+                {"reference": "TX001", "amount": {"currency": "USD", "total": 100}},
+                {"reference": "TX002", "amount": {"currency": "USD", "total": 200}},
+            ]
+        }
+        information.set_payment(nested_payments)
+        self.assertEqual(len(information.payment), 2)
+        self.assertEqual(information.payment[0].reference, "TX001")
+        self.assertEqual(information.payment[1].reference, "TX002")
+
+    def test_last_transaction_no_payments(self):
+        """
+        Test `last_transaction` when there are no payments.
+        """
+        information = Information(
+            request_id="12345",
+            status=Status(status="OK", reason="Success"),
+        )
+        self.assertIsNone(information.last_transaction())
+
+    def test_set_payment_with_empty_list(self):
+        """
+        Test `set_payment` when the input is an empty list.
+        """
+        information = Information(
+            request_id="12345",
+            status=Status(status="OK", reason="Success"),
+        )
+        information.set_payment([])
+        self.assertEqual(len(information.payment), 0)
+
+    def test_last_transaction_no_approved(self):
+        """
+        Test `last_transaction` when `approved=True` and no transactions are approved.
+        """
+        information = Information(
+            request_id="12345",
+            status=Status(status=StatusEnum.OK, reason="Success"),
+            payment=[
+                Transaction(reference="TX001", status=Status(status=StatusEnum.FAILED, reason="Failed")),
+                Transaction(reference="TX002", status=Status(status=StatusEnum.FAILED, reason="Failed")),
+            ],
+        )
+        print(information.last_transaction(approved=True))
+        self.assertIsNone(information.last_transaction(approved=True))
