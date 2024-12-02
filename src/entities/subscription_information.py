@@ -22,10 +22,8 @@ class SubscriptionInformation(BaseModel):
             instrument_data = instrument_data["item"]
 
         for nvp_data in instrument_data:
-            if isinstance(nvp_data, dict):
-                nvp_data = NameValuePair(**nvp_data)
-            if isinstance(nvp_data, NameValuePair):
-                self.instrument.append(nvp_data)
+            nvp_data = nvp_data if isinstance(nvp_data, NameValuePair) else NameValuePair(**nvp_data)
+            self.instrument.append(nvp_data)
 
     def instrument_to_list(self) -> List[dict]:
         """
