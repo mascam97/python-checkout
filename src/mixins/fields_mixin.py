@@ -21,10 +21,7 @@ class FieldsMixin:
 
         self.fields = []
         for nvp in fields_data:
-            if isinstance(nvp, dict):
-                nvp = NameValuePair(**nvp)
-            if isinstance(nvp, NameValuePair):
-                self.fields.append(nvp)
+            self.fields.append(nvp if isinstance(nvp, NameValuePair) else NameValuePair(**nvp))
 
     def fields_to_array(self) -> List[Dict]:
         """
@@ -36,16 +33,13 @@ class FieldsMixin:
         """
         Convert the fields to a key-value pair dictionary.
         """
-        if nvps is None:
-            nvps = self.fields
+        nvps_data = nvps if nvps is not None else self.fields
 
-        return {field.keyword: field.value for field in nvps if isinstance(field, NameValuePair)}
+        return {field.keyword: field.value for field in nvps_data if isinstance(field, NameValuePair)}
 
     def add_field(self, nvp: Union[Dict, NameValuePair]) -> None:
         """
         Add a new NameValuePair to the fields.
         """
-        if isinstance(nvp, dict):
-            nvp = NameValuePair(**nvp)
-        if isinstance(nvp, NameValuePair):
-            self.fields.append(nvp)
+        name_value_pair = nvp if isinstance(nvp, NameValuePair) else NameValuePair(**nvp)
+        self.fields.append(name_value_pair)
