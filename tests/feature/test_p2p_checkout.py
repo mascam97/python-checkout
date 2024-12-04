@@ -10,6 +10,7 @@ from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
 from messages.responses.information import InformationResponse
 from messages.responses.redirect import RedirectResponse
+from messages.responses.reverse import ReverseResponse
 from p2p_checkout import P2PCheckout
 
 
@@ -201,3 +202,40 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertEqual(payment.amount.fromAmount.currency, "COP")
         self.assertEqual(payment.amount.toAmount.total, 2178.45)
         self.assertEqual(payment.amount.toAmount.currency, "CLP")
+
+    @patch("clients.rest_client.RestCarrier._post")
+    @RedirectResponseMock.mock_response_decorator("reverse_response_successful", 200)
+    def test_reverse_valid(self, mock_post, mock_response):
+        """
+        Test the reverse method with a valid internal reference and mock response.
+        """
+        mock_post.return_value = mock_response["body"]
+
+        internal_reference = "437987"
+        result = self.p2p_checkout.reverse(internal_reference)
+
+        self.assertIsInstance(result, ReverseResponse)
+        self.assertIsNotNone(result.status)
+        self.assertEqual(result.status.status, "APPROVED")
+        self.assertEqual(result.status.reason, "00")
+        self.assertEqual(result.status.message, "Aprobada")
+        self.assertIsNotNone(result.status.date)
+
+        self.assertIsNotNone(result.payment)
+        payment = result.payment
+        self.assertEqual(payment.reference, "ref_collect_3")
+        self.assertEqual(payment.authorization, "300159")
+        self.assertEqual(payment.payment_method, "master")
+        self.assertEqual(payment.status.status, "APPROVED")
+        self.assertEqual(payment.amount.fromAmount.total, 10000)
+        self.assertEqual(payment.amount.fromAmount.currency, "COP")
+        self.assertEqual(payment.amount.toAmount.total, 2178.45)
+        self.assertEqual(payment.amount.toAmount.currency, "CLP")
+
+        self.assertEqual(len(payment.processor_fields), 9)
+        self.assertEqual(payment.processor_fields[0].keyword, "merchantCode")
+        self.assertEqual(payment.processor_fields[0].value, "4549106521651")
+        self.assertEqual(payment.processor_fields[1].keyword, "terminalNumber")
+        self.assertEqual(payment.processor_fields[1].value, "98765432")
+        self.assertEqual(payment.processor_fields[-1].keyword, "b24")
+        self.assertEqual(payment.processor_fields[-1].value, "00")
