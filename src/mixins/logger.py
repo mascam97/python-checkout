@@ -46,7 +46,7 @@ class Logger:
         if name in {"debug", "info", "warning", "error", "critical"}:
             return cast(
                 Callable[[str, Optional[Dict[str, Any]]], None],
-                lambda message, context=None: self.log(name, message, context)
+                lambda message, context=None: self.log(name, message, context),
             )
         raise AttributeError(f"'Logger' object has no attribute '{name}'")
 

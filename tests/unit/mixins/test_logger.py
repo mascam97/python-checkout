@@ -1,4 +1,3 @@
-import logging
 import unittest
 
 from mixins.logger import Logger
