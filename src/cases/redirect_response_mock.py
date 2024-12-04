@@ -1,6 +1,6 @@
 from functools import wraps
 import json
-from typing import Callable, Dict, Any
+from typing import Any, Callable, Dict
 
 
 class RedirectResponseMock:
@@ -41,6 +41,7 @@ class RedirectResponseMock:
         :param status_code: HTTP status code to determine the headers (default: 200).
         :return: A decorator function that modifies the test function to include the mock response.
         """
+
         def decorator(test_func: Callable[..., Any]) -> Callable[..., Any]:
             @wraps(test_func)
             def wrapper(*args: Any, **kwargs: Any) -> Any:

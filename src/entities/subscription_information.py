@@ -33,10 +33,7 @@ class SubscriptionInformation(BaseModel):
         if not isinstance(instrument_data, list):
             raise ValueError("Instrument data must be a list of dictionaries or NameValuePair objects.")
 
-        return [
-            nvp if isinstance(nvp, NameValuePair) else NameValuePair(**nvp)
-            for nvp in instrument_data
-        ]
+        return [nvp if isinstance(nvp, NameValuePair) else NameValuePair(**nvp) for nvp in instrument_data]
 
     def set_instrument(self, instrument_data: Union[dict, List[dict]]) -> None:
         """

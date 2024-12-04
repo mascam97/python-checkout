@@ -205,10 +205,7 @@ class SubsCriptionInformationTest(unittest.TestCase):
         """
         Test when instrument_data is a list of dictionaries.
         """
-        data = [
-            {"keyword": "key1", "value": "value1"},
-            {"keyword": "key2", "value": "value2"}
-        ]
+        data = [{"keyword": "key1", "value": "value1"}, {"keyword": "key2", "value": "value2"}]
         result = SubscriptionInformation.validate_instrument(data)
         self.assertEqual(len(result), 2)
         self.assertIsInstance(result[0], NameValuePair)
@@ -219,10 +216,7 @@ class SubsCriptionInformationTest(unittest.TestCase):
         """
         Test when instrument_data contains an 'item' key with a list.
         """
-        data = {"item": [
-            {"keyword": "key1", "value": "value1"},
-            {"keyword": "key2", "value": "value2"}
-        ]}
+        data = {"item": [{"keyword": "key1", "value": "value1"}, {"keyword": "key2", "value": "value2"}]}
         result = SubscriptionInformation.validate_instrument(data)
         self.assertEqual(len(result), 2)
         self.assertIsInstance(result[0], NameValuePair)

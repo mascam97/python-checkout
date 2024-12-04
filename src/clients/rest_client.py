@@ -43,7 +43,6 @@ class RestCarrier(Carrier):
         Query a session by request ID.
         """
         result = self._post(f"api/session/{request_id}", {})
-        print(result)
         return InformationResponse(**result)
 
     def collect(self, collect_request: CollectRequest) -> InformationResponse:

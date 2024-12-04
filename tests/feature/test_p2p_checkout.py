@@ -71,7 +71,7 @@ class P2PCheckoutTest(unittest.TestCase):
 
     @patch("clients.rest_client.RestCarrier._post")
     @RedirectResponseMock.mock_response_decorator("information_subscription_response_successful", 200)
-    def test_query_valid(self, mock_post, mock_response):
+    def test_query_subscription_valid(self, mock_post, mock_response):
         """
         Test the query method with a valid request ID and mock response.
         """
@@ -115,3 +115,46 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertIsNone(information_response.last_transaction())
         self.assertIsNone(information_response.last_approved_transaction())
         self.assertEqual(information_response.last_authorization(), "")
+
+    @patch("clients.rest_client.RestCarrier._post")
+    @RedirectResponseMock.mock_response_decorator("information_payment_response_successful", 200)
+    def test_query_payment_valid(self, mock_post, mock_response):
+        """
+        Test the query method with a valid request ID and mock response.
+        """
+        mock_post.return_value = mock_response["body"]
+
+        information_response = self.p2p_checkout.query("88867")
+
+        self.assertIsInstance(information_response, InformationResponse)
+        self.assertEqual(information_response.request_id, 88867)
+        self.assertEqual(information_response.status.status, "APPROVED")
+        self.assertEqual(information_response.status.reason, "00")
+        self.assertEqual(information_response.status.message, "The request has been successfully approved")
+        self.assertIsNotNone(information_response.status.date)
+
+        self.assertEqual(len(information_response.payment), 2)
+
+        payment_1 = information_response.payment[0]
+        self.assertEqual(payment_1.reference, "test_megapuntos_test_3")
+        self.assertEqual(payment_1.authorization, "999999")
+        self.assertEqual(payment_1.payment_method, "diners")
+        self.assertEqual(payment_1.status.status, "APPROVED")
+        self.assertEqual(payment_1.status.reason, "00")
+        self.assertEqual(payment_1.amount.fromAmount.total, 10000)
+        self.assertEqual(payment_1.amount.fromAmount.currency, "COP")
+        self.assertEqual(payment_1.amount.toAmount.total, 2.24)
+        self.assertEqual(payment_1.amount.toAmount.currency, "USD")
+
+        payment_2 = information_response.payment[1]
+        print(payment_2)
+        self.assertEqual(payment_2.reference, "test_megapuntos_test_3")
+        self.assertEqual(payment_2.authorization, "000000")
+        self.assertEqual(payment_2.payment_method, "master")
+        self.assertEqual(payment_2.status.status, "REJECTED")
+        self.assertEqual(payment_2.status.reason, "?2")
+
+        self.assertEqual(payment_2.amount.fromAmount.total, 10000)
+        self.assertEqual(payment_2.amount.fromAmount.currency, "COP")
+        self.assertEqual(payment_2.amount.toAmount.total, 2178.45)
+        self.assertEqual(payment_2.amount.toAmount.currency, "CLP")

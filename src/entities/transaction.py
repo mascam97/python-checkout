@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -11,7 +11,9 @@ from enums.status_enum import StatusEnum
 
 class Transaction(BaseModel):
     reference: str = Field(..., description="Commerce-provided reference")
-    internal_reference: str = Field(default="", alias="internalReference", description="PlacetoPay reference")
+    internal_reference: Union[str, int] = Field(
+        default="", alias="internalReference", description="PlacetoPay reference"
+    )
     payment_method: str = Field(default="", alias="paymentMethod", description="Payment method identifier")
     payment_method_name: str = Field(default="", alias="paymentMethodName", description="Payment method name")
     issuer_name: str = Field(default="", alias="issuerName", description="Name of the issuer")

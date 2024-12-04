@@ -1,13 +1,16 @@
 from typing import Any, Dict, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from entities.amount_base import AmountBase
 
 
 class AmountConversion(BaseModel):
-    fromAmount: Optional[AmountBase] = Field(default=None, description="Base amount to convert from")
-    toAmount: Optional[AmountBase] = Field(default=None, description="Base amount to convert to")
+
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
+
+    fromAmount: Optional[AmountBase] = Field(default=None, description="Base amount to convert from", alias="from")
+    toAmount: Optional[AmountBase] = Field(default=None, description="Base amount to convert to", alias="to")
     factor: float = Field(default=1.0, description="Conversion factor")
 
     def set_amount_base(self, base: Union[Dict[Any, AmountBase], AmountBase]) -> None:
