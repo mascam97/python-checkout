@@ -8,6 +8,7 @@ from entities.subscription import Subscription
 
 
 class RedirectRequest(BaseModel):
+
     locale: str = Field(default="es_CO", description="Locale of the request")
     payer: Optional[Person] = Field(default=None, description="Information about the payer")
     buyer: Optional[Person] = Field(default=None, description="Information about the buyer")
@@ -25,14 +26,7 @@ class RedirectRequest(BaseModel):
         default=False, description="Whether to avoid pre-filling buyer data", alias="noBuyerFill"
     )
 
-    model_config = ConfigDict(populate_by_name=True)
-
-    @staticmethod
-    def from_dict(data: dict) -> "RedirectRequest":
-        """
-        Create an instance of RedirectRequest from a dictionary.
-        """
-        return RedirectRequest(**data)
+    model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True)
 
     def to_dict(self) -> dict:
         """

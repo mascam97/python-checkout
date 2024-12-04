@@ -1,5 +1,6 @@
 import logging
 from typing import Any, Dict, Optional, cast
+from urllib.parse import urljoin
 
 from pydantic import BaseModel, Field, HttpUrl, model_validator
 
@@ -36,7 +37,7 @@ class Settings(BaseModel):
         if not base_url:
             raise ValueError("Base URL cannot be empty.")
 
-        values["base_url"] = f"{str(base_url).rstrip('/')}/"
+        values["base_url"] = urljoin(str(base_url).rstrip("/") + "/", "")
         return values
 
     def base_url_with_endpoint(self, endpoint: str = "") -> str:
@@ -46,7 +47,7 @@ class Settings(BaseModel):
         :param endpoint: API endpoint.
         :return: Full URL as a string.
         """
-        return f"{str(self.base_url).rstrip('/')}/{endpoint.lstrip('/')}"
+        return f"{urljoin(str(self.base_url).rstrip('/') + '/', '')}{endpoint.lstrip('/')}"
 
     def get_client(self) -> HttpClient:
         """

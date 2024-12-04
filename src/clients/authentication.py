@@ -69,7 +69,7 @@ class Authentication:
             "nonce": self.get_nonce(),
         }
 
-    def as_dict(self) -> Dict:
+    def to_dict(self) -> Dict:
         """
         Return the authentication data as a dictionary.
 

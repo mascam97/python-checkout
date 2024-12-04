@@ -67,7 +67,7 @@ class TestHttpClient(unittest.TestCase):
     def test_sanitize_base_url(self):
         """Test that the base URL is sanitized correctly."""
         client = HttpClient("https://example.com/")
-        self.assertEqual(client.base_url, "https://example.com")
+        self.assertEqual(client.base_url, "https://example.com/")
 
     def test_handle_request_exception_with_response(self):
         """

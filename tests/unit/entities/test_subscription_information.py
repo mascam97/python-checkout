@@ -182,3 +182,57 @@ class SubsCriptionInformationTest(unittest.TestCase):
             "instrument": [],
         }
         self.assertEqual(result_dict, expected_dict)
+
+    def test_validate_instrument_none(self):
+        """
+        Test when instrument_data is None or empty.
+        """
+        result = SubscriptionInformation.validate_instrument(None)
+        self.assertEqual(result, [])
+
+    def test_validate_instrument_single_dict(self):
+        """
+        Test when instrument_data is a single dictionary.
+        """
+        data = {"keyword": "key1", "value": "value1"}
+        result = SubscriptionInformation.validate_instrument(data)
+        self.assertEqual(len(result), 1)
+        self.assertIsInstance(result[0], NameValuePair)
+        self.assertEqual(result[0].keyword, "key1")
+        self.assertEqual(result[0].value, "value1")
+
+    def test_validate_instrument_list_of_dicts(self):
+        """
+        Test when instrument_data is a list of dictionaries.
+        """
+        data = [
+            {"keyword": "key1", "value": "value1"},
+            {"keyword": "key2", "value": "value2"}
+        ]
+        result = SubscriptionInformation.validate_instrument(data)
+        self.assertEqual(len(result), 2)
+        self.assertIsInstance(result[0], NameValuePair)
+        self.assertEqual(result[0].keyword, "key1")
+        self.assertEqual(result[1].keyword, "key2")
+
+    def test_validate_instrument_with_item_key(self):
+        """
+        Test when instrument_data contains an 'item' key with a list.
+        """
+        data = {"item": [
+            {"keyword": "key1", "value": "value1"},
+            {"keyword": "key2", "value": "value2"}
+        ]}
+        result = SubscriptionInformation.validate_instrument(data)
+        self.assertEqual(len(result), 2)
+        self.assertIsInstance(result[0], NameValuePair)
+        self.assertEqual(result[0].keyword, "key1")
+        self.assertEqual(result[1].keyword, "key2")
+
+    def test_validate_instrument_invalid_data(self):
+        """
+        Test when instrument_data is not a list or dict.
+        """
+        data = "invalid_data"
+        with self.assertRaises(ValueError):
+            SubscriptionInformation.validate_instrument(data)

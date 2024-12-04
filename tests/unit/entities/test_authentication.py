@@ -51,7 +51,7 @@ class AuthenticationTest(unittest.TestCase):
             "seed": expect_seed,
             "additional": {},
         }
-        assert auth.as_dict() == expected_dict
+        assert auth.to_dict() == expected_dict
 
     def test_fails_not_login_and_tran_key_provider(self):
         with pytest.raises(P2PException) as exc_info:

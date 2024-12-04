@@ -57,7 +57,7 @@ class RedirectRequestTest(unittest.TestCase):
         Test creating RedirectRequest from a dictionary.
         """
         data = {"returnUrl": "https://example.com/return", "ipAddress": "192.168.1.1", "userAgent": "Test User Agent"}
-        redirect_request = RedirectRequest.from_dict(data)
+        redirect_request = RedirectRequest.model_validate(data)
 
         self.assertIsInstance(redirect_request, RedirectRequest)
         self.assertEqual(redirect_request.return_url, "https://example.com/return")

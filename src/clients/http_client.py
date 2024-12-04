@@ -1,5 +1,6 @@
 import logging
 from typing import Any, Dict, Optional
+from urllib.parse import urljoin
 
 import requests
 
@@ -24,7 +25,7 @@ class HttpClient:
     @staticmethod
     def _sanitize_base_url(base_url: str) -> str:
         """Ensure the base URL does not end with a trailing slash."""
-        return base_url.rstrip("/")
+        return urljoin(str(base_url).rstrip("/") + "/", "")
 
     def post(self, endpoint: str, json: Dict[str, Any], headers: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
         """
@@ -43,17 +44,18 @@ class HttpClient:
 
             response = self.session.post(url, json=json, headers=headers, timeout=self.timeout)
             response.raise_for_status()
-
             self._log_response(response)
-            return response.json()
         except requests.exceptions.RequestException as e:
-            return self._handle_request_exception(e)
+            self._handle_request_exception(e)
         except Exception as e:
-            return self._handle_generic_exception(e)
+            self._handle_generic_exception(e)
+
+        return response.json()
 
     def _construct_url(self, endpoint: str) -> str:
         """Construct the full URL for the API endpoint."""
-        return f"{self.base_url}/{endpoint.lstrip('/')}"
+        urljoin(str(self.base_url).rstrip("/") + "/", "")
+        return f"{urljoin(str(self.base_url).rstrip('/') + '/', '')}{endpoint.lstrip('/')}"
 
     def _log_request(self, url: str, payload: Dict[str, Any]) -> None:
         """Log the details of an outgoing request."""

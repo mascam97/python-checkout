@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -7,9 +7,7 @@ from enums.display_on_enum import DisplayOnEnum
 
 class NameValuePair(BaseModel):
     keyword: str = Field(..., description="The keyword associated with the value")
-    value: Union[str, list, dict, None] = Field(
-        default=None, description="The value, which can be a string, list, or dict"
-    )
+    value: Any = Field(default=None, description="The value, which can be a string, list, or dict")
     displayOn: Optional[DisplayOnEnum] = Field(
         default=DisplayOnEnum.NONE, description="Display setting for the keyword"
     )

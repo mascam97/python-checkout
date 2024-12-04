@@ -5,7 +5,7 @@ from contracts.carrier import Carrier
 from entities.settings import Settings
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
-from messages.responses.information import Information
+from messages.responses.information import InformationResponse
 from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
 
@@ -29,7 +29,7 @@ class RestCarrier(Carrier):
         :return: Response as a dictionary.
         """
         data = {**arguments, "auth": self.settings.authentication().to_dict()}
-        return self.http_client.post(endpoint, json=data, headers=self.settings.headers())
+        return self.http_client.post(endpoint, json=data, headers=self.settings.additional_headers)
 
     def request(self, redirect_request: RedirectRequest) -> RedirectResponse:
         """
@@ -38,19 +38,20 @@ class RestCarrier(Carrier):
         result = self._post("api/session", redirect_request.to_dict())
         return RedirectResponse(**result)
 
-    def query(self, request_id: str) -> Information:
+    def query(self, request_id: str) -> InformationResponse:
         """
         Query a session by request ID.
         """
         result = self._post(f"api/session/{request_id}", {})
-        return Information(**result)
+        print(result)
+        return InformationResponse(**result)
 
-    def collect(self, collect_request: CollectRequest) -> Information:
+    def collect(self, collect_request: CollectRequest) -> InformationResponse:
         """
         Handle a collect request.
         """
         result = self._post("api/collect", collect_request.to_dict())
-        return Information(**result)
+        return InformationResponse(**result)
 
     def reverse(self, transaction_id: str) -> ReverseResponse:
         """

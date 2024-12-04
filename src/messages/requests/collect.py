@@ -1,12 +1,15 @@
 from typing import Optional
 
-from pydantic import Field
+from pydantic import ConfigDict, Field
 
 from entities.instrument import Instrument
 from messages.requests.redirect import RedirectRequest
 
 
 class CollectRequest(RedirectRequest):
+
+    model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True)
+
     instrument: Optional[Instrument] = Field(..., description="Instrument details")
     return_url: str = Field(default="", alias="returnUrl", description="URL to return to after processing")
     ip_address: str = Field(default="", alias="ipAddress", description="IP address of the user")

@@ -5,7 +5,7 @@ from entities.subscription_information import SubscriptionInformation
 from entities.transaction import Transaction
 from enums.status_enum import StatusEnum
 from messages.requests.redirect import RedirectRequest
-from messages.responses.information import Information
+from messages.responses.information import InformationResponse
 
 
 class InformationTest(unittest.TestCase):
@@ -34,7 +34,7 @@ class InformationTest(unittest.TestCase):
         )
         subscription = SubscriptionInformation(type="token")
 
-        information = Information(
+        information = InformationResponse(
             request_id="REQ123",
             status=status,
             request=request,
@@ -52,12 +52,12 @@ class InformationTest(unittest.TestCase):
         """
         Test initialization of Information with default values.
         """
-        information = Information(request_id="REQ123")
+        information = InformationResponse(request_id="REQ123")
 
         self.assertEqual(information.request_id, "REQ123")
         self.assertIsNone(information.status)
         self.assertIsNone(information.request)
-        self.assertEqual(information.payment, [])
+        self.assertIsNone(information.payment)
         self.assertIsNone(information.subscription)
 
     def test_set_payment(self):
@@ -69,7 +69,7 @@ class InformationTest(unittest.TestCase):
             {"reference": "REF002", "internalReference": "INT002", "authorization": "AUTH002"},
         ]
 
-        information = Information(request_id="REQ123")
+        information = InformationResponse(request_id="REQ123")
         information.set_payment(payments_data)
 
         self.assertEqual(len(information.payment), 2)
@@ -83,7 +83,7 @@ class InformationTest(unittest.TestCase):
         transaction1 = Transaction(reference="REF001", authorization="AUTH001", refunded=False)
         transaction2 = Transaction(reference="REF002", authorization="AUTH002", refunded=False)
 
-        information = Information(request_id="REQ123", payment=[transaction1, transaction2])
+        information = InformationResponse(request_id="REQ123", payment=[transaction1, transaction2])
 
         last_transaction = information.last_transaction()
         self.assertEqual(last_transaction.reference, "REF002")
@@ -96,7 +96,7 @@ class InformationTest(unittest.TestCase):
         transaction1 = Transaction(reference="REF001", authorization="AUTH001", refunded=False)
         transaction2 = Transaction(reference="REF002", authorization="AUTH002", refunded=False, status=status_approved)
 
-        information = Information(request_id="REQ123", payment=[transaction1, transaction2])
+        information = InformationResponse(request_id="REQ123", payment=[transaction1, transaction2])
 
         last_approved_transaction = information.last_approved_transaction()
         self.assertEqual(last_approved_transaction.reference, "REF002")
@@ -108,7 +108,7 @@ class InformationTest(unittest.TestCase):
         status_approved = Status(status=StatusEnum.APPROVED, reason="Approved")
         transaction = Transaction(reference="REF001", authorization="AUTH001", refunded=False, status=status_approved)
 
-        information = Information(request_id="REQ123", payment=[transaction])
+        information = InformationResponse(request_id="REQ123", payment=[transaction])
 
         last_authorization = information.last_authorization()
         self.assertEqual(last_authorization, "AUTH001")
@@ -121,7 +121,7 @@ class InformationTest(unittest.TestCase):
         transaction = Transaction(reference="REF001", authorization="AUTH001")
         subscription = SubscriptionInformation(type="token")
 
-        information = Information(
+        information = InformationResponse(
             request_id="REQ123",
             status=status,
             payment=[transaction],
@@ -142,7 +142,7 @@ class InformationTest(unittest.TestCase):
         """
         Test `set_payment` when the input contains nested transactions in a dictionary.
         """
-        information = Information(
+        information = InformationResponse(
             request_id="12345",
             status=Status(status="OK", reason="Success"),
         )
@@ -161,7 +161,7 @@ class InformationTest(unittest.TestCase):
         """
         Test `last_transaction` when there are no payments.
         """
-        information = Information(
+        information = InformationResponse(
             request_id="12345",
             status=Status(status="OK", reason="Success"),
         )
@@ -171,18 +171,18 @@ class InformationTest(unittest.TestCase):
         """
         Test `set_payment` when the input is an empty list.
         """
-        information = Information(
+        information = InformationResponse(
             request_id="12345",
             status=Status(status="OK", reason="Success"),
         )
         information.set_payment([])
-        self.assertEqual(len(information.payment), 0)
+        self.assertIsNone(information.payment)
 
     def test_last_transaction_no_approved(self):
         """
         Test `last_transaction` when `approved=True` and no transactions are approved.
         """
-        information = Information(
+        information = InformationResponse(
             request_id="12345",
             status=Status(status=StatusEnum.OK, reason="Success"),
             payment=[

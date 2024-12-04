@@ -1,10 +1,11 @@
 from typing import Any, Dict, Type, TypeVar, Union
 
+from contracts.carrier import Carrier
 from entities.settings import Settings
 from exceptions.p2p_exception import P2PException
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
-from messages.responses.information import Information
+from messages.responses.information import InformationResponse
 from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
 
@@ -23,6 +24,7 @@ class P2PCheckout:
         :param data: Configuration dictionary for settings.
         """
         self.settings: Settings = Settings(**data)
+        self.logger = self.settings.logger()
 
     def _validate_request(self, request: Union[RedirectRequest, CollectRequest, Dict], expected_class: Type[T]) -> T:
         """
@@ -34,12 +36,29 @@ class P2PCheckout:
         :raises P2PException: If the request is invalid.
         """
         if isinstance(request, dict):
-            request = expected_class(**request)
+            try:
+                request = expected_class(**request)
+            except Exception as e:
+                self.logger.error(f"Failed to convert dictionary to {expected_class.__name__}: {e}")
+                raise P2PException.for_data_not_provided(
+                    f"Failed to convert dictionary to {expected_class.__name__}: {e}"
+                )
 
         if not isinstance(request, expected_class):
-            raise P2PException.for_data_not_provided(f"Invalid request type. Expected {expected_class.__name__}")
+            self.logger.error(f"Invalid request type: {type(request).__name__}. Expected {expected_class.__name__}.")
+            raise P2PException.for_data_not_provided(
+                f"Invalid request type: {type(request).__name__}. Expected {expected_class.__name__}."
+            )
 
+        self.logger.debug(f"Request validated as {expected_class.__name__}.")
         return request
+
+    @property
+    def carrier(self) -> Carrier:
+        """
+        Access the carrier instance from settings.
+        """
+        return self.settings.carrier()
 
     def request(self, redirect_request: Union[RedirectRequest, Dict]) -> RedirectResponse:
         """
@@ -49,26 +68,43 @@ class P2PCheckout:
         :return: RedirectResponse object.
         """
         redirect_request = self._validate_request(redirect_request, RedirectRequest)
-        return self.settings.carrier().request(redirect_request)
+        try:
+            response = self.carrier.request(redirect_request)
+            return response
+        except Exception as e:
+            self.logger.error(f"Error during redirect request: {e}")
+            raise e
 
-    def query(self, request_id: str) -> Information:
+    def query(self, request_id: str) -> InformationResponse:
         """
         Query a session by request ID.
 
         :param request_id: The ID of the request to query.
-        :return: RedirectInformation object.
+        :return: Information object.
         """
-        return self.settings.carrier().query(request_id)
+        self.logger.info(f"Querying request ID: {request_id}.")
+        try:
+            response = self.carrier.query(request_id)
+            self.logger.debug(f"Query for request ID {request_id} completed.")
+            return response
+        except Exception as e:
+            self.logger.error(f"Error during query for request ID {request_id}: {e}")
+            raise e
 
-    def collect(self, collect_request: Union[CollectRequest, Dict]) -> Information:
+    def collect(self, collect_request: Union[CollectRequest, Dict]) -> InformationResponse:
         """
         Handle a collect request.
 
         :param collect_request: CollectRequest instance or dictionary with request data.
-        :return: RedirectInformation object.
+        :return: Information object.
         """
         collect_request = self._validate_request(collect_request, CollectRequest)
-        return self.settings.carrier().collect(collect_request)
+        try:
+            response = self.carrier.collect(collect_request)
+            return response
+        except Exception as e:
+            self.logger.error(f"Error during collect request: {e}")
+            raise e
 
     def reverse(self, internal_reference: str) -> ReverseResponse:
         """
@@ -77,4 +113,9 @@ class P2PCheckout:
         :param internal_reference: The internal reference of the transaction to reverse.
         :return: ReverseResponse object.
         """
-        return self.settings.carrier().reverse(internal_reference)
+        self.logger.info(f"Reversing transaction with reference: {internal_reference}.")
+        try:
+            return self.carrier.reverse(internal_reference)
+        except Exception as e:
+            self.logger.error(f"Error during reversal for reference {internal_reference}: {e}")
+            raise e

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -6,15 +6,9 @@ from entities.status import Status
 
 
 class RedirectResponse(BaseModel):
-    request_id: str = Field(
-        default="",
-        alias="requestId",
-        description="Unique transaction code for this request",
-    )
-    session_url: str = Field(
-        default="",
-        alias="session_url",
-        description="URL to consume when the gateway requires redirection",
+    request_id: Union[str, int] = Field(..., alias="requestId", description="Unique transaction code for this request")
+    process_url: str = Field(
+        ..., alias="processUrl", description="URL to consume when the gateway requires redirection"
     )
     status: Optional[Status] = Field(..., description="Status of the transaction")
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)

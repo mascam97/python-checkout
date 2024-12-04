@@ -14,12 +14,12 @@ class RedirectResponseTest(unittest.TestCase):
         status = Status(status=StatusEnum.OK, reason="Approved")
         redirect_response = RedirectResponse(
             requestId="12345",
-            session_url="https://example.com/session",
+            process_url="https://example.com/session",
             status=status,
         )
 
         self.assertEqual(redirect_response.request_id, "12345")
-        self.assertEqual(redirect_response.session_url, "https://example.com/session")
+        self.assertEqual(redirect_response.process_url, "https://example.com/session")
         self.assertIsInstance(redirect_response.status, Status)
         self.assertTrue(redirect_response.is_successful())
 
@@ -30,12 +30,12 @@ class RedirectResponseTest(unittest.TestCase):
         status = Status(status=StatusEnum.REJECTED, reason="Declined")
         redirect_response = RedirectResponse(
             requestId="67890",
-            session_url="https://example.com/session",
+            process_url="https://example.com/session",
             status=status,
         )
 
         self.assertEqual(redirect_response.request_id, "67890")
-        self.assertEqual(redirect_response.session_url, "https://example.com/session")
+        self.assertEqual(redirect_response.process_url, "https://example.com/session")
         self.assertFalse(redirect_response.is_successful())
 
     def test_to_dict(self):
@@ -45,13 +45,13 @@ class RedirectResponseTest(unittest.TestCase):
         status = Status(status=StatusEnum.OK, reason="Approved")
         redirect_response = RedirectResponse(
             requestId="12345",
-            session_url="https://example.com/session",
+            process_url="https://example.com/session",
             status=status,
         )
 
         expected_dict = {
             "requestId": "12345",
-            "session_url": "https://example.com/session",
+            "processUrl": "https://example.com/session",
             "status": status.to_dict(),
         }
 
@@ -63,7 +63,7 @@ class RedirectResponseTest(unittest.TestCase):
         """
         redirect_response = RedirectResponse(
             requestId="12345",
-            session_url="https://example.com/session",
+            process_url="https://example.com/session",
             status=None,
         )
 

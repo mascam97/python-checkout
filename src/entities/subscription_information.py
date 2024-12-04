@@ -1,6 +1,6 @@
 from typing import List, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from entities.account import Account
 from entities.name_value_pair import NameValuePair
@@ -12,6 +12,31 @@ class SubscriptionInformation(BaseModel):
     type: str = Field(default="", description="Type of subscription (e.g., token, account)")
     status: Optional[Status] = Field(default=None, description="Status information")
     instrument: List[NameValuePair] = Field(default_factory=list, description="Instrument details as name-value pairs")
+
+    @field_validator("instrument", mode="before")
+    @classmethod
+    def validate_instrument(
+        cls, instrument_data: Union[List[dict], List[NameValuePair], dict, None]
+    ) -> List[NameValuePair]:
+        """
+        Ensure the instrument field is always a list of NameValuePair objects.
+        """
+        if not instrument_data:
+            return []
+
+        if isinstance(instrument_data, dict):
+            if "item" in instrument_data:
+                instrument_data = instrument_data["item"]
+            else:
+                instrument_data = [instrument_data]
+
+        if not isinstance(instrument_data, list):
+            raise ValueError("Instrument data must be a list of dictionaries or NameValuePair objects.")
+
+        return [
+            nvp if isinstance(nvp, NameValuePair) else NameValuePair(**nvp)
+            for nvp in instrument_data
+        ]
 
     def set_instrument(self, instrument_data: Union[dict, List[dict]]) -> None:
         """
