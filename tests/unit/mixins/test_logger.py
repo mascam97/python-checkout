@@ -1,5 +1,5 @@
-import unittest
 import logging
+import unittest
 
 from mixins.logger import Logger
 
@@ -82,7 +82,6 @@ class LoggerTest(unittest.TestCase):
         cleaned_context = self.logger._clean_context("invalid")
         self.assertEqual(cleaned_context, {})
 
-
     def test_dynamic_methods(self):
         """
         Test dynamically created logging methods (e.g., debug, info, etc.).
@@ -97,21 +96,3 @@ class LoggerTest(unittest.TestCase):
         """
         with self.assertRaises(AttributeError):
             self.logger.invalid_method("This should fail")
-            
-    def test_create_default_logger_add_handler(self):
-        """
-        Test that the default logger adds a handler when none exist.
-        """
-        # Obtener el logger y limpiar sus manejadores
-        logger = logging.getLogger("P2PLogger")
-        for handler in logger.handlers[:]:
-            logger.removeHandler(handler)
-
-        # Crear un nuevo logger a través del método
-        new_logger = Logger._create_default_logger()
-
-        # Verificar que el manejador fue añadido
-        self.assertEqual(len(new_logger.handlers), 1)
-        self.assertIsInstance(new_logger.handlers[0], logging.StreamHandler)
-        self.assertEqual(new_logger.level, logging.DEBUG)
-

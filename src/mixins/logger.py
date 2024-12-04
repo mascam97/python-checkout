@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, cast
 
 
 class Logger:
@@ -44,7 +44,10 @@ class Logger:
         :return: A callable function that logs with the specified level.
         """
         if name in {"debug", "info", "warning", "error", "critical"}:
-            return lambda message, context=None: self.log(name, message, context)
+            return cast(
+                Callable[[str, Optional[Dict[str, Any]]], None],
+                lambda message, context=None: self.log(name, message, context)
+            )
         raise AttributeError(f"'Logger' object has no attribute '{name}'")
 
     @staticmethod
@@ -65,10 +68,9 @@ class Logger:
         :return: A `logging.Logger` instance.
         """
         logger = logging.getLogger("P2PLogger")
-        if not logger.hasHandlers():  # Avoid adding multiple handlers if logger already exists
-            logger.setLevel(logging.DEBUG)
-            handler = logging.StreamHandler()
-            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-            handler.setFormatter(formatter)
-            logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG)
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
         return logger
