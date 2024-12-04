@@ -2,8 +2,11 @@ import unittest
 from unittest.mock import patch
 
 from cases.redirect_response_mock import RedirectResponseMock
+from entities.instrument import Instrument
+from entities.token import Token
 from enums.status_enum import StatusEnum
 from exceptions.p2p_exception import P2PException
+from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
 from messages.responses.information import InformationResponse
 from messages.responses.redirect import RedirectResponse
@@ -158,3 +161,43 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertEqual(payment_2.amount.fromAmount.currency, "COP")
         self.assertEqual(payment_2.amount.toAmount.total, 2178.45)
         self.assertEqual(payment_2.amount.toAmount.currency, "CLP")
+
+    @patch("clients.rest_client.RestCarrier._post")
+    @RedirectResponseMock.mock_response_decorator("collect_response_successful", 200)
+    def test_collect_valid(self, mock_post, mock_response):
+        """
+        Test the collect method with a valid CollectRequest and mock response.
+        """
+        mock_post.return_value = mock_response["body"]
+
+        token = Token(token="test_token", subtoken="test_subtoken")
+        instrument = Instrument(token=token, pin="1234", password="secret")
+        collect_request_data = {
+            "instrument": instrument,
+            "returnUrl": "https://checkout-co.placetopay.dev/home",
+            "ipAddress": "186.86.52.226",
+            "userAgent": "PostmanRuntime/7.42.0",
+        }
+        collect_request = CollectRequest.model_validate(collect_request_data)
+
+        result = self.p2p_checkout.collect(collect_request)
+
+        self.assertIsInstance(result, InformationResponse)
+        self.assertEqual(result.request_id, 88866)
+        self.assertEqual(result.status.status, "APPROVED")
+        self.assertEqual(result.status.reason, "00")
+        self.assertEqual(result.status.message, "La petición ha sido aprobada exitosamente")
+        self.assertIsNotNone(result.status.date)
+
+        self.assertEqual(len(result.payment), 1)
+
+        payment = result.payment[0]
+        self.assertEqual(payment.reference, "ref_collect_3")
+        self.assertEqual(payment.authorization, "300159")
+        self.assertEqual(payment.payment_method, "master")
+        self.assertEqual(payment.status.status, "APPROVED")
+        self.assertEqual(payment.status.message, "Aprobada")
+        self.assertEqual(payment.amount.fromAmount.total, 10000)
+        self.assertEqual(payment.amount.fromAmount.currency, "COP")
+        self.assertEqual(payment.amount.toAmount.total, 2178.45)
+        self.assertEqual(payment.amount.toAmount.currency, "CLP")
