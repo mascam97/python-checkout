@@ -1,13 +1,18 @@
-import unittest, hashlib, base64, pytest
-from exceptions.p2p_exception import P2PException
+import base64
+import hashlib
+import unittest
 from unittest import mock
-from client.authentication import Authentication
+
+import pytest
+
+from clients.authentication import Authentication
+from exceptions.p2p_exception import P2PException
 
 
 class AuthenticationTest(unittest.TestCase):
 
-    @mock.patch("client.authentication.random.randrange")
-    @mock.patch("client.authentication.datetime")
+    @mock.patch("clients.authentication.random.randrange")
+    @mock.patch("clients.authentication.datetime")
     def test_authentication_initialitation(self, mock_datetime, mock_randrange):
         mock_now = mock.Mock()
         mock_now.isoformat.return_value = "2024-10-22T04:39:18.810868+00:00"
@@ -46,7 +51,7 @@ class AuthenticationTest(unittest.TestCase):
             "seed": expect_seed,
             "additional": {},
         }
-        assert auth.as_dict() == expected_dict
+        assert auth.to_dict() == expected_dict
 
     def test_fails_not_login_and_tran_key_provider(self):
         with pytest.raises(P2PException) as exc_info:

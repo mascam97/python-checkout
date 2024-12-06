@@ -1,4 +1,4 @@
-from p2p_exception import P2PException
+from exceptions.p2p_exception import P2PException
 
 
 class P2pServiceException(P2PException):
@@ -9,12 +9,10 @@ class P2pServiceException(P2PException):
     @staticmethod
     def from_service_exception(exception: Exception) -> "P2pServiceException":
         """
-        Create a new PlacetoPayServiceException from another exception.
+        Create a new P2pServiceException from another exception.
 
         :param exception: The original exception that caused the service error.
-        :return: A new instance of PlacetoPayServiceException.
+        :return: A new instance of P2pServiceException.
         """
-        return P2pServiceException(
-            "Error handling operation",
-            exception.__traceback__.tb_lineno,
-        )
+        line_number = exception.__traceback__.tb_lineno if exception.__traceback__ else "Unknown"
+        return P2pServiceException(f"Error handling operation: {exception} (line {line_number})")

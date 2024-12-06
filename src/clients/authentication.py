@@ -1,8 +1,9 @@
-import hashlib
 import base64
-import random
 import datetime
+import hashlib
+import random
 from typing import Dict
+
 from exceptions.p2p_exception import P2PException
 
 
@@ -14,15 +15,13 @@ class Authentication:
         :param config: Dictionary containing 'login' and 'tranKey'.
         """
         if "login" not in config or "tranKey" not in config:
-            raise P2PException.for_data_not_provided(
-                "No login or tranKey provided for authentication"
-            )
+            raise P2PException.for_data_not_provided("No login or tranKey provided for authentication")
 
         self.login: str = config["login"]
         self.tran_key: str = config["tranKey"]
         self.algorithm: str = config.get("algorithm", "sha256")
         self.auth: Dict = config.get("auth", {})
-        self.additional: Dict = config.get("authAdditional", {})
+        self.additional: Dict = config.get("auth_additional", {})
 
         self.generate()
 
@@ -45,15 +44,13 @@ class Authentication:
         :return: ISO formatted timestamp.
         """
 
-        return self.auth.get(
-            "seed", datetime.datetime.now(datetime.timezone.utc).isoformat()
-        )
+        return self.auth.get("seed", datetime.datetime.now(datetime.timezone.utc).isoformat())
 
     def digest(self, encoded: bool = True) -> str:
         """
         Generate the digest based on nonce, seed, and tranKey.
 
-        :param encoded: If True, returns the digest base64 encoded.
+        :param encoded: If True, returns the digest base64 encoded. Otherwise, returns the hexadecimal digest.
         :return: Digest string.
         """
         nonce = self.get_nonce()
@@ -61,7 +58,7 @@ class Authentication:
         digest_input = nonce + seed + self.tran_key
         digest = hashlib.new(self.algorithm, digest_input.encode("utf-8")).digest()
 
-        return base64.b64encode(digest).decode("utf-8") if encoded else digest
+        return base64.b64encode(digest).decode("utf-8") if encoded else digest.hex()
 
     def generate(self) -> None:
         """
@@ -72,7 +69,7 @@ class Authentication:
             "nonce": self.get_nonce(),
         }
 
-    def as_dict(self) -> Dict:
+    def to_dict(self) -> Dict:
         """
         Return the authentication data as a dictionary.
 
