@@ -80,14 +80,11 @@ class TestHttpClient(unittest.TestCase):
         exception = requests.exceptions.RequestException()
         exception.response = response_mock
 
-        # Replace the logger with a mock to verify logging
         self.client.logger = MagicMock()
 
-        # Call the private method `_handle_request_exception` to test it
-        with self.assertRaises(Exception):  # Adjust exception type if needed
+        with self.assertRaises(Exception):
             self.client._handle_request_exception(exception)
 
-        # Verify that the logger warning was called with the correct parameters
         self.client.logger.warning.assert_called_once_with(
             "BAD_RESPONSE",
             {

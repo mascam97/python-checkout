@@ -45,7 +45,7 @@ class Amount(AmountBase):
         """
         Convert the Amount object to a dictionary including taxes and details.
         """
-        parent_data = super().to_dict()  # Assuming AmountBase has a `to_dict` method.
+        parent_data = super().to_dict()
         return {
             **parent_data,
             "taxes": self.taxes_to_dict(),

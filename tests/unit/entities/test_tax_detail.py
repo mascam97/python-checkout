@@ -46,4 +46,4 @@ class TaxtDetailTest(unittest.TestCase):
         Test that missing required fields raise a validation error.
         """
         with self.assertRaises(ValidationError):
-            TaxDetail(amount=100.0)  # 'kind'
+            TaxDetail(amount=100.0)

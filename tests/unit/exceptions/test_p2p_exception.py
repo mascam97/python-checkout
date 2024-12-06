@@ -9,7 +9,6 @@ class P2PExeceptionTest(unittest.TestCase):
         Test the read_exception method with an exception that has a traceback.
         """
         try:
-            # Simulate an exception
             1 / 0
         except ZeroDivisionError as e:
             message = P2PException.read_exception(e)

@@ -26,6 +26,11 @@ class RedirectResponseMock:
                 "Content-Type": "application/json",
                 "X-Mock-Status": "Bad Request",
             },
+            401: {
+                "Content-Type": "application/json",
+                "X-Mock-Status": "Unauthorized",
+                "WWW-Authenticate": 'Bearer realm="Access to the staging site"',
+            }
         }.get(status_code, {"Content-Type": "application/json"})
 
         return {"body": body, "headers": headers}

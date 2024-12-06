@@ -27,7 +27,7 @@ class Person(BaseModel):
         Placeholder for business document validation.
         Replace this with actual logic similar to DocumentHelper::businessDocument.
         """
-        business_document_types = {"TIN", "VAT", "EIN"}  # Example types
+        business_document_types = {"TIN", "VAT", "EIN"}
         return document_type in business_document_types
 
     def to_dict(self) -> dict:

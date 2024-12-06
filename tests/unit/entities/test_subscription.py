@@ -46,7 +46,7 @@ class SubscriptionTest(unittest.TestCase):
                 {"keyword": "field1", "value": "value1", "displayOn": DisplayOnEnum.NONE},
                 {"keyword": "field2", "value": "value2", "displayOn": DisplayOnEnum.NONE},
             ],
-            "fields": [],  # Assuming fields_to_array() returns an empty list by default
+            "fields": [],
         }
 
         self.assertEqual(subscription.to_dict(), expected_dict)

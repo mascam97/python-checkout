@@ -10,7 +10,6 @@ class P2pServiceExceptionTest(unittest.TestCase):
         Test creating P2pServiceException from an exception with a traceback.
         """
         try:
-            # Simulate an exception
             1 / 0
         except ZeroDivisionError as e:
             exc = P2pServiceException.from_service_exception(e)

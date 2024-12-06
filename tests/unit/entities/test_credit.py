@@ -47,5 +47,5 @@ class TestCredit(unittest.TestCase):
                 code="CREDIT123",
                 type="Personal",
                 groupCode="GRP001",
-                installment="twelve",  # 'installment' should be an int
+                installment="twelve",
             )
