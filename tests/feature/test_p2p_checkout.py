@@ -144,7 +144,9 @@ class P2PCheckoutTest(unittest.TestCase):
         """
         mock_post.return_value = mock_response
 
-        token = Token(token="test_token", subtoken="test_subtoken")
+        token = Token(
+            token="5caef08ecd1230088a12e8f7d9ce20e9134dc6fc049c8a4857c9ba6e942b16b2", subtoken="test_subtoken"
+        )
         instrument = Instrument(token=token, pin="1234", password="secret")
         collect_request_data = {
             "instrument": instrument,
@@ -216,7 +218,6 @@ class P2PCheckoutTest(unittest.TestCase):
     @patch("requests.Session.post")
     @RedirectResponseMock.mock_response_decorator("redirect_response_fail_authentication", 401)
     def test_request_fails_bad_request(self, mock_post, mock_response):
-        """Test _validate_request with a valid RedirectRequest and mock RestCarrier."""
         mock_post.return_value = mock_response
 
         redirect_request = {
@@ -232,3 +233,52 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertEqual("FAILED", status_dict["status"]["status"])
         self.assertEqual(401, status_dict["status"]["reason"])
         self.assertEqual("Failed authentication 101", status_dict["status"]["message"])
+
+    @patch("requests.Session.post")
+    @RedirectResponseMock.mock_response_decorator("information_fails_session_not_found", 401)
+    def test_query_fails_when_session_not_found(self, mock_post, mock_response):
+        mock_post.return_value = mock_response
+
+        with self.assertRaises(P2PException) as context:
+            self.p2p_checkout.query("88608")
+
+        status_dict = json.loads(str(context.exception))
+        self.assertEqual("FAILED", status_dict["status"]["status"])
+        self.assertEqual("unauthorized", status_dict["status"]["reason"])
+        self.assertEqual("La sesión no pertenece a su sitio", status_dict["status"]["message"])
+
+    @patch("requests.Session.post")
+    @RedirectResponseMock.mock_response_decorator("collect_response_fails_token_not_valid", 400)
+    def test_collect_fails_when_token_not_valid(self, mock_post, mock_response):
+
+        token = Token(token="token_not_valid")
+        instrument = Instrument(token=token, pin="1234", password="secret")
+        collect_request_data = {
+            "instrument": instrument,
+            "returnUrl": "https://checkout-co.placetopay.dev/home",
+            "ipAddress": "186.86.52.226",
+            "userAgent": "PostmanRuntime/7.42.0",
+        }
+
+        mock_post.return_value = mock_response
+
+        with self.assertRaises(P2PException) as context:
+            self.p2p_checkout.collect(CollectRequest.model_validate(collect_request_data))
+
+        status_dict = json.loads(str(context.exception))
+        self.assertEqual("FAILED", status_dict["status"]["status"])
+        self.assertEqual("request_not_valid", status_dict["status"]["reason"])
+        self.assertEqual("La longitud del token no es correcta", status_dict["status"]["message"])
+
+    @patch("requests.Session.post")
+    @RedirectResponseMock.mock_response_decorator("reverse_response_fails_transaction_not_found", 400)
+    def test_reverse_fails_when_transaction_not_found(self, mock_post, mock_response):
+        mock_post.return_value = mock_response
+
+        with self.assertRaises(P2PException) as context:
+            self.p2p_checkout.reverse("123123123")
+
+        status_dict = json.loads(str(context.exception))
+        self.assertEqual("FAILED", status_dict["status"]["status"])
+        self.assertEqual("request_not_valid", status_dict["status"]["reason"])
+        self.assertEqual("No existe la transacción que busca", status_dict["status"]["message"])

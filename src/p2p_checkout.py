@@ -3,7 +3,6 @@ from typing import Any, Dict, Type, TypeVar, Union
 from contracts.carrier import Carrier
 from entities.settings import Settings
 from exceptions.p2p_exception import P2PException
-from exceptions.p2p_service_exception import P2pServiceException
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
 from messages.responses.information import InformationResponse
@@ -89,12 +88,8 @@ class P2PCheckout:
         :return: Information object.
         """
         collect_request = self._validate_request(collect_request, CollectRequest)
-        try:
-            response = self.carrier.collect(collect_request)
-            return response
-        except Exception as e:
-            self.logger.error(f"Error during collect request: {e}")
-            raise P2pServiceException.from_service_exception(e)
+        self.logger.info("Collect init")
+        return self.carrier.collect(collect_request)
 
     def reverse(self, internal_reference: str) -> ReverseResponse:
         """
@@ -104,8 +99,4 @@ class P2PCheckout:
         :return: ReverseResponse object.
         """
         self.logger.info(f"Reversing transaction with reference: {internal_reference}.")
-        try:
-            return self.carrier.reverse(internal_reference)
-        except Exception as e:
-            self.logger.error(f"Error during reversal for reference {internal_reference}: {e}")
-            raise P2pServiceException.from_service_exception(e)
+        return self.carrier.reverse(internal_reference)

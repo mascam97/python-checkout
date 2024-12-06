@@ -8,8 +8,14 @@ from exceptions.p2p_exception import P2PException
 from exceptions.p2p_service_exception import P2pServiceException
 
 
-class HttpClient:                                                                                                   
-    def __init__(self, base_url: str, timeout: Optional[int] = None , logger: Optional[logging.Logger] = None, headers: Optional[Dict[str, str]] = None) -> None:
+class HttpClient:
+    def __init__(
+        self,
+        base_url: str,
+        timeout: Optional[int] = None,
+        logger: Optional[logging.Logger] = None,
+        headers: Optional[Dict[str, str]] = None,
+    ) -> None:
         """
         Initialize the HTTP client.
 
@@ -41,7 +47,7 @@ class HttpClient:
         url = self._construct_url(endpoint)
         try:
             self._log_request(url, json)
-            headers = headers if isinstance(headers, Dict) else {'content-type' : "application/json"} | self.headers
+            headers = headers if isinstance(headers, Dict) else {"content-type": "application/json"} | self.headers
             response = requests.session().post(url=url, json=json, headers=headers, timeout=self.timeout)
             response.raise_for_status()
             self._log_response(response)
