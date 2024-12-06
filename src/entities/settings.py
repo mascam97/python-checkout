@@ -1,8 +1,8 @@
 import logging
-from typing import Any, Dict, Optional, cast
+from typing import Any, Dict, Optional
 from urllib.parse import urljoin
 
-from pydantic import BaseModel, Field, HttpUrl, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 from clients.authentication import Authentication
 from clients.http_client import HttpClient
@@ -16,11 +16,11 @@ class Settings(BaseModel):
 
     model_config = {"arbitrary_types_allowed": True}
 
-    base_url: HttpUrl = Field(..., description="Base URL for the API")
+    base_url: str = Field(..., description="Base URL for the API")
     timeout: int = Field(default=15, description="Request timeout in seconds")
     login: str = Field(..., description="API login key")
     tranKey: str = Field(..., description="API transaction key")
-    additional_headers: Dict[str, str] = Field(default_factory=dict, description="Additional HTTP headers")
+    headers: Dict[str, str] = Field(default_factory=dict, description="Additional HTTP headers")
     auth_additional: Dict[str, Any] = Field(default_factory=dict, description="Additional authentication data")
     loggerConfig: Optional[Dict[str, Any]] = Field(default=None, description="Logger configuration")
     p2p_client: Optional[HttpClient] = Field(default=None, description="Optional pre-configured HttpClient")
@@ -37,7 +37,7 @@ class Settings(BaseModel):
         if not base_url:
             raise ValueError("Base URL cannot be empty.")
 
-        values["base_url"] = urljoin(str(base_url).rstrip("/") + "/", "")
+        values["base_url"] = urljoin(base_url.rstrip("/") + "/", "")
         return values
 
     def base_url_with_endpoint(self, endpoint: str = "") -> str:
@@ -47,7 +47,7 @@ class Settings(BaseModel):
         :param endpoint: API endpoint.
         :return: Full URL as a string.
         """
-        return f"{urljoin(str(self.base_url).rstrip('/') + '/', '')}{endpoint.lstrip('/')}"
+        return f"{urljoin(self.base_url.rstrip('/') + '/', '')}{endpoint.lstrip('/')}"
 
     def get_client(self) -> HttpClient:
         """
@@ -58,14 +58,10 @@ class Settings(BaseModel):
         """
         if not self.p2p_client:
             self.p2p_client = HttpClient(
-                base_url=str(self.base_url),
-                timeout=self.timeout,
-                logger=self.logger(),
+                base_url=str(self.base_url), timeout=self.timeout, logger=self.p2p_logger, headers=self.headers
             )
 
-        client = cast(HttpClient, self.p2p_client)
-        client.session.headers.update(self.additional_headers)
-        return client
+        return self.p2p_client
 
     def logger(self) -> logging.Logger:
         """

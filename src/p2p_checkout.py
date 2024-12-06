@@ -3,6 +3,7 @@ from typing import Any, Dict, Type, TypeVar, Union
 from contracts.carrier import Carrier
 from entities.settings import Settings
 from exceptions.p2p_exception import P2PException
+from exceptions.p2p_service_exception import P2pServiceException
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
 from messages.responses.information import InformationResponse
@@ -68,12 +69,7 @@ class P2PCheckout:
         :return: RedirectResponse object.
         """
         redirect_request = self._validate_request(redirect_request, RedirectRequest)
-        try:
-            response = self.carrier.request(redirect_request)
-            return response
-        except Exception as e:
-            self.logger.error(f"Error during redirect request: {e}")
-            raise e
+        return self.carrier.request(redirect_request)
 
     def query(self, request_id: str) -> InformationResponse:
         """
@@ -83,13 +79,7 @@ class P2PCheckout:
         :return: Information object.
         """
         self.logger.info(f"Querying request ID: {request_id}.")
-        try:
-            response = self.carrier.query(request_id)
-            self.logger.debug(f"Query for request ID {request_id} completed.")
-            return response
-        except Exception as e:
-            self.logger.error(f"Error during query for request ID {request_id}: {e}")
-            raise e
+        return self.carrier.query(request_id)
 
     def collect(self, collect_request: Union[CollectRequest, Dict]) -> InformationResponse:
         """
@@ -104,7 +94,7 @@ class P2PCheckout:
             return response
         except Exception as e:
             self.logger.error(f"Error during collect request: {e}")
-            raise e
+            raise P2pServiceException.from_service_exception(e)
 
     def reverse(self, internal_reference: str) -> ReverseResponse:
         """
@@ -118,4 +108,4 @@ class P2PCheckout:
             return self.carrier.reverse(internal_reference)
         except Exception as e:
             self.logger.error(f"Error during reversal for reference {internal_reference}: {e}")
-            raise e
+            raise P2pServiceException.from_service_exception(e)

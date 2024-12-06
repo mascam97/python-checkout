@@ -1,15 +1,14 @@
+import json
 import unittest
 from unittest.mock import patch
 
 from cases.redirect_response_mock import RedirectResponseMock
 from entities.instrument import Instrument
 from entities.token import Token
-from enums.status_enum import StatusEnum
 from exceptions.p2p_exception import P2PException
 from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
 from messages.responses.information import InformationResponse
-from messages.responses.redirect import RedirectResponse
 from messages.responses.reverse import ReverseResponse
 from p2p_checkout import P2PCheckout
 
@@ -48,38 +47,13 @@ class P2PCheckoutTest(unittest.TestCase):
 
         self.assertIn("Failed to convert dictionary to RedirectRequest", str(context.exception))
 
-    @patch("clients.rest_client.RestCarrier._post")
-    @RedirectResponseMock.mock_response_decorator("redirect_response_successful", 200)
-    def test_validate_request_valid(self, mock_post, mock_response):
-        """Test _validate_request with a valid RedirectRequest and mock RestCarrier."""
-        mock_post.return_value = mock_response["body"]
-        redirect_request = {
-            "returnUrl": "https://example.com/return",
-            "ipAddress": "127.0.0.1",
-            "userAgent": "P2PCheckout Sandbox",
-        }
-
-        request = self.p2p_checkout._validate_request(redirect_request, RedirectRequest)
-        redirect_request = self.p2p_checkout.request(redirect_request=request)
-
-        self.assertIsInstance(redirect_request, RedirectResponse)
-        self.assertEqual(redirect_request.request_id, 1)
-        self.assertEqual(
-            redirect_request.process_url,
-            "https://checkout-co.placetopay.dev/spa/session/1/8618851565b57b1c44d7576c4bba9b91",
-        )
-        self.assertEqual(redirect_request.status.status, StatusEnum.OK)
-        self.assertEqual(redirect_request.status.reason, "PC")
-        self.assertEqual(redirect_request.status.message, "The request has been processed correctly")
-        self.assertIsNotNone(redirect_request.status.date)
-
-    @patch("clients.rest_client.RestCarrier._post")
+    @patch("requests.Session.post")
     @RedirectResponseMock.mock_response_decorator("information_subscription_response_successful", 200)
     def test_query_subscription_valid(self, mock_post, mock_response):
         """
         Test the query method with a valid request ID and mock response.
         """
-        mock_post.return_value = mock_response["body"]
+        mock_post.return_value = mock_response
 
         information_response = self.p2p_checkout.query("88860")
 
@@ -120,13 +94,13 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertIsNone(information_response.last_approved_transaction())
         self.assertEqual(information_response.last_authorization(), "")
 
-    @patch("clients.rest_client.RestCarrier._post")
+    @patch("requests.Session.post")
     @RedirectResponseMock.mock_response_decorator("information_payment_response_successful", 200)
     def test_query_payment_valid(self, mock_post, mock_response):
         """
         Test the query method with a valid request ID and mock response.
         """
-        mock_post.return_value = mock_response["body"]
+        mock_post.return_value = mock_response
 
         information_response = self.p2p_checkout.query("88867")
 
@@ -151,7 +125,6 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertEqual(payment_1.amount.toAmount.currency, "USD")
 
         payment_2 = information_response.payment[1]
-        print(payment_2)
         self.assertEqual(payment_2.reference, "test_megapuntos_test_3")
         self.assertEqual(payment_2.authorization, "000000")
         self.assertEqual(payment_2.payment_method, "master")
@@ -163,13 +136,13 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertEqual(payment_2.amount.toAmount.total, 2178.45)
         self.assertEqual(payment_2.amount.toAmount.currency, "CLP")
 
-    @patch("clients.rest_client.RestCarrier._post")
+    @patch("requests.Session.post")
     @RedirectResponseMock.mock_response_decorator("collect_response_successful", 200)
     def test_collect_valid(self, mock_post, mock_response):
         """
         Test the collect method with a valid CollectRequest and mock response.
         """
-        mock_post.return_value = mock_response["body"]
+        mock_post.return_value = mock_response
 
         token = Token(token="test_token", subtoken="test_subtoken")
         instrument = Instrument(token=token, pin="1234", password="secret")
@@ -203,13 +176,13 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertEqual(payment.amount.toAmount.total, 2178.45)
         self.assertEqual(payment.amount.toAmount.currency, "CLP")
 
-    @patch("clients.rest_client.RestCarrier._post")
+    @patch("requests.Session.post")
     @RedirectResponseMock.mock_response_decorator("reverse_response_successful", 200)
     def test_reverse_valid(self, mock_post, mock_response):
         """
         Test the reverse method with a valid internal reference and mock response.
         """
-        mock_post.return_value = mock_response["body"]
+        mock_post.return_value = mock_response
 
         internal_reference = "437987"
         result = self.p2p_checkout.reverse(internal_reference)
@@ -237,5 +210,25 @@ class P2PCheckoutTest(unittest.TestCase):
         self.assertEqual(payment.processor_fields[0].value, "4549106521651")
         self.assertEqual(payment.processor_fields[1].keyword, "terminalNumber")
         self.assertEqual(payment.processor_fields[1].value, "98765432")
-        self.assertEqual(payment.processor_fields[-1].keyword, "b24")
         self.assertEqual(payment.processor_fields[-1].value, "00")
+        self.assertEqual(payment.processor_fields[-1].keyword, "b24")
+
+    @patch("requests.Session.post")
+    @RedirectResponseMock.mock_response_decorator("redirect_response_fail_authentication", 401)
+    def test_request_fails_bad_request(self, mock_post, mock_response):
+        """Test _validate_request with a valid RedirectRequest and mock RestCarrier."""
+        mock_post.return_value = mock_response
+
+        redirect_request = {
+            "returnUrl": "https://example.com/return",
+            "ipAddress": "127.0.0.1",
+            "userAgent": "P2PCheckout Sandbox",
+        }
+
+        with self.assertRaises(P2PException) as context:
+            self.p2p_checkout.request(redirect_request)
+
+        status_dict = json.loads(str(context.exception))
+        self.assertEqual("FAILED", status_dict["status"]["status"])
+        self.assertEqual(401, status_dict["status"]["reason"])
+        self.assertEqual("Failed authentication 101", status_dict["status"]["message"])

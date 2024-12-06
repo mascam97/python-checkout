@@ -12,7 +12,7 @@ from exceptions.p2p_service_exception import P2pServiceException
 class TestHttpClient(unittest.TestCase):
     def setUp(self):
         self.base_url = "https://example.com"
-        self.client = HttpClient(self.base_url)
+        self.client = HttpClient(base_url=self.base_url)
 
     def _mock_response(self, status_code=200, json_data=None, raise_for_status=None):
         """Helper to mock a requests response."""
@@ -33,9 +33,9 @@ class TestHttpClient(unittest.TestCase):
 
         self.assertEqual(response, {"key": "value"})
         mock_post.assert_called_once_with(
-            f"{self.base_url}/test",
+            url=f"{self.base_url}/test",
             json={"data": "test"},
-            headers=None,
+            headers={"content-type": "application/json"},
             timeout=10,
         )
 

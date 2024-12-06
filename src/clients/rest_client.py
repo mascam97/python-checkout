@@ -1,6 +1,5 @@
 from typing import Dict
 
-from clients.http_client import HttpClient
 from contracts.carrier import Carrier
 from entities.settings import Settings
 from messages.requests.collect import CollectRequest
@@ -18,7 +17,6 @@ class RestCarrier(Carrier):
         :param settings: Settings object with client, authentication, base URL, and logger.
         """
         self.settings = settings
-        self.http_client = HttpClient(base_url=settings.base_url, timeout=settings.timeout, logger=settings.logger())
 
     def _post(self, endpoint: str, arguments: Dict) -> Dict:
         """
@@ -29,7 +27,7 @@ class RestCarrier(Carrier):
         :return: Response as a dictionary.
         """
         data = {**arguments, "auth": self.settings.authentication().to_dict()}
-        return self.http_client.post(endpoint, json=data, headers=self.settings.additional_headers)
+        return self.settings.get_client().post(endpoint=endpoint, json=data, headers=self.settings.headers)
 
     def request(self, redirect_request: RedirectRequest) -> RedirectResponse:
         """

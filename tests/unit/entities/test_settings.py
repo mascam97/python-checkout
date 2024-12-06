@@ -17,7 +17,7 @@ class SettingsTest(unittest.TestCase):
             "tranKey": "test_tranKey",
             "auth_additional": {},
             "loggerConfig": {"level": "DEBUG"},
-            "additional_headers": {"Authorization": "Bearer test_token"},
+            "headers": {"Authorization": "Bearer test_token"},
         }
 
     def test_base_url_with_endpoint(self):
@@ -30,9 +30,8 @@ class SettingsTest(unittest.TestCase):
         client = settings.get_client()
         carrier = settings.carrier()
         self.assertIsInstance(carrier, RestCarrier)
-        self.assertIsNotNone(client)
         self.assertIsInstance(client, HttpClient)
-        self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
+        self.assertEqual(client.headers["Authorization"], "Bearer test_token")
         self.assertEqual(client.timeout, self.config["timeout"])
 
     def test_authentication_instance(self):
@@ -80,14 +79,14 @@ class SettingsTest(unittest.TestCase):
     def test_client_headers_and_timeout(self):
         settings = Settings(**self.config)
         client = settings.get_client()
-        self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
+        self.assertEqual(client.headers["Authorization"], "Bearer test_token")
         self.assertEqual(client.timeout, self.config["timeout"])
 
     def test_get_client_initializes_session(self):
         settings = Settings(**self.config)
         client = settings.get_client()
         self.assertIsInstance(client, HttpClient)
-        self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
+        self.assertEqual(client.headers["Authorization"], "Bearer test_token")
         self.assertEqual(client.timeout, self.config["timeout"])
 
     def test_get_client_uses_existing_session(self):
@@ -129,13 +128,10 @@ class SettingsTest(unittest.TestCase):
         """
         Test that get_client uses an externally provided HttpClient.
         """
-        external_client = HttpClient(
-            base_url=self.config["base_url"],
-            timeout=self.config["timeout"],
-        )
+        external_client = HttpClient(base_url="https://external_client.com", timeout=120, logger=None, headers=None)
         self.config["p2p_client"] = external_client
         settings = Settings(**self.config)
 
         client = settings.get_client()
         self.assertEqual(client, external_client)
-        self.assertEqual(client.session.headers["Authorization"], "Bearer test_token")
+        self.assertEqual(client.headers, {})

@@ -8,8 +8,8 @@ from exceptions.p2p_exception import P2PException
 from exceptions.p2p_service_exception import P2pServiceException
 
 
-class HttpClient:
-    def __init__(self, base_url: str, timeout: int = 10, logger: Optional[logging.Logger] = None) -> None:
+class HttpClient:                                                                                                   
+    def __init__(self, base_url: str, timeout: Optional[int] = None , logger: Optional[logging.Logger] = None, headers: Optional[Dict[str, str]] = None) -> None:
         """
         Initialize the HTTP client.
 
@@ -18,9 +18,9 @@ class HttpClient:
         :param logger: Logger instance for logging requests and responses.
         """
         self.base_url = self._sanitize_base_url(base_url)
-        self.timeout = timeout
+        self.timeout = timeout or 10
         self.logger = logger or self._default_logger()
-        self.session = requests.Session()  # Use a session for better performance.
+        self.headers = headers or {}
 
     @staticmethod
     def _sanitize_base_url(base_url: str) -> str:
@@ -31,7 +31,7 @@ class HttpClient:
         """
         Make an HTTP POST request to the specified endpoint.
 
-        :param endpoint: The API endpoint.
+        :param endpoint: The API endpoint .
         :param json: The data to include in the request body.
         :param headers: Optional HTTP headers.
         :return: Parsed JSON response as a dictionary.
@@ -41,20 +41,20 @@ class HttpClient:
         url = self._construct_url(endpoint)
         try:
             self._log_request(url, json)
-
-            response = self.session.post(url, json=json, headers=headers, timeout=self.timeout)
+            headers = headers if isinstance(headers, Dict) else {'content-type' : "application/json"} | self.headers
+            response = requests.session().post(url=url, json=json, headers=headers, timeout=self.timeout)
             response.raise_for_status()
             self._log_response(response)
+            return response.json()
         except requests.exceptions.RequestException as e:
             self._handle_request_exception(e)
+            raise
         except Exception as e:
             self._handle_generic_exception(e)
-
-        return response.json()
+            raise
 
     def _construct_url(self, endpoint: str) -> str:
         """Construct the full URL for the API endpoint."""
-        urljoin(str(self.base_url).rstrip("/") + "/", "")
         return f"{urljoin(str(self.base_url).rstrip('/') + '/', '')}{endpoint.lstrip('/')}"
 
     def _log_request(self, url: str, payload: Dict[str, Any]) -> None:
@@ -76,6 +76,7 @@ class HttpClient:
                     "result": exception.response.text,
                 },
             )
+            raise P2PException.for_data_not_provided(exception.response.text)
         else:
             self._log_warning("BAD_RESPONSE", {"class": type(exception).__name__})
 
