@@ -130,10 +130,13 @@ git clone https://github.com/andrextor/python-checkout.git
 cd python-checkout
 ```
 
-# Install Poetry if not already installed
-curl -sSL https://install.python-poetry.org | python3 -
+Install Poetry if not already installed:
 
-Install dependencies
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+Install dependencies:
 
 ```bash
 poetry install --no-root
@@ -142,19 +145,19 @@ poetry install --no-root
 To activate the development environment:
 
 - **Centralized Virtual Environments** (default): Poetry places the virtual environments in a central location for all Poetry-managed projects:
-~/.cache/pypoetry/virtualenvs/
+  `~/.cache/pypoetry/virtualenvs/`
 
-- **Project-Specific Virtual Environments** (optional): If you prefer the virtual environment to be created within your project directory (e.g., ./.venv), you can configure Poetry to do so:
+- **Project-Specific Virtual Environments** (optional): If you prefer the virtual environment to be created within your project directory (e.g., `./.venv`), you can configure Poetry to do so:
 
   ```bash
   poetry config virtualenvs.in-project true
   ```
 
-  Activate the environment:
+Activate the environment:
 
-  ```bash
-  poetry shell
-  ```
+```bash
+poetry shell
+```
 
 ### **Testing and Code Quality**
 
@@ -215,9 +218,9 @@ We welcome contributions! Follow these steps to contribute:
 
 1. Fork the repository:
 
-```bash
-  git fork https://github.com/andrextor/python-checkout.git
-```
+   ```bash
+   git fork https://github.com/andrextor/python-checkout.git
+   ```
 
 2. Create a feature branch:
 
