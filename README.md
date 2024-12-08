@@ -26,161 +26,18 @@ This project is a Python library inspired by the [PlaceToPay PHP Redirection Lib
 - **Logging**: To log and debug processes.
 - **Typing**: To ensure type safety and better developer experience.
 
----
+## Documentation
 
-## ***Quick Start For Production Use***
+### Quick Start For Production Use
 
-Here’s a quick example to get you started with the library:
+Follow the [Quick Start](https://github.com/andrextor/python-checkout/wiki/Quick-Start)
 
-1.Configuration
+### Installation
 
-Set up your Settings object with the necessary credentials:
+Follow the [Installation Guide](https://github.com/andrextor/python-checkout/wiki/Installation) to set up the project.
 
-```python
-from checkout import Checkout
+### Contribution
 
-# Configuration
-config = {
-    "base_url": "https://example.placetopay.com/redirection/",
-    "login": "your_login",
-    "tranKey": "your_transaction_key",
-    "timeout": 10,
-    "headers": {"Accept": "application/json", 'Content-Type': 'application/json'},
-}
+Want to contribute? Check out the [Contribution Guide](https://github.com/andrextor/python-checkout/wiki/Contribution-Guidehttps://github.com/andrextor/python-checkout/wiki/Contribution) for detailed instructions.
 
-checkout = Checkout(**config)
-```
-
-2.Create a Payment Request
-
-```python
-from messages.requests.redirect import RedirectRequest
-from messages.responses.redirect import RedirectResponse
-
-redirect_request = RedirectRequest(
-    amount={"currency": "COP", "total": 10000},
-    payment={"reference": "TEST123", "description": "Test Payment"}
-)
-
-# This request returns a `RedirectResponse` object containing the process URL.
-response: RedirectResponse = checkout.request(redirect_request)
-
-print("Redirect to:", response.process_url)
-```
-
-3.Query a Payment Request
-
-```python
-from messages.responses.information import RedirectInformation
-
-# Query a session by request ID. Returns a `RedirectInformation` object.
-query_response: RedirectInformation = checkout.query(123456)  # Replace with your request ID
-
-print("Request Status:", query_response.status)
-```
-
-4.Reverse a Payment
-
-```python
-from messages.responses.reverse import ReverseResponse
-
-# Reverse a transaction. Returns a `ReverseResponse` object.
-reverse_response: ReverseResponse = checkout.reverse("internal_reference")
-
-print("Reverse Status:", reverse_response.status)
-```
-
-## **Installation**
-
-Clone the repository and install the required dependencies:
-
-```bash
-git clone https://github.com/andrextor/python-checkout.git
-cd python-checkout
-```
-
-Install Poetry (if not already installed):
-
-```bash
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-Install dependencies
-
-```bash
-poetry install --no-root
-```
-
-To activate the development environment
-
-- Centralized Virtual Environments: By default, Poetry places the virtual environments in a central location for all Poetry-managed projects:
-~/.cache/pypoetry/virtualenvs/
-- Project-Specific Virtual Environments: If you prefer the virtual environment to be created within your project directory (e.g., ./.venv), you can configure Poetry to do so:
-
-```bash
-poetry config virtualenvs.in-project true
-```
-
-```bash
-poetry shell
-```
-
-Running Tests
-
-```bash
-poetry run pytest --cov=src
-```
-
-Use the following commands for code formatting and linting:
-
-```bash
-poetry run black .
-poetry run flake8
-poetry run isort .
-```
-
-Run type checks using mypy:
-
-```bash
-poetry run mypy src
-```
-
-Adding Dependencies
-
-```bash
-# To add a runtime dependency
-poetry add <package_name> 
-
-# To add a development dependency
-poetry add --group dev <package_name>
-```
-
-Project Structure
-
-- entities: Contains core models like Settings, Authentication, and payment-related entities (Amount, Transaction, etc.).
-- messages: Handles request and response objects for PlaceToPay interactions.
-- exceptions: Custom exception handling for the library.
-- client: Handles HTTP client interactions, including RestCarrier.
-- contracts: Defines interfaces for reusable components.
-- tests: Contains unit tests to ensure the library’s functionality.
-
-Contributing
-
-We welcome contributions! If you’d like to contribute, please fork the repository, make your changes, and submit a pull request.
-
-Steps to Contribute:
-
-- Fork the repository.
-
-```bash
-git fork https://github.com/andrextor/python-checkout.git
-``````
-
-- Create a feature branch: git checkout -b feature/new-feature.
-- Commit your changes: git commit -m "Add new feature".
-- Push to the branch: git push origin feature/new-feature.
-- Open a pull request on GitHub.
-
-License
-
-This project is licensed under the MIT License. See the LICENSE file for detail
+### [License](https://github.com/andrextor/python-checkout/LICENSE.txt)
