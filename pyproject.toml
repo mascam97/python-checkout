@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "p2p-checkout"
+name = "python-checkout"
 version = "0.1.0"
-description = "Python library for PlaceToPay integration."
+description = "Python library for PlaceToPay Checkout integration."
 authors = ["Iván Andrés López Gómez <andresgom11012@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/andrextor/P2PCheckout"
+homepage = "https://github.com/andrextor/python-checkout"
 
 [tool.poetry.dependencies]
 python = "^3.13"
