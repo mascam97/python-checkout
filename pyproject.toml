@@ -6,6 +6,7 @@ authors = ["Iván Andrés López Gómez <andresgom11012@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/andrextor/python-checkout"
+packages = [{include = "checkout"}]
 
 [tool.poetry.dependencies]
 python = "^3.13"
@@ -47,13 +48,13 @@ show_error_codes = true
 warn_unused_configs = true
 
 [[tool.mypy.overrides]]
-module = "tests.*"
+module = "checkout.tests.*"
 disallow_untyped_defs = false
 
 [tool.isort]
 profile = "black"
 line_length = 120
-known_first_party = ["src"]
+known_first_party = ["checkout"]
 known_third_party = ["pytest", "requests", "flask"]
 sections = [
     "FUTURE",
@@ -75,15 +76,16 @@ ignore = ["E402", "W503"]
 
 [tool.coverage.run]
 branch = true
-source = ["src"]
+source = ["checkout"]
+include = ["checkout/*"]
 omit = [
-    "src/*/__init__.py",
+    "checkout/*/__init__.py",
     "*/__pycache__/*"
 ]
 
 [tool.coverage.report]
 omit = [
-    "src/*/__init__.py",
+    "checkout/*/__init__.py",
     "*/__pycache__/*"
 ]
 fail_under = 98
@@ -96,15 +98,12 @@ title = "Test Coverage Report"
 [tool.coverage.xml]
 output = "coverage.xml"
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]
 filterwarnings = [
     "ignore:SOCKS support in urllib3 requires the installation of optional dependencies:urllib3.exceptions.DependencyWarning"
 ]
 
 [tool.env]
-PYTHONPATH = "src"
+PYTHONPATH = "checkout"
 
 [virtualenvs]
 create = true
