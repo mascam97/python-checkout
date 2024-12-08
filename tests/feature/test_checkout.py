@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import patch
 
 from cases.redirect_response_mock import RedirectResponseMock
+from checkout import Checkout
 from entities.instrument import Instrument
 from entities.token import Token
 from exceptions.p2p_exception import P2PException
@@ -10,10 +11,9 @@ from messages.requests.collect import CollectRequest
 from messages.requests.redirect import RedirectRequest
 from messages.responses.information import InformationResponse
 from messages.responses.reverse import ReverseResponse
-from p2p_checkout import P2PCheckout
 
 
-class P2PCheckoutTest(unittest.TestCase):
+class CheckoutTest(unittest.TestCase):
 
     def setUp(self):
         """Set up shared test data."""
@@ -23,17 +23,17 @@ class P2PCheckoutTest(unittest.TestCase):
             "tranKey": "test_tranKey",
             "timeout": 10,
         }
-        self.p2p_checkout = P2PCheckout(self.settings_data)
+        self.checkout = Checkout(self.settings_data)
 
     def test_initialization(self):
-        """Test if the P2PCheckout initializes correctly."""
-        self.assertIsNotNone(self.p2p_checkout.settings)
-        self.assertEqual(str(self.p2p_checkout.settings.base_url), "https://example.com/")
+        """Test if the Checkout initializes correctly."""
+        self.assertIsNotNone(self.checkout.settings)
+        self.assertEqual(str(self.checkout.settings.base_url), "https://example.com/")
 
     def test_validate_request_invalid(self):
         """Test _validate_request with an invalid type."""
         with self.assertRaises(P2PException) as context:
-            self.p2p_checkout._validate_request([], RedirectRequest)
+            self.checkout._validate_request([], RedirectRequest)
 
         self.assertIn("Invalid request type: list. Expected RedirectRequest.", str(context.exception))
 
@@ -43,7 +43,7 @@ class P2PCheckoutTest(unittest.TestCase):
         """
         invalid_dict = {"invalid_field": "value"}
         with self.assertRaises(P2PException) as context:
-            self.p2p_checkout._validate_request(invalid_dict, RedirectRequest)
+            self.checkout._validate_request(invalid_dict, RedirectRequest)
 
         self.assertIn("Failed to convert dictionary to RedirectRequest", str(context.exception))
 
@@ -55,7 +55,7 @@ class P2PCheckoutTest(unittest.TestCase):
         """
         mock_post.return_value = mock_response
 
-        information_response = self.p2p_checkout.query("88860")
+        information_response = self.checkout.query("88860")
 
         self.assertIsInstance(information_response, InformationResponse)
         self.assertEqual(information_response.request_id, 88860)
@@ -102,7 +102,7 @@ class P2PCheckoutTest(unittest.TestCase):
         """
         mock_post.return_value = mock_response
 
-        information_response = self.p2p_checkout.query("88867")
+        information_response = self.checkout.query("88867")
 
         self.assertIsInstance(information_response, InformationResponse)
         self.assertEqual(information_response.request_id, 88867)
@@ -156,7 +156,7 @@ class P2PCheckoutTest(unittest.TestCase):
         }
         collect_request = CollectRequest.model_validate(collect_request_data)
 
-        result = self.p2p_checkout.collect(collect_request)
+        result = self.checkout.collect(collect_request)
 
         self.assertIsInstance(result, InformationResponse)
         self.assertEqual(result.request_id, 88866)
@@ -187,7 +187,7 @@ class P2PCheckoutTest(unittest.TestCase):
         mock_post.return_value = mock_response
 
         internal_reference = "437987"
-        result = self.p2p_checkout.reverse(internal_reference)
+        result = self.checkout.reverse(internal_reference)
 
         self.assertIsInstance(result, ReverseResponse)
         self.assertIsNotNone(result.status)
@@ -223,11 +223,11 @@ class P2PCheckoutTest(unittest.TestCase):
         redirect_request = {
             "returnUrl": "https://example.com/return",
             "ipAddress": "127.0.0.1",
-            "userAgent": "P2PCheckout Sandbox",
+            "userAgent": "Checkout Sandbox",
         }
 
         with self.assertRaises(P2PException) as context:
-            self.p2p_checkout.request(redirect_request)
+            self.checkout.request(redirect_request)
 
         status_dict = json.loads(str(context.exception))
         self.assertEqual("FAILED", status_dict["status"]["status"])
@@ -240,7 +240,7 @@ class P2PCheckoutTest(unittest.TestCase):
         mock_post.return_value = mock_response
 
         with self.assertRaises(P2PException) as context:
-            self.p2p_checkout.query("88608")
+            self.checkout.query("88608")
 
         status_dict = json.loads(str(context.exception))
         self.assertEqual("FAILED", status_dict["status"]["status"])
@@ -263,7 +263,7 @@ class P2PCheckoutTest(unittest.TestCase):
         mock_post.return_value = mock_response
 
         with self.assertRaises(P2PException) as context:
-            self.p2p_checkout.collect(CollectRequest.model_validate(collect_request_data))
+            self.checkout.collect(CollectRequest.model_validate(collect_request_data))
 
         status_dict = json.loads(str(context.exception))
         self.assertEqual("FAILED", status_dict["status"]["status"])
@@ -276,7 +276,7 @@ class P2PCheckoutTest(unittest.TestCase):
         mock_post.return_value = mock_response
 
         with self.assertRaises(P2PException) as context:
-            self.p2p_checkout.reverse("123123123")
+            self.checkout.reverse("123123123")
 
         status_dict = json.loads(str(context.exception))
         self.assertEqual("FAILED", status_dict["status"]["status"])
