@@ -1,7 +1,7 @@
-# **P2PCheckout Python Integration Library**
+# **python-checkout Python Integration Library**
 
-[![codecov](https://codecov.io/github/andrextor/P2PCheckout/graph/badge.svg?token=XPxrdb1Q2M)](https://codecov.io/github/andrextor/P2PCheckout)
-[![Build Status](https://github.com/andrextor/P2PCheckout/actions/workflows/python-app.yml/badge.svg)](https://github.com/andrextor/P2PCheckout/actions)
+[![codecov](https://codecov.io/github/andrextor/python-checkout/graph/badge.svg?token=XPxrdb1Q2M)](https://codecov.io/github/andrextor/python-checkout)
+[![Build Status](https://github.com/andrextor/python-checkout/actions/workflows/python-app.yml/badge.svg)](https://github.com/andrextor/python-checkout/actions)
 
 This project is a Python library inspired by the [PlaceToPay PHP Redirection Library](https://github.com/dnetix/redirection). It aims to provide a robust and easy-to-use solution for integrating with PlaceToPay's payment gateway using Python. The library incorporates some enhancements to better fit Python's ecosystem and leverages modern Python tools like Pydantic and Requests for validation and HTTP handling.
 
@@ -37,7 +37,7 @@ Here’s a quick example to get you started with the library:
 Set up your Settings object with the necessary credentials:
 
 ```python
-from src.p2p_checkout import P2PCheckout
+from checkout import Checkout
 
 # Configuration
 config = {
@@ -48,7 +48,7 @@ config = {
     "headers": {"Accept": "application/json", 'Content-Type': 'application/json'},
 }
 
-p2p_checkout = P2PCheckout(**config)
+checkout = Checkout(**config)
 ```
 
 2.Create a Payment Request
@@ -63,7 +63,7 @@ redirect_request = RedirectRequest(
 )
 
 # This request returns a `RedirectResponse` object containing the process URL.
-response: RedirectResponse = placeto_pay.request(redirect_request)
+response: RedirectResponse = checkout.request(redirect_request)
 
 print("Redirect to:", response.process_url)
 ```
@@ -74,7 +74,7 @@ print("Redirect to:", response.process_url)
 from messages.responses.information import RedirectInformation
 
 # Query a session by request ID. Returns a `RedirectInformation` object.
-query_response: RedirectInformation = placeto_pay.query(123456)  # Replace with your request ID
+query_response: RedirectInformation = checkout.query(123456)  # Replace with your request ID
 
 print("Request Status:", query_response.status)
 ```
@@ -85,7 +85,7 @@ print("Request Status:", query_response.status)
 from messages.responses.reverse import ReverseResponse
 
 # Reverse a transaction. Returns a `ReverseResponse` object.
-reverse_response: ReverseResponse = placeto_pay.reverse("internal_reference")
+reverse_response: ReverseResponse = checkout.reverse("internal_reference")
 
 print("Reverse Status:", reverse_response.status)
 ```
@@ -95,8 +95,8 @@ print("Reverse Status:", reverse_response.status)
 Clone the repository and install the required dependencies:
 
 ```bash
-git clone https://github.com/andrextor/P2PCheckout.git
-cd P2PCheckout
+git clone https://github.com/andrextor/python-checkout.git
+cd python-checkout
 ```
 
 Install Poetry (if not already installed):
@@ -108,7 +108,7 @@ curl -sSL https://install.python-poetry.org | python3 -
 Install dependencies
 
 ```bash
-poetry install
+poetry install --no-root
 ```
 
 To activate the development environment
@@ -173,7 +173,7 @@ Steps to Contribute:
 - Fork the repository.
 
 ```bash
-git fork https://github.com/andrextor/P2PCheckout.git
+git fork https://github.com/andrextor/python-checkout.git
 ``````
 
 - Create a feature branch: git checkout -b feature/new-feature.

@@ -12,7 +12,7 @@ from messages.responses.reverse import ReverseResponse
 T = TypeVar("T", RedirectRequest, CollectRequest)
 
 
-class P2PCheckout:
+class Checkout:
     """
     Main class for interacting with PlaceToPay.
     """
