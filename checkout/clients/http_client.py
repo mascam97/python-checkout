@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Any, Dict, Optional
 from urllib.parse import urljoin
@@ -65,7 +66,12 @@ class HttpClient:
 
     def _log_request(self, url: str, payload: Dict[str, Any]) -> None:
         """Log the details of an outgoing request."""
-        self.logger.debug("REQUEST", {"url": url, "json": payload})
+        try:
+            payload_str = json.dumps(payload, ensure_ascii=False)
+        except (TypeError, ValueError) as e:
+            payload_str = f"Error serializing payload: {e}"
+
+        self.logger.debug(f"REQUEST to {url}: {payload_str}")
 
     def _log_response(self, response: requests.Response) -> None:
         """Log the details of a received response."""

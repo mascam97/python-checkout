@@ -2,6 +2,7 @@ from typing import Optional
 
 from pydantic import ConfigDict, Field
 
+from checkout.decorators.convert_to_boolean import convert_booleans_to_strings
 from checkout.entities.instrument import Instrument
 from checkout.messages.requests.redirect import RedirectRequest
 
@@ -15,6 +16,7 @@ class CollectRequest(RedirectRequest):
     ip_address: str = Field(default="", alias="ipAddress", description="IP address of the user")
     user_agent: str = Field(default="", alias="userAgent", description="User agent of the user's browser")
 
+    @convert_booleans_to_strings
     def to_dict(self) -> dict:
         """
         Convert the CollectRequest object to a dictionary.
@@ -23,5 +25,5 @@ class CollectRequest(RedirectRequest):
 
         return {
             **parent_dict,
-            "instrument": self.instrument.to_dict() if self.instrument else None,
+            "instrument": self.instrument.to_dict() if self.instrument else "",
         }

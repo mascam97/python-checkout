@@ -19,55 +19,36 @@ class Authentication:
 
         self.login: str = config["login"]
         self.tran_key: str = config["tranKey"]
-        self.algorithm: str = config.get("algorithm", "sha256")
-        self.auth: Dict = config.get("auth", {})
-        self.additional: Dict = config.get("auth_additional", {})
 
-        self.generate()
+        self.raw_nonce = self._generate_raw_nonce()
+        self.seed = self._generate_seed()
+        self.tran_key_digest = self._generate_tran_key()
 
-    def get_nonce(self) -> str:
+    def _generate_raw_nonce(self) -> bytes:
         """
-        Generate or retrieve the nonce.
+        Generate a raw random nonce (16 bytes).
 
-        :param encoded: If True, returns the nonce base64 encoded.
+        :return: Raw nonce in bytes.
         """
-        if self.auth:
-            return self.auth["nonce"]
-        else:
-            nonce = random.randrange(1000000, 10000000).to_bytes(16, byteorder="big")
-            return base64.b64encode(nonce).decode("utf-8")
+        return random.getrandbits(128).to_bytes(16, byteorder="big")
 
-    def get_seed(self) -> str:
+    def _generate_seed(self) -> str:
         """
-        Generate or retrieve the seed (timestamp).
+        Generate the seed (timestamp in ISO format).
 
         :return: ISO formatted timestamp.
         """
+        return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-        return self.auth.get("seed", datetime.datetime.now(datetime.timezone.utc).isoformat())
-
-    def digest(self, encoded: bool = True) -> str:
+    def _generate_tran_key(self) -> str:
         """
-        Generate the digest based on nonce, seed, and tranKey.
+        Generate the tranKey by hashing the raw_nonce, seed, and tran_key using SHA256.
 
-        :param encoded: If True, returns the digest base64 encoded. Otherwise, returns the hexadecimal digest.
-        :return: Digest string.
+        :return: Base64 encoded tranKey string.
         """
-        nonce = self.get_nonce()
-        seed = self.get_seed()
-        digest_input = nonce + seed + self.tran_key
-        digest = hashlib.new(self.algorithm, digest_input.encode("utf-8")).digest()
-
-        return base64.b64encode(digest).decode("utf-8") if encoded else digest.hex()
-
-    def generate(self) -> None:
-        """
-        Generate the authentication data if not overridden.
-        """
-        self.auth = {
-            "seed": self.get_seed(),
-            "nonce": self.get_nonce(),
-        }
+        digest_input = self.raw_nonce + self.seed.encode("utf-8") + self.tran_key.encode("utf-8")
+        digest = hashlib.sha256(digest_input).digest()
+        return base64.b64encode(digest).decode("utf-8")
 
     def to_dict(self) -> Dict:
         """
@@ -77,8 +58,7 @@ class Authentication:
         """
         return {
             "login": self.login,
-            "tranKey": self.digest(),
-            "nonce": self.get_nonce(),
-            "seed": self.get_seed(),
-            "additional": self.additional,
+            "tranKey": self.tran_key_digest,
+            "nonce": base64.b64encode(self.raw_nonce).decode("utf-8"),
+            "seed": self.seed,
         }

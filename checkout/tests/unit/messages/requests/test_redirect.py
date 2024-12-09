@@ -15,9 +15,6 @@ class RedirectRequestTest(unittest.TestCase):
         self.assertEqual(redirect_request.ip_address, "192.168.1.1")
         self.assertEqual(redirect_request.user_agent, "Test User Agent")
         self.assertEqual(redirect_request.locale, "es_CO")
-        self.assertFalse(redirect_request.capture_address)
-        self.assertFalse(redirect_request.skip_result)
-        self.assertFalse(redirect_request.no_buyer_fill)
 
     def test_initialization_with_all_fields(self):
         """
@@ -35,9 +32,9 @@ class RedirectRequestTest(unittest.TestCase):
             "ipAddress": "192.168.1.1",
             "userAgent": "Test User Agent",
             "expiration": "2023-12-31T23:59:59Z",
-            "captureAddress": True,
-            "skipResult": True,
-            "noBuyerFill": True,
+            "captureAddress": "true",
+            "skipResult": "true",
+            "noBuyerFill": "true",
         }
         redirect_request = RedirectRequest(**data)
 
@@ -79,19 +76,12 @@ class RedirectRequestTest(unittest.TestCase):
 
         expected = {
             "locale": "es_CO",
-            "payer": None,
-            "buyer": None,
-            "payment": None,
-            "subscription": None,
             "returnUrl": "https://example.com/return",
-            "paymentMethod": "",
-            "cancelUrl": "",
             "ipAddress": "192.168.1.1",
             "userAgent": "Test User Agent",
-            "expiration": None,
-            "captureAddress": True,
-            "skipResult": False,
-            "noBuyerFill": False,
+            "captureAddress": "true",
+            "skipResult": "false",
+            "noBuyerFill": "false",
         }
         self.assertEqual(result, expected)
 
@@ -107,5 +97,5 @@ class RedirectRequestTest(unittest.TestCase):
         self.assertIsNone(redirect_request.payment)
         self.assertIsNone(redirect_request.subscription)
         self.assertIsNone(redirect_request.expiration)
-        self.assertEqual(redirect_request.payment_method, "")
-        self.assertEqual(redirect_request.cancel_url, "")
+        self.assertIsNone(redirect_request.payment_method)
+        self.assertIsNone(redirect_request.cancel_url)

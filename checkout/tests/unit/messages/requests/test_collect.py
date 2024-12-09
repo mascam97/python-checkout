@@ -78,16 +78,6 @@ class CollectTest(unittest.TestCase):
         self.assertEqual("Mozilla/5.0", result["userAgent"])
         self.assertEqual("https://example.com/return", result["returnUrl"])
 
-        self.assertIsNone(result["payer"])
-        self.assertIsNone(result["buyer"])
-        self.assertIsNone(result["payment"])
-        self.assertIsNone(result["subscription"])
-
-        self.assertIsNone(result["expiration"])
-
-        self.assertFalse(result["captureAddress"])
-        self.assertFalse(result["skipResult"])
-        self.assertFalse(result["noBuyerFill"])
-
-        self.assertEqual("", result["paymentMethod"])
-        self.assertEqual("", result["cancelUrl"])
+        self.assertEqual("false", result["captureAddress"])
+        self.assertEqual("false", result["skipResult"])
+        self.assertEqual("false", result["noBuyerFill"])

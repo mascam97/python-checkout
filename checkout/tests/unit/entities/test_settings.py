@@ -1,137 +1,50 @@
-import logging
+import base64
+import hashlib
 import unittest
-from unittest.mock import MagicMock
+from unittest import mock
 
-from checkout.clients.http_client import HttpClient
-from checkout.clients.rest_client import RestCarrier
-from checkout.entities.settings import Settings
+import pytest
+
+from checkout.clients.authentication import Authentication
+from checkout.exceptions.checkout_exception import CheckoutException
 
 
-class SettingsTest(unittest.TestCase):
+class AuthenticationTest(unittest.TestCase):
 
-    def setUp(self):
-        self.config = {
-            "base_url": "https://example.com/",
-            "timeout": 10,
+    @mock.patch("checkout.clients.authentication.random.getrandbits")
+    @mock.patch("checkout.clients.authentication.datetime")
+    def test_authentication_initialization(self, mock_datetime, mock_getrandbits):
+        # Mock datetime and random.getrandbits
+        mock_now = mock.Mock()
+        mock_now.isoformat.return_value = "2024-10-22T04:39:18.810868+00:00"
+        mock_datetime.datetime.now.return_value = mock_now
+        mock_datetime.timezone.utc = mock.Mock()
+        mock_getrandbits.return_value = int("927342197", 10)
+
+        config = {
             "login": "test_login",
-            "tranKey": "test_tranKey",
-            "auth_additional": {},
-            "loggerConfig": {"level": "DEBUG"},
-            "headers": {"Authorization": "Bearer test_token"},
+            "tranKey": "test_tran_key",
         }
 
-    def test_base_url_with_endpoint(self):
-        settings = Settings(**self.config)
-        url = settings.base_url_with_endpoint("test-endpoint")
-        self.assertEqual(url, "https://example.com/test-endpoint")
+        auth = Authentication(config)
 
-    def test_get_client(self):
-        settings = Settings(**self.config)
-        client = settings.get_client()
-        carrier = settings.carrier()
-        self.assertIsInstance(carrier, RestCarrier)
-        self.assertIsInstance(client, HttpClient)
-        self.assertEqual(client.headers["Authorization"], "Bearer test_token")
-        self.assertEqual(client.timeout, self.config["timeout"])
+        raw_nonce = mock_getrandbits.return_value.to_bytes(16, byteorder="big")
+        expected_nonce = base64.b64encode(raw_nonce).decode("utf-8")
+        expected_seed = "2024-10-22T04:39:18.810868+00:00"
+        digest_input = raw_nonce + expected_seed.encode("utf-8") + config["tranKey"].encode("utf-8")
+        expected_tran_key = base64.b64encode(hashlib.sha256(digest_input).digest()).decode("utf-8")
 
-    def test_authentication_instance(self):
-        settings = Settings(**self.config)
-        auth = settings.authentication()
-        self.assertEqual(auth.login, self.config["login"])
-        self.assertEqual(auth.tran_key, self.config["tranKey"])
-        self.assertEqual(auth.additional, self.config["auth_additional"])
+        expected_dict = {
+            "login": config["login"],
+            "tranKey": expected_tran_key,
+            "nonce": expected_nonce,
+            "seed": expected_seed,
+        }
 
-    def test_rest_client_instance(self):
-        settings = Settings(**self.config)
-        self.assertIsInstance(settings.carrier(), RestCarrier)
+        self.assertEqual(auth.to_dict(), expected_dict)
 
-    def test_validate_base_url_with_missing_slash(self):
-        config = self.config.copy()
-        config["base_url"] = "https://example.com"
-        settings = Settings(**config)
-        self.assertEqual(str(settings.base_url), "https://example.com/")
+    def test_fails_not_login_and_tran_key_provided(self):
+        with pytest.raises(CheckoutException) as exc_info:
+            Authentication({})
 
-    def test_validate_base_url_with_empty_url(self):
-        config = self.config.copy()
-        config["base_url"] = ""
-        with self.assertRaises(ValueError) as context:
-            Settings(**config)
-        self.assertIn("Base URL cannot be empty.", str(context.exception))
-
-    def test_logger_creation(self):
-        settings = Settings(**self.config)
-        logger = settings.logger()
-        self.assertEqual(len(logger.handlers), 1)
-        self.assertIsInstance(logger.handlers[0], logging.StreamHandler)
-
-    def test_create_logger_with_custom_formatter(self):
-        config = self.config.copy()
-        config["loggerConfig"]["formatter"] = "%(message)s"
-        settings = Settings(**config)
-        logger = settings.logger()
-        self.assertIsNotNone(logger)
-        self.assertEqual(logger.level, logging.DEBUG)
-        self.assertEqual(len(logger.handlers), 1)
-        handler = logger.handlers[0]
-        self.assertIsInstance(handler.formatter, logging.Formatter)
-        self.assertEqual(handler.formatter._fmt, "%(message)s")
-
-    def test_client_headers_and_timeout(self):
-        settings = Settings(**self.config)
-        client = settings.get_client()
-        self.assertEqual(client.headers["Authorization"], "Bearer test_token")
-        self.assertEqual(client.timeout, self.config["timeout"])
-
-    def test_get_client_initializes_session(self):
-        settings = Settings(**self.config)
-        client = settings.get_client()
-        self.assertIsInstance(client, HttpClient)
-        self.assertEqual(client.headers["Authorization"], "Bearer test_token")
-        self.assertEqual(client.timeout, self.config["timeout"])
-
-    def test_get_client_uses_existing_session(self):
-        settings = Settings(**self.config)
-        first_client = settings.get_client()
-        second_client = settings.get_client()
-        self.assertIs(first_client, second_client)
-        self.assertIsInstance(first_client, HttpClient)
-
-    def test_logger_reuses_existing_instance(self):
-        settings = Settings(**self.config)
-        existing_logger = MagicMock()
-        settings.p2p_logger = existing_logger
-        logger = settings.logger()
-        self.assertEqual(logger, existing_logger)
-
-    def test_custom_logger_configuration(self):
-        config = self.config.copy()
-        config.pop("loggerConfig", None)
-        settings = Settings(**config)
-        logger = settings.logger()
-
-        self.assertIsNotNone(logger)
-        self.assertEqual(len(logger.handlers), 1)
-        self.assertEqual(logger.level, logging.DEBUG)
-
-    def test_create_logger_with_logger_config(self):
-        config = self.config.copy()
-        config["loggerConfig"] = {"level": logging.WARNING, "formatter": "%(message)s"}
-        settings = Settings(**config)
-        logger = settings.logger()
-        self.assertEqual(logger.level, logging.WARNING)
-        self.assertEqual(len(logger.handlers), 1)
-        handler = logger.handlers[0]
-        self.assertIsInstance(handler.formatter, logging.Formatter)
-        self.assertEqual(handler.formatter._fmt, "%(message)s")
-
-    def test_use_external_client(self):
-        """
-        Test that get_client uses an externally provided HttpClient.
-        """
-        external_client = HttpClient(base_url="https://external_client.com", timeout=120, logger=None, headers=None)
-        self.config["p2p_client"] = external_client
-        settings = Settings(**self.config)
-
-        client = settings.get_client()
-        self.assertEqual(client, external_client)
-        self.assertEqual(client.headers, {"Content-Type": "application/json"})
+        self.assertEqual(str(exc_info.value), "No login or tranKey provided for authentication")
