@@ -1,3 +1,4 @@
+
 # **python-checkout Python Integration Library**
 
 [![codecov](https://codecov.io/github/andrextor/python-checkout/graph/badge.svg?token=XPxrdb1Q2M)](https://codecov.io/github/andrextor/python-checkout)
@@ -7,26 +8,26 @@ This project is a Python library inspired by the [PlaceToPay PHP Redirection Lib
 
 ---
 
-## **Table of Contents**
+> This `README.md` provides guidance on setting up and using the package in a local development environment. If you are looking to install and use the package in your project, please refer to the [Wiki - Quick Start](https://github.com/andrextor/python-checkout/wiki/Quick-Start). Additional documentation and detailed guides are available in the [Wiki](https://github.com/andrextor/python-checkout/wiki).
+
+---
+
+## **Table of contents**
 
 1. [Features](#features)
-2. [Technologies Used](#technologies-used)
-3. [Quick Start](#quick-start)
-    - [Installing the Package](#installing-the-package)
-    - [Basic Usage](#basic-usage)
-4. [Development Setup](#development-setup)
-    - [Installation for Local Development](#installation-for-local-development)
-    - [Testing and Code Quality](#testing-and-code-quality)
-    - [Adding Dependencies](#adding-dependencies)
-5. [Project Structure](#project-structure)
-6. [Contributing](#contributing)
-7. [License](#license)
+2. [Technologies used](#technologies-used)
+3. [Development setup](#development-setup)
+    - [Installation for local development](#installation-for-local-development)
+    - [Testing and code quality](#testing-and-code-quality)
+    - [Adding dependencies](#adding-dependencies)
+4. [Contributing](#contributing)
+5. [License](#license)
 
 ---
 
 ## **Features**
 
-- 🛠 **Inspired by Dnetix PHP Library**: A Python adaptation of the official PHP library, maintaining core concepts and improving usability.
+- 🛠 **Inspired by Dnetix PHP Library**: A Python adaptation of the official PHP library, keeping the core concepts and enhancing usability.
 - 🔑 **Authentication Management**: Easily handle login and transaction keys with dynamic nonce and seed generation.
 - 📡 **Request Handling**: Create, query, collect, and reverse payment requests with ease.
 - ✅ **Validation with Pydantic**: Ensures data integrity and validation throughout the library.
@@ -35,93 +36,19 @@ This project is a Python library inspired by the [PlaceToPay PHP Redirection Lib
 
 ---
 
-## **Technologies Used**
+## **Technologies used**
 
 - **Python 3.13+**
 - **Pydantic**: For model validation and serialization.
 - **Requests**: For HTTP client requests.
 - **Logging**: To log and debug processes.
-- **Typing**: To ensure type safety and improve developer experience.
+- **Typing**: To ensure type safety and better developer experience.
 
 ---
 
-## **Quick Start**
+## **Development setup**
 
-### **Installing the Package**
-
-To install the library in your Python project, run:
-
-```bash
-pip install p2pcheckout
-```
-
-### **Basic Usage**
-
-Here’s an example to get started:
-
-#### 1. Configuration
-
-Set up your Settings object with the necessary credentials:
-
-```python
-from checkout import Checkout
-
-# Configuration
-config = {
-    "base_url": "https://example.placetopay.com/redirection/",
-    "login": "your_login",
-    "tranKey": "your_transaction_key",
-    "timeout": 10,
-    "headers": {"Accept": "application/json", 'Content-Type': 'application/json'},
-}
-
-checkout = Checkout(**config)
-```
-
-#### 2. Create a Payment Request
-
-```python
-from messages.requests.redirect import RedirectRequest
-from messages.responses.redirect import RedirectResponse
-
-redirect_request = RedirectRequest(
-    amount={"currency": "COP", "total": 10000},
-    payment={"reference": "TEST123", "description": "Test Payment"}
-)
-
-# This request returns a `RedirectResponse` object containing the process URL.
-response: RedirectResponse = checkout.request(redirect_request)
-
-print("Redirect to:", response.process_url)
-```
-
-#### 3. Query a Payment Request
-
-```python
-from messages.responses.information import RedirectInformation
-
-# Query a session by request ID. Returns a `RedirectInformation` object.
-query_response: RedirectInformation = checkout.query(123456)  # Replace with your request ID
-
-print("Request Status:", query_response.status)
-```
-
-#### 4. Reverse a Payment
-
-```python
-from messages.responses.reverse import ReverseResponse
-
-# Reverse a transaction. Returns a `ReverseResponse` object.
-reverse_response: ReverseResponse = checkout.reverse("internal_reference")
-
-print("Reverse Status:", reverse_response.status)
-```
-
----
-
-## **Development Setup**
-
-### **Installation for Local Development**
+### **Installation for local development**
 
 Clone the repository and install the required dependencies:
 
@@ -144,10 +71,10 @@ poetry install --no-root
 
 To activate the development environment:
 
-- **Centralized Virtual Environments** (default): Poetry places the virtual environments in a central location for all Poetry-managed projects:
+- **Centralized virtual environments** (default): Poetry places the virtual environments in a central location for all Poetry-managed projects:
   `~/.cache/pypoetry/virtualenvs/`
 
-- **Project-Specific Virtual Environments** (optional): If you prefer the virtual environment to be created within your project directory (e.g., `./.venv`), you can configure Poetry to do so:
+- **Project-Specific virtual environments** (optional): If you prefer the virtual environment to be created within your project directory (e.g., `./.venv`), you can configure Poetry to do so:
 
   ```bash
   poetry config virtualenvs.in-project true
@@ -159,7 +86,7 @@ Activate the environment:
 poetry shell
 ```
 
-### **Testing and Code Quality**
+### **Testing and code quality**
 
 Run tests:
 
@@ -181,7 +108,7 @@ Run type checks using mypy:
 poetry run mypy src
 ```
 
-### **Adding Dependencies**
+### **Adding dependencies**
 
 To manage dependencies for your project, use Poetry as follows:
 
@@ -198,17 +125,6 @@ To manage dependencies for your project, use Poetry as follows:
   ```
 
 This ensures that your project remains modular and adheres to best practices for dependency management.
-
----
-
-## **Project Structure**
-
-- **entities**: Core models like Settings, Authentication, and payment-related entities (Amount, Transaction, etc.).
-- **messages**: Request and response objects for PlaceToPay interactions.
-- **exceptions**: Custom exception handling for the library.
-- **client**: HTTP client interactions, including RestCarrier.
-- **contracts**: Interfaces for reusable components.
-- **tests**: Unit tests for validating the library's functionality.
 
 ---
 

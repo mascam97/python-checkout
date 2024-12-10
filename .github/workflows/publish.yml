@@ -1,0 +1,18 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and publish to pypi
+        uses: JRubics/poetry-publish@v2.0
+        with:
+          python-version: "3.13"
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
